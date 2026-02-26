@@ -321,6 +321,100 @@
   @keyframes floatUp{0%{transform:translateY(100vh) rotate(0)}100%{transform:translateY(-100px) rotate(360deg)}}
   @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
   @keyframes popIn{0%{transform:scale(.8);opacity:0}100%{transform:scale(1);opacity:1}}
+  /* ══ RESULT ZONES ══ */
+  .result-zone {
+    border-radius:24px; padding:24px 20px; margin:0 -4px;
+  }
+  .result-zone-story {
+    background:linear-gradient(160deg,#0f0f1e,#1a1a3a);
+    border:1.5px solid rgba(100,130,220,.2);
+    box-shadow:0 8px 40px rgba(0,0,0,.3);
+    color:white;
+  }
+  .result-zone-quiz {
+    background:linear-gradient(160deg,#FFF9F3,#FFF4E8);
+    border:1.5px solid rgba(212,149,106,.2);
+    box-shadow:0 4px 24px rgba(44,24,16,.08);
+    margin-top:0;
+  }
+  .result-zone-header {
+    text-align:center; margin-bottom:20px;
+  }
+  .result-zone-badge {
+    display:inline-block; padding:5px 16px; border-radius:20px;
+    font-size:11px; font-weight:800; letter-spacing:1.5px;
+    margin-bottom:10px;
+  }
+  .result-zone-badge.story {
+    background:rgba(255,255,255,.1); color:rgba(255,255,255,.8);
+    border:1px solid rgba(255,255,255,.2);
+  }
+  .result-zone-badge.quiz {
+    background:rgba(212,149,106,.12); color:var(--caramel);
+    border:1px solid rgba(212,149,106,.3);
+  }
+  .result-zone-title {
+    font-family:'Noto Serif KR',serif; font-size:18px;
+    font-weight:900; line-height:1.4;
+  }
+  .result-zone-story .result-zone-title { color:white; }
+  .result-zone-quiz .result-zone-title { color:var(--dark); }
+
+  /* ── 존 전환 구분선 ── */
+  .zone-transition {
+    text-align:center; padding:16px 0 14px;
+  }
+  .zone-transition-label {
+    font-size:11px; font-weight:700; color:var(--muted);
+    letter-spacing:1px; margin-bottom:6px;
+  }
+  .zone-transition-arrow {
+    font-size:22px; color:var(--toast); animation:bounce .8s ease infinite alternate;
+  }
+  @keyframes bounce { from{transform:translateY(0)} to{transform:translateY(5px)} }
+
+  /* ══ RESULT ZONE DIVIDER (legacy — keep for safety) ══ */
+  .result-zone-divider {
+    margin:28px 0; text-align:center; position:relative;
+  }
+  .result-zone-divider::before {
+    content:''; position:absolute; left:0; right:0; top:50%;
+    height:1px; background:linear-gradient(90deg,transparent,var(--border),transparent);
+  }
+  .result-zone-divider-inner {
+    display:inline-block; position:relative; z-index:1;
+    background:var(--cream); padding:8px 20px;
+    font-family:'Noto Serif KR',serif; font-size:12px;
+    font-weight:700; color:var(--muted); letter-spacing:1.5px;
+    border:1.5px solid var(--border); border-radius:20px;
+  }
+
+  /* ── story zone 내부 카드 오버라이드 ── */
+  .result-zone-story .character-card-mini {
+    background:rgba(255,255,255,.07);
+    border-color:rgba(255,255,255,.15);
+  }
+  .result-zone-story .character-food-name { color:white; }
+  .result-zone-story .character-sub-tag { color:rgba(255,255,255,.5); }
+  .result-zone-story .story-ai-box {
+    background:rgba(255,255,255,.07);
+    border-color:rgba(255,255,255,.12);
+  }
+  .result-zone-story .story-ai-box-title { color:rgba(255,255,255,.85); }
+  .result-zone-story .story-ai-content { color:rgba(255,255,255,.8); }
+  .result-zone-story .story-recap-card {
+    background:rgba(255,255,255,.06);
+    border-color:rgba(255,255,255,.1);
+    color:rgba(255,255,255,.8);
+  }
+  .result-zone-story .recap-title { color:rgba(255,255,255,.7); }
+  .result-zone-story .recap-story-label { color:rgba(255,255,255,.5); }
+  .result-zone-story .recap-story-content { color:rgba(255,255,255,.85); }
+  .result-zone-story .kw-chip {
+    background:rgba(255,255,255,.1); color:rgba(255,255,255,.7);
+    border-color:rgba(255,255,255,.15);
+  }
+
   .fade-in{animation:fadeUp .35s ease both;}
 
   /* ══ CHOICE PAGE ══ */
@@ -573,106 +667,122 @@
 
     <div id="result-content" style="display:none">
 
-      <!-- ══ ① 퀴즈 결과 메인 ══ -->
-      <div class="personality-card" style="margin-top:28px">
-        <span class="personality-emoji" id="personality-emoji"></span>
-        <div class="personality-food-type" id="personality-food-type"></div>
-        <div class="personality-type-tag" id="personality-type-tag"></div>
-        <div class="personality-desc" id="personality-desc"></div>
-      </div>
-
-      <!-- ══ ② 썰한줄 — 메인 하이라이트 (썰 있을 때만) ══ -->
+      <!-- ════════════════════════════════════════ -->
+      <!--  ZONE A: 썰 녹음 결과  (hasStory 일 때만)  -->
+      <!-- ════════════════════════════════════════ -->
       <div id="story-oneliner-block" style="display:none">
-        <div class="story-oneliner-card">
-          <div class="story-oneliner-label">🔥 AI가 읽은 내 썰 한 줄 요약</div>
-          <div class="loading-row" id="oneliner-loading">
-            <div class="ai-dots"><span></span><span></span><span></span></div>
-            <span>썰 읽는 중...</span>
-          </div>
-          <div class="story-oneliner-text" id="story-oneliner-text" style="display:none"></div>
-          <!-- 이사람에게 -->
-          <div class="story-oneliner-to" id="story-oneliner-to" style="display:none"></div>
-          <!-- 태그 -->
-          <div id="story-oneliner-tags" style="display:none;margin-top:10px"></div>
-        </div>
-      </div>
+        <div class="result-zone result-zone-story">
 
-      <!-- ══ ③ 캐릭터 소소하게 (썰 있을 때만) ══ -->
-      <div id="character-block" style="display:none">
-        <div class="section-divider" style="margin:20px 0 16px">
-          <div class="section-divider-line"></div>
-          <div class="section-divider-label">✦ 나의 음식 캐릭터 ✦</div>
-          <div class="section-divider-line"></div>
-        </div>
-        <div class="character-card character-card-mini">
-          <div class="char-img-wrap" id="char-img-wrap">
-            <div class="char-loading-inner" id="char-loading-inner">
-              <div class="small-spinner"></div>
-              <p>그리는 중...</p>
-            </div>
-            <img class="char-img" id="char-img" src="" alt="" style="display:none">
+          <div class="result-zone-header">
+            <div class="result-zone-badge story">🎙️ 썰 분석</div>
+            <div class="result-zone-title">AI가 내 썰을 읽고<br>내린 진단</div>
           </div>
-          <div class="character-info">
-            <div class="character-food-name" id="char-food-name"></div>
-            <div id="mood-badge-wrap"></div>
-            <div class="character-sub-tag" id="char-sub-tag"></div>
-            <div class="character-base-desc" id="char-base-desc"></div>
-            <!-- 명대사 -->
-            <div id="char-quote-wrap" style="display:none;margin-top:10px;padding:9px 12px;background:rgba(100,130,220,.08);border-radius:10px;border-left:3px solid var(--story-blue)">
-              <div style="font-size:10px;font-weight:700;color:var(--story-blue);letter-spacing:1px;margin-bottom:4px">💬 이 캐릭터의 한마디</div>
-              <div id="char-quote-text" style="font-size:13px;color:#1a2a6a;font-style:italic;line-height:1.6"></div>
+
+          <!-- 썰 한 줄 — 메인 카드 -->
+          <div class="story-oneliner-card">
+            <div class="story-oneliner-label">🔥 이 썰, 한 줄로 요약하면</div>
+            <div class="loading-row" id="oneliner-loading" style="min-height:64px;justify-content:center">
+              <div class="ai-dots"><span></span><span></span><span></span></div>
+              <span style="color:rgba(255,255,255,.5);font-size:13px">썰 읽는 중...</span>
+            </div>
+            <div class="story-oneliner-text" id="story-oneliner-text" style="display:none"></div>
+            <div class="story-oneliner-to" id="story-oneliner-to" style="display:none"></div>
+            <div id="story-oneliner-tags" style="display:none;margin-top:12px"></div>
+          </div>
+
+          <!-- 캐릭터 미니 카드 -->
+          <div class="character-card-mini">
+            <div class="char-img-wrap" id="char-img-wrap">
+              <div class="char-loading-inner" id="char-loading-inner">
+                <div class="small-spinner"></div>
+                <p>그리는 중...</p>
+              </div>
+              <img class="char-img" id="char-img" src="" alt="" style="display:none">
+            </div>
+            <div class="character-info">
+              <div class="character-food-name" id="char-food-name"></div>
+              <div id="mood-badge-wrap"></div>
+              <div class="character-sub-tag" id="char-sub-tag"></div>
+              <div id="char-quote-wrap" style="display:none;margin-top:10px;padding:9px 12px;background:rgba(100,130,220,.1);border-radius:10px;border-left:3px solid var(--story-blue)">
+                <div style="font-size:10px;font-weight:700;color:var(--story-blue);letter-spacing:1px;margin-bottom:4px">💬 캐릭터 한마디</div>
+                <div id="char-quote-text" style="font-size:13px;color:#1a2a6a;font-style:italic;line-height:1.6"></div>
+              </div>
             </div>
           </div>
+
+          <!-- 음식 심리 -->
+          <div class="story-ai-box">
+            <div class="story-ai-box-title">🍽️ 왜 하필 그 음식이었을까?</div>
+            <div class="loading-row" id="story-ai-loading">
+              <div class="ai-dots"><span></span><span></span><span></span></div>
+              <span>분석 중...</span>
+            </div>
+            <div class="story-ai-content" id="story-ai-content" style="display:none"></div>
+          </div>
+
+          <!-- 원문 -->
+          <div class="story-recap-card" id="story-recap-card" style="display:none">
+            <div class="recap-title">📝 AI가 받아쓴 내 썰</div>
+            <div class="recap-story">
+              <div class="recap-story-label">녹음된 내용</div>
+              <div class="recap-story-content" id="story-recap-content"></div>
+            </div>
+            <div id="keywords-wrap" style="display:none;margin-top:12px">
+              <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:7px">핵심 키워드</div>
+              <div class="keywords-row" id="keywords-row"></div>
+            </div>
+          </div>
+        </div><!-- /result-zone-story -->
+
+        <!-- ── 섹션 전환 구분선 ── -->
+        <div class="zone-transition">
+          <div class="zone-transition-label">📊 성향 분석 결과로</div>
+          <div class="zone-transition-arrow">↓</div>
+        </div>
+      </div>
+      <!-- /story-oneliner-block -->
+
+      <!-- ════════════════════════════════════════ -->
+      <!--  ZONE B: 7개 질문 성향 분석 (항상 표시)   -->
+      <!-- ════════════════════════════════════════ -->
+      <div class="result-zone result-zone-quiz">
+
+        <div class="result-zone-header">
+          <div class="result-zone-badge quiz">🎲 성향 분석</div>
+          <div class="result-zone-title" id="quiz-zone-title">7개 질문으로 알아보는<br>나의 음식 성향</div>
         </div>
 
-        <!-- 썰 분석 (공감포인트·웹툰장면 제거, 음식심리만) -->
-        <div class="story-ai-box" id="story-analysis-box">
-          <div class="story-ai-box-title">🍽️ 왜 하필 그 음식이었을까?</div>
-          <div class="loading-row" id="story-ai-loading">
+        <!-- 성향 타입 카드 -->
+        <div class="personality-card">
+          <span class="personality-emoji" id="personality-emoji"></span>
+          <div class="personality-food-type" id="personality-food-type"></div>
+          <div class="personality-type-tag" id="personality-type-tag"></div>
+          <div class="personality-desc" id="personality-desc"></div>
+        </div>
+
+        <!-- 성향 AI 분석 -->
+        <div class="quiz-ai-box">
+          <div class="quiz-ai-box-title">🔍 7개 질문이 말해주는 나</div>
+          <div class="loading-row" id="quiz-ai-loading">
             <div class="ai-dots"><span></span><span></span><span></span></div>
-            <span>분석 중...</span>
+            <span>성향 패턴 분석 중...</span>
           </div>
-          <div class="story-ai-content" id="story-ai-content" style="display:none"></div>
+          <div class="quiz-ai-content" id="quiz-ai-content" style="display:none"></div>
         </div>
 
-        <!-- 녹음 내용 텍스트 -->
-        <div class="story-recap-card" id="story-recap-card" style="display:none">
-          <div class="recap-title">📝 AI가 받아쓴 내 썰</div>
-          <div class="recap-story">
-            <div class="recap-story-label">녹음된 내용</div>
-            <div class="recap-story-content" id="story-recap-content"></div>
-          </div>
-          <div id="keywords-wrap" style="display:none;margin-top:12px">
-            <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:7px;">핵심 키워드</div>
-            <div class="keywords-row" id="keywords-row"></div>
-          </div>
+        <!-- 답변 리캡 -->
+        <div class="quiz-recap-card">
+          <div class="recap-title">📋 내가 고른 7가지 답변</div>
+          <div id="quiz-recap-body"></div>
         </div>
-      </div>
 
-      <!-- ══ ④ 7가지 성향 분석 ══ -->
-      <div class="section-divider" style="margin:24px 0 16px">
-        <div class="section-divider-line"></div>
-        <div class="section-divider-label">✦ 성향 심층 분석 ✦</div>
-        <div class="section-divider-line"></div>
-      </div>
+      </div><!-- /result-zone-quiz -->
 
-      <div class="quiz-ai-box">
-        <div class="quiz-ai-box-title">🔍 7개 질문이 말해주는 나</div>
-        <div class="loading-row" id="quiz-ai-loading">
-          <div class="ai-dots"><span></span><span></span><span></span></div>
-          <span>성향 패턴 분석 중...</span>
+      <div style="padding:20px 0">
+        <button class="btn-to-phone" onclick="goTo('page-phone')">마지막이에요!!</button>
+        <div style="text-align:center;margin-top:14px">
+          <button onclick="restartAll()" style="padding:9px 22px;border-radius:20px;border:1.5px solid var(--toast);background:transparent;color:var(--toast);font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">↩ 처음부터 다시</button>
         </div>
-        <div class="quiz-ai-content" id="quiz-ai-content" style="display:none"></div>
-      </div>
-
-      <div class="quiz-recap-card">
-        <div class="recap-title">📋 내가 고른 7가지 답변</div>
-        <div id="quiz-recap-body"></div>
-      </div>
-
-      <button class="btn-to-phone" onclick="goTo('page-phone')">마지막이에요!!</button>
-      <div style="text-align:center;margin-top:14px">
-        <button onclick="restartAll()" style="padding:9px 22px;border-radius:20px;border:1.5px solid var(--toast);background:transparent;color:var(--toast);font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">↩ 처음부터 다시</button>
       </div>
     </div>
   </div>
@@ -1114,7 +1224,8 @@ async function buildResult(foodName){
 
   if(hasStory){
     document.getElementById('story-oneliner-block').style.display='block';
-    document.getElementById('character-block').style.display='block';
+    document.getElementById('quiz-zone-title').textContent='7개 질문이 말하는 나';
+  }
 
     const intensityLabel={'low':'잔잔하게 ','medium':'','high':'강렬하게 '}[moodIntensity]||'';
     document.getElementById('char-food-name').textContent=`${foodName} 캐릭터`;
@@ -1249,6 +1360,22 @@ async function doStoryOneliner(res,story,foodName,mood,emotionDetail='',storyCon
   return await callGemini(prompt,900);
 }
 
+
+function renderQuizAI(text,res){
+  const hl=getField(text,'한줄요약')||`${res.food} 타입의 독보적인 당신 ✨`;
+  const t1=getField(text,'특징1'),t2=getField(text,'특징2'),t3=getField(text,'특징3');
+  const traits=[t1,t2,t3].filter(Boolean);
+  if(!traits.length)traits.push('읽을수록 공감 가는 성향이에요.','주변이 먼저 알아보는 숨은 매력이 있어요.','자기 자신을 잘 아는 사람이에요.');
+  const weakness=getField(text,'약점');
+  const reason=getField(text,'결정적한마디')||`${res.food}처럼 알고 보면 더 깊어지는 사람이에요.`;
+  const tags=(getField(text,'태그').match(/#[^\s#]+/g)||[]).slice(0,5);
+  if(!tags.length)tags.push('#나다운썰','#썰푸드','#찐분석','#음식성향');
+  return`<div class="q-ai-section"><div class="q-ai-section-title">✦ 한줄 요약</div><p style="font-weight:700;font-size:15px;color:var(--dark);line-height:1.6">${hl}</p></div>
+<div class="q-ai-section"><div class="q-ai-section-title">✦ 이런 사람이에요</div>${traits.map((t,i)=>`<div style="margin-bottom:10px;padding:10px 12px;background:rgba(212,149,106,.06);border-radius:10px;border-left:3px solid var(--toast)"><p style="font-size:11px;font-weight:700;color:var(--toast);margin-bottom:4px">특징 ${i+1}</p><p style="font-size:13px;color:var(--dark);line-height:1.7">${t}</p></div>`).join('')}</div>
+${weakness?`<div class="q-ai-section"><div class="q-ai-section-title">⚡ 아킬레스건</div><p style="font-size:13px;color:var(--muted);line-height:1.7;padding:10px 12px;background:rgba(44,24,16,.04);border-radius:10px;font-style:italic">${weakness}</p></div>`:''}
+<div class="q-ai-section"><div class="q-ai-section-title">✦ 결정적 한마디</div><p style="font-size:14px;font-weight:600;color:var(--dark);border-left:3px solid var(--toast);padding:12px 14px;background:rgba(212,149,106,.07);border-radius:0 10px 10px 0;line-height:1.8">"${reason}"</p></div>
+<div style="margin-top:4px">${tags.map(t=>`<span class="q-ai-tag">${t}</span>`).join('')}</div>`;
+}
 
 function localQuizAI(res){
   const db={
