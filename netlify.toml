@@ -1,12 +1,3 @@
 [build]
   publish = "."
   functions = "netlify/functions"
-
-[functions]
-  node_bundler = "esbuild"
-
-# /api/* 요청을 Functions로 라우팅
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
