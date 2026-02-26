@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>로드 인터뷰 — AI 실시간 썰 분석</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0D0D0F;
+  --surface: #17181C;
+  --surface2: #1E2028;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --primary: #FF6B35;
+  --primary-glow: rgba(255,107,53,0.25);
+  --secondary: #7B61FF;
+  --secondary-glow: rgba(123,97,255,0.2);
+  --accent: #FFD166;
+  --text: #F0EDE8;
+  --text-muted: #6B6E7A;
+  --text-dim: #9A9DAA;
+  --success: #4ECDC4;
+  --danger: #FF4757;
+  --wave: #FF6B35;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body {
+  background: var(--bg);
+  font-family: 'Noto Sans KR', sans-serif;
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Background grain texture */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(ellipse at 20% 10%, rgba(255,107,53,0.07) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 90%, rgba(123,97,255,0.06) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── PAGES ── */
+.page { display: none; position: relative; z-index: 1; min-height: 100vh; flex-direction: column; }
+.page.active { display: flex; }
+
+/* ── SPLASH ── */
+#page-splash {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 24px;
+  position: relative;
+}
+
+.splash-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  letter-spacing: 3px;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  animation: fadeUp 0.6s ease both;
+}
+.splash-eyebrow::before, .splash-eyebrow::after {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: var(--primary);
+  opacity: 0.5;
+}
+
+.splash-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: clamp(36px, 10vw, 64px);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -2px;
+  margin-bottom: 8px;
+  animation: fadeUp 0.6s 0.1s ease both;
+  opacity: 0;
+  animation-fill-mode: both;
+}
+.splash-title span { color: var(--primary); }
+
+.splash-subtitle {
+  font-size: clamp(13px, 3vw, 16px);
+  color: var(--text-dim);
+  line-height: 1.7;
+  margin-bottom: 48px;
+  animation: fadeUp 0.6s 0.2s ease both;
+  opacity: 0;
+  animation-fill-mode: both;
+}
+
+.splash-visual {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  margin: 0 auto 48px;
+  animation: fadeUp 0.6s 0.15s ease both;
+  opacity: 0;
+  animation-fill-mode: both;
+}
+.splash-mic-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--primary);
+  opacity: 0.2;
+  animation: ringPulse 2s ease-in-out infinite;
+}
+.splash-mic-ring:nth-child(2) { inset: -18px; animation-delay: 0.5s; opacity: 0.1; }
+.splash-mic-ring:nth-child(3) { inset: -36px; animation-delay: 1s; opacity: 0.05; }
+.splash-mic-core {
+  position: absolute;
+  inset: 20px;
+  background: linear-gradient(135deg, var(--surface), var(--surface2));
+  border-radius: 50%;
+  border: 1.5px solid var(--border2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 52px;
+}
+@keyframes ringPulse {
+  0%, 100% { transform: scale(1); opacity: 0.15; }
+  50% { transform: scale(1.05); opacity: 0.3; }
+}
+
+.splash-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 40px;
+  animation: fadeUp 0.6s 0.25s ease both;
+  opacity: 0;
+  animation-fill-mode: both;
+}
+.splash-tag {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  border: 1px solid var(--border2);
+  color: var(--text-dim);
+  background: var(--surface);
+}
+.splash-tag span { color: var(--primary); margin-right: 4px; }
+
+.splash-btn {
+  padding: 18px 60px;
+  border-radius: 50px;
+  border: none;
+  background: var(--primary);
+  color: white;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Noto Serif KR', serif;
+  letter-spacing: 0.5px;
+  box-shadow: 0 0 40px var(--primary-glow), 0 8px 24px rgba(0,0,0,0.4);
+  transition: all 0.25s;
+  animation: fadeUp 0.6s 0.3s ease both;
+  opacity: 0;
+  animation-fill-mode: both;
+}
+.splash-btn:hover { transform: translateY(-3px); box-shadow: 0 0 60px var(--primary-glow), 0 12px 32px rgba(0,0,0,0.5); }
+.splash-btn:active { transform: translateY(0); }
+
+/* ── SETUP PAGE ── */
+#page-setup {
+  padding: 0 0 80px;
+}
+.setup-header {
+  padding: 52px 24px 32px;
+  text-align: center;
+}
+.setup-header h2 {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 26px;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+.setup-header p { font-size: 13px; color: var(--text-dim); line-height: 1.7; }
+
+.setup-wrap { max-width: 520px; margin: 0 auto; padding: 0 20px; }
+.setup-section { margin-bottom: 24px; }
+.setup-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.setup-input {
+  width: 100%;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 14px;
+  color: var(--text);
+  font-family: 'Noto Sans KR', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.setup-input:focus { border-color: var(--primary); }
+.setup-input::placeholder { color: var(--text-muted); }
+
+.api-hint {
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--text-muted);
+  padding: 10px 12px;
+  background: rgba(255,107,53,0.05);
+  border-radius: 8px;
+  border-left: 2px solid var(--primary);
+  line-height: 1.6;
+}
+.api-hint a { color: var(--primary); text-decoration: none; }
+
+.setup-btn {
+  width: 100%;
+  padding: 16px;
+  border-radius: 14px;
+  border: none;
+  background: var(--primary);
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Noto Serif KR', serif;
+  transition: all 0.2s;
+  box-shadow: 0 0 30px var(--primary-glow);
+  margin-top: 8px;
+}
+.setup-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* ── RECORD PAGE ── */
+#page-record { padding: 0 0 80px; }
+
+.record-header {
+  padding: 44px 24px 20px;
+  text-align: center;
+}
+.record-header h2 {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 22px;
+  font-weight: 900;
+  margin-bottom: 6px;
+}
+.record-header p { font-size: 12px; color: var(--text-muted); }
+
+.record-wrap { max-width: 480px; margin: 0 auto; padding: 0 20px; }
+
+/* Interview context card */
+.context-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px 18px;
+  margin-bottom: 20px;
+}
+.context-card-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.context-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.context-label { font-size: 12px; font-weight: 600; color: var(--text-dim); }
+.context-subject { font-size: 15px; font-weight: 700; color: var(--text); }
+
+/* ── RECORDER ── */
+.recorder-zone {
+  background: var(--surface);
+  border-radius: 24px;
+  border: 1.5px solid var(--border);
+  padding: 32px 24px;
+  margin-bottom: 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+.recorder-zone.recording {
+  border-color: var(--danger);
+  box-shadow: 0 0 40px rgba(255,71,87,0.1);
+}
+.recorder-zone.processing {
+  border-color: var(--secondary);
+}
+
+/* Waveform */
+.waveform-container {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  margin-bottom: 20px;
+}
+.wave-bar {
+  width: 3px;
+  border-radius: 2px;
+  background: var(--border2);
+  transition: height 0.1s ease, background 0.3s;
+}
+.recording .wave-bar {
+  background: var(--danger);
+  animation: waveDance var(--dur, 0.6s) ease-in-out infinite alternate;
+  animation-delay: var(--delay, 0s);
+}
+@keyframes waveDance {
+  from { height: 4px; }
+  to { height: var(--max-h, 40px); }
+}
+
+/* Timer */
+.rec-timer {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: var(--text);
+  margin-bottom: 8px;
+  transition: color 0.3s;
+}
+.recording .rec-timer { color: var(--danger); }
+
+.rec-status {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+  min-height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.rec-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--danger);
+  animation: blink 1s ease-in-out infinite;
+  display: none;
+}
+.recording .rec-dot { display: block; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+/* Main record button */
+.rec-btn-wrap { display: flex; justify-content: center; }
+.rec-btn {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  background: var(--surface2);
+  border: 2px solid var(--border2);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+.rec-btn:hover { transform: scale(1.08); }
+.rec-btn:active { transform: scale(0.95); }
+.rec-btn.idle {
+  background: var(--danger);
+  border-color: var(--danger);
+  box-shadow: 0 0 32px rgba(255,71,87,0.4), 0 8px 24px rgba(0,0,0,0.3);
+}
+.rec-btn.rec {
+  background: var(--surface2);
+  border-color: var(--danger);
+  box-shadow: 0 0 32px rgba(255,71,87,0.2);
+}
+
+/* Question suggestions */
+.questions-card {
+  background: var(--surface);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  padding: 16px 18px;
+  margin-bottom: 20px;
+}
+.questions-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.q-chip {
+  display: inline-block;
+  padding: 7px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border2);
+  background: var(--surface2);
+  font-size: 12px;
+  color: var(--text-dim);
+  margin: 4px 4px 4px 0;
+  cursor: pointer;
+  transition: all 0.2s;
+  line-height: 1.4;
+}
+.q-chip:hover { border-color: var(--primary); color: var(--primary); }
+.q-chip.ai-chip { border-color: rgba(123,97,255,0.3); color: var(--secondary); background: rgba(123,97,255,0.05); }
+
+/* Session history */
+.session-card {
+  background: var(--surface);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  padding: 16px 18px;
+  margin-bottom: 12px;
+}
+.session-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.session-count {
+  background: var(--primary);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.session-item {
+  border-bottom: 1px solid var(--border);
+  padding: 10px 0;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.session-item:last-child { border-bottom: none; }
+.session-item:hover { opacity: 0.75; }
+.session-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.session-num { font-size: 11px; color: var(--primary); font-weight: 700; }
+.session-time { font-size: 10px; color: var(--text-muted); }
+.session-preview { font-size: 12px; color: var(--text-dim); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* ── RESULT PAGE ── */
+#page-result { padding: 0; }
+
+.result-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 20px 0;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 10;
+}
+.result-back {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--text-dim);
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.result-back:hover { border-color: var(--primary); color: var(--primary); }
+.result-nav-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-dim);
+}
+
+.result-wrap { max-width: 520px; margin: 0 auto; padding: 24px 20px 80px; }
+
+/* Loading */
+.result-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  gap: 16px;
+  text-align: center;
+}
+.ai-spinner {
+  width: 56px; height: 56px;
+  border: 3px solid var(--border);
+  border-top-color: var(--primary);
+  border-right-color: var(--secondary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text {
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.8;
+}
+.loading-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+.loading-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--surface);
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  transition: all 0.4s;
+}
+.loading-step.done { color: var(--success); border-color: rgba(78,205,196,0.2); }
+.loading-step.active { color: var(--primary); border-color: rgba(255,107,53,0.2); }
+.step-icon { font-size: 16px; }
+
+/* Result content */
+.result-content { display: none; }
+
+/* Transcript card */
+.res-card {
+  background: var(--surface);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  padding: 20px;
+  margin-bottom: 14px;
+  animation: slideUp 0.4s ease both;
+}
+.res-card:nth-child(2) { animation-delay: 0.05s; }
+.res-card:nth-child(3) { animation-delay: 0.1s; }
+.res-card:nth-child(4) { animation-delay: 0.15s; }
+.res-card:nth-child(5) { animation-delay: 0.2s; }
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.res-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.res-icon {
+  width: 32px; height: 32px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.res-icon.orange { background: rgba(255,107,53,0.15); }
+.res-icon.purple { background: rgba(123,97,255,0.15); }
+.res-icon.teal { background: rgba(78,205,196,0.15); }
+.res-icon.yellow { background: rgba(255,209,102,0.15); }
+.res-icon.red { background: rgba(255,71,87,0.15); }
+
+.res-card-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.transcript-text {
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--text);
+  background: var(--surface2);
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid var(--border);
+}
+
+/* Keywords */
+.keyword-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.keyword-chip {
+  padding: 7px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  background: rgba(255,107,53,0.1);
+  border: 1px solid rgba(255,107,53,0.2);
+  color: var(--primary);
+}
+
+/* Summary bullets */
+.summary-lines { display: flex; flex-direction: column; gap: 10px; }
+.summary-line {
+  display: flex;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text);
+}
+.summary-num {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--secondary);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Analysis meters */
+.analysis-text {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--text-dim);
+  margin-bottom: 14px;
+}
+.meter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.meter-label { font-size: 11px; color: var(--text-muted); width: 60px; flex-shrink: 0; }
+.meter-track {
+  flex: 1;
+  height: 6px;
+  background: var(--surface2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.meter-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--secondary), var(--primary));
+  transition: width 0.8s cubic-bezier(0.34,1.56,0.64,1);
+}
+.meter-val { font-size: 11px; color: var(--text-muted); width: 30px; text-align: right; flex-shrink: 0; }
+
+/* Next question */
+.next-q-box {
+  background: linear-gradient(135deg, rgba(123,97,255,0.12), rgba(255,107,53,0.08));
+  border: 1.5px solid rgba(123,97,255,0.25);
+  border-radius: 14px;
+  padding: 16px 18px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.6;
+  font-family: 'Noto Serif KR', serif;
+  position: relative;
+}
+.next-q-box::before {
+  content: '💡';
+  position: absolute;
+  top: -10px;
+  left: 16px;
+  font-size: 18px;
+}
+
+.btn-copy-q {
+  width: 100%;
+  margin-top: 12px;
+  padding: 11px;
+  border-radius: 10px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-copy-q:hover { border-color: var(--secondary); color: var(--secondary); }
+
+/* Bottom action bar */
+.result-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 20px;
+}
+.btn-action {
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  color: var(--text-dim);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.btn-action:hover { border-color: var(--primary); color: var(--primary); }
+.btn-action.primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+  box-shadow: 0 0 20px var(--primary-glow);
+}
+.btn-action.primary:hover { opacity: 0.9; }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 30px;
+  padding: 12px 24px;
+  font-size: 13px;
+  color: var(--text);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  z-index: 9999;
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  pointer-events: none;
+  white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* Error card */
+.error-card {
+  background: rgba(255,71,87,0.08);
+  border: 1px solid rgba(255,71,87,0.2);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  margin: 20px 0;
+}
+.error-card h3 { font-size: 16px; color: var(--danger); margin-bottom: 8px; }
+.error-card p { font-size: 13px; color: var(--text-dim); line-height: 1.7; }
+
+/* Audio player */
+.audio-player-wrap {
+  background: var(--surface2);
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  border: 1px solid var(--border);
+}
+.audio-player-wrap audio {
+  flex: 1;
+  height: 32px;
+  min-width: 0;
+}
+audio::-webkit-media-controls-panel { background: var(--surface2); }
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Setup page API input toggle */
+.eye-btn {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+}
+.input-wrap { position: relative; }
+
+/* Divider */
+.result-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 20px 0;
+}
+
+/* Session tag */
+.session-tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 700;
+  background: rgba(123,97,255,0.1);
+  color: var(--secondary);
+  border: 1px solid rgba(123,97,255,0.2);
+  margin-bottom: 12px;
+}
+</style>
+</head>
+<body>
+
+<div id="page-splash" class="page active">
+  <div class="splash-eyebrow">Road Interview</div>
+
+  <div class="splash-visual">
+    <div class="splash-mic-ring"></div>
+    <div class="splash-mic-ring"></div>
+    <div class="splash-mic-ring"></div>
+    <div class="splash-mic-core">🎙️</div>
+  </div>
+
+  <h1 class="splash-title">AI가 분석하는<br><span>실시간 인터뷰</span></h1>
+  <p class="splash-subtitle">
+    녹음 한 번으로<br>
+    텍스트 변환 · 요약 · 심리분석 · 추천 질문까지
+  </p>
+
+  <div class="splash-tags">
+    <div class="splash-tag"><span>🎙️</span>음성 녹음</div>
+    <div class="splash-tag"><span>📝</span>자동 받아쓰기</div>
+    <div class="splash-tag"><span>🧠</span>AI 심층 분석</div>
+    <div class="splash-tag"><span>💡</span>다음 질문 추천</div>
+  </div>
+
+  <button class="splash-btn" onclick="goTo('page-setup')">시작하기 →</button>
+</div>
+
+<div id="page-setup" class="page">
+  <div class="setup-header">
+    <h2>인터뷰 설정</h2>
+    <p>Gemini API 키와 인터뷰 대상자 정보를 입력해주세요</p>
+  </div>
+  <div class="setup-wrap">
+    <div class="setup-section">
+      <label class="setup-label">Gemini API Key</label>
+      <div class="input-wrap">
+        <input type="password" id="api-key-input" class="setup-input" placeholder="AIza..." autocomplete="off">
+        <button class="eye-btn" onclick="toggleApiVisibility()">👁</button>
+      </div>
+      <div class="api-hint">
+        <a href="https://aistudio.google.com/apikey" target="_blank">Google AI Studio</a>에서 무료로 발급받을 수 있어요.
+        키는 이 기기에만 임시 저장되며 서버에 전송되지 않아요.
+      </div>
+    </div>
+    <div class="setup-section">
+      <label class="setup-label">인터뷰이 이름 / 호칭</label>
+      <input type="text" id="interviewee-input" class="setup-input" placeholder="예: 김씨 아저씨, 대학생 박씨">
+    </div>
+    <div class="setup-section">
+      <label class="setup-label">인터뷰 주제 (선택)</label>
+      <input type="text" id="topic-input" class="setup-input" placeholder="예: 요즘 살기 힘든 이야기, 인생 최고의 썰">
+    </div>
+    <button class="setup-btn" onclick="startInterview()">인터뷰 시작 →</button>
+  </div>
+</div>
+
+<div id="page-record" class="page">
+  <div class="record-header">
+    <h2>🎙️ 로드 인터뷰</h2>
+    <p id="rec-subtitle">버튼을 눌러 녹음을 시작하세요</p>
+  </div>
+  <div class="record-wrap">
+
+    <div class="context-card" id="context-card">
+      <div class="context-card-top">
+        <div class="context-num" id="session-num">1</div>
+        <div>
+          <div class="context-label">인터뷰이</div>
+          <div class="context-subject" id="interviewee-display">—</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--text-muted);">주제: <span id="topic-display" style="color:var(--text-dim)">자유주제</span></div>
+    </div>
+
+    <div class="recorder-zone" id="recorder-zone">
+      <div class="waveform-container" id="waveform"></div>
+      <div class="rec-timer" id="rec-timer">00:00</div>
+      <div class="rec-status">
+        <div class="rec-dot"></div>
+        <span id="rec-status-text">준비 완료</span>
+      </div>
+      <div class="rec-btn-wrap">
+        <button class="rec-btn idle" id="rec-btn" onclick="toggleRecording()">🎙️</button>
+      </div>
+    </div>
+
+    <div class="questions-card" id="question-suggestions">
+      <div class="questions-title">💬 추천 질문 (탭하면 복사)</div>
+      <div id="q-chips-default">
+        <div class="q-chip" onclick="copyQ(this)">어떤 일이 가장 인상적으로 기억나세요?</div>
+        <div class="q-chip" onclick="copyQ(this)">그때 기분이 어떠셨어요?</div>
+        <div class="q-chip" onclick="copyQ(this)">그게 삶에 어떤 영향을 줬나요?</div>
+        <div class="q-chip" onclick="copyQ(this)">더 자세히 얘기해줄 수 있어요?</div>
+      </div>
+      <div id="q-chips-ai" style="margin-top:8px;display:none"></div>
+    </div>
+
+    <div class="session-card" id="session-history-card" style="display:none">
+      <div class="session-title">
+        이전 분석
+        <span class="session-count" id="session-count-badge">0</span>
+      </div>
+      <div id="session-list"></div>
+    </div>
+
+  </div>
+</div>
+
+<div id="page-result" class="page">
+  <div class="result-nav">
+    <button class="result-back" onclick="goTo('page-record')">←</button>
+    <div class="result-nav-title" id="result-nav-title">분석 결과</div>
+  </div>
+
+  <div class="result-wrap">
+    <div class="result-loading" id="result-loading">
+      <div class="ai-spinner"></div>
+      <div class="loading-text">Gemini AI가 썰을 분석하는 중이에요</div>
+      <div class="loading-steps">
+        <div class="loading-step active" id="step-stt"><span class="step-icon">📝</span>음성 → 텍스트 변환 중</div>
+        <div class="loading-step" id="step-summary"><span class="step-icon">✍️</span>내용 요약</div>
+        <div class="loading-step" id="step-analysis"><span class="step-icon">🧠</span>심리·성향 분석</div>
+        <div class="loading-step" id="step-question"><span class="step-icon">💡</span>다음 질문 추천</div>
+      </div>
+    </div>
+
+    <div class="result-content" id="result-content">
+
+      <div class="session-tag" id="result-session-tag">📍 인터뷰 #1</div>
+
+      <div class="audio-player-wrap" id="audio-player-wrap" style="display:none">
+        <span style="font-size:18px">🎙️</span>
+        <audio id="audio-player" controls></audio>
+      </div>
+
+      <div class="res-card" id="card-transcript">
+        <div class="res-card-header">
+          <div class="res-icon orange">📝</div>
+          <div class="res-card-title">받아쓰기 · Transcript</div>
+        </div>
+        <div class="transcript-text" id="result-transcript">—</div>
+      </div>
+
+      <div class="res-card" id="card-keywords">
+        <div class="res-card-header">
+          <div class="res-icon yellow">🔑</div>
+          <div class="res-card-title">핵심 키워드</div>
+        </div>
+        <div class="keyword-chips" id="result-keywords"></div>
+      </div>
+
+      <div class="res-card" id="card-summary">
+        <div class="res-card-header">
+          <div class="res-icon teal">✍️</div>
+          <div class="res-card-title">3줄 요약</div>
+        </div>
+        <div class="summary-lines" id="result-summary"></div>
+      </div>
+
+      <div class="res-card" id="card-analysis">
+        <div class="res-card-header">
+          <div class="res-icon purple">🧠</div>
+          <div class="res-card-title">심리 · 성향 분석</div>
+        </div>
+        <div class="analysis-text" id="result-analysis-text">—</div>
+        <div id="result-meters"></div>
+      </div>
+
+      <div class="res-card" id="card-question">
+        <div class="res-card-header">
+          <div class="res-icon red">💡</div>
+          <div class="res-card-title">AI 추천 다음 질문</div>
+        </div>
+        <div class="next-q-box" id="result-next-q">—</div>
+        <button class="btn-copy-q" onclick="copyNextQ()">📋 질문 복사하기</button>
+      </div>
+
+      <div class="result-actions">
+        <button class="btn-action" onclick="goTo('page-record')">🎙️ 다음 녹음</button>
+        <button class="btn-action primary" onclick="shareResult()">공유하기 ↗</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════
+let apiKey = '';
+let interviewee = '';
+let topic = '';
+let sessionCount = 0;
+let sessions = [];
+
+let mediaRecorder = null;
+let audioChunks = [];
+let recordingInterval = null;
+let recordingSeconds = 0;
+let isRecording = false;
+let currentBlob = null;
+let currentAudioUrl = null;
+
+// ══════════════════════════════════════
+//  NAV
+// ══════════════════════════════════════
+function goTo(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function toggleApiVisibility() {
+  const input = document.getElementById('api-key-input');
+  input.type = input.type === 'password' ? 'text' : 'password';
+}
+
+// ══════════════════════════════════════
+//  SETUP
+// ══════════════════════════════════════
+function startInterview() {
+  const rawKey = document.getElementById('api-key-input').value.trim();
+  // 에러 방지: 혹시 모를 콜론(:) 등이 포함된 경우 제거
+  apiKey = rawKey.split(':')[0]; 
+  
+  if (!apiKey) { showToast('⚠️ Gemini API 키를 입력해주세요'); return; }
+  
+  interviewee = document.getElementById('interviewee-input').value.trim() || '익명';
+  topic = document.getElementById('topic-input').value.trim() || '자유주제';
+
+  document.getElementById('interviewee-display').textContent = interviewee;
+  document.getElementById('topic-display').textContent = topic;
+
+  buildWaveform();
+  goTo('page-record');
+}
+
+// ══════════════════════════════════════
+//  WAVEFORM
+// ══════════════════════════════════════
+function buildWaveform() {
+  const container = document.getElementById('waveform');
+  container.innerHTML = '';
+  const count = 28;
+  for (let i = 0; i < count; i++) {
+    const bar = document.createElement('div');
+    bar.className = 'wave-bar';
+    const h = 4 + Math.random() * 28;
+    bar.style.setProperty('--max-h', h + 'px');
+    bar.style.setProperty('--dur', (0.4 + Math.random() * 0.6).toFixed(2) + 's');
+    bar.style.setProperty('--delay', (i * 0.03).toFixed(2) + 's');
+    bar.style.height = '4px';
+    container.appendChild(bar);
+  }
+}
+
+function setWaveformHeight(active) {
+  document.querySelectorAll('.wave-bar').forEach(bar => {
+    bar.style.height = active ? '' : '4px';
+  });
+}
+
+// ══════════════════════════════════════
+//  RECORDER
+// ══════════════════════════════════════
+async function toggleRecording() {
+  if (!isRecording) {
+    await startRecording();
+  } else {
+    stopRecording();
+  }
+}
+
+async function startRecording() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    audioChunks = [];
+    mediaRecorder = new MediaRecorder(stream, { mimeType: getSupportedMimeType() });
+    mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+    mediaRecorder.onstop = handleRecordingStop;
+    mediaRecorder.start(100);
+
+    isRecording = true;
+    recordingSeconds = 0;
+
+    // UI
+    const zone = document.getElementById('recorder-zone');
+    const btn = document.getElementById('rec-btn');
+    zone.classList.add('recording');
+    btn.classList.remove('idle');
+    btn.classList.add('rec');
+    btn.textContent = '⏹️';
+    document.getElementById('rec-status-text').textContent = '녹음 중...';
+    document.getElementById('rec-subtitle').textContent = '대화를 자유롭게 나눠보세요 ✨';
+
+    recordingInterval = setInterval(() => {
+      recordingSeconds++;
+      const m = String(Math.floor(recordingSeconds / 60)).padStart(2, '0');
+      const s = String(recordingSeconds % 60).padStart(2, '0');
+      document.getElementById('rec-timer').textContent = `${m}:${s}`;
+    }, 1000);
+  } catch (err) {
+    showToast('🎙️ 마이크 권한이 필요해요 (HTTPS 환경에서만 작동)');
+    console.error(err);
+  }
+}
+
+function stopRecording() {
+  if (mediaRecorder && isRecording) {
+    mediaRecorder.stop();
+    mediaRecorder.stream.getTracks().forEach(t => t.stop());
+    isRecording = false;
+    clearInterval(recordingInterval);
+
+    const zone = document.getElementById('recorder-zone');
+    const btn = document.getElementById('rec-btn');
+    zone.classList.remove('recording');
+    zone.classList.add('processing');
+    btn.classList.remove('rec');
+    btn.textContent = '⏳';
+    btn.disabled = true;
+    document.getElementById('rec-status-text').textContent = 'AI 분석 중...';
+    document.getElementById('rec-subtitle').textContent = 'Gemini가 분석하고 있어요';
+  }
+}
+
+function getSupportedMimeType() {
+  const types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/mp4'];
+  return types.find(t => MediaRecorder.isTypeSupported(t)) || '';
+}
+
+async function handleRecordingStop() {
+  const mimeType = getSupportedMimeType() || 'audio/webm';
+  currentBlob = new Blob(audioChunks, { type: mimeType });
+  currentAudioUrl = URL.createObjectURL(currentBlob);
+
+  sessionCount++;
+  document.getElementById('session-num').textContent = sessionCount + 1;
+
+  goTo('page-result');
+  await analyzeWithGemini(currentBlob, mimeType);
+}
+
+// ══════════════════════════════════════
+//  GEMINI ANALYSIS
+// ══════════════════════════════════════
+async function analyzeWithGemini(blob, mimeType) {
+  document.getElementById('result-loading').style.display = 'flex';
+  document.getElementById('result-content').style.display = 'none';
+  document.getElementById('result-nav-title').textContent = `분석 중... (#${sessionCount})`;
+
+  animateLoadingSteps();
+
+  try {
+    const base64 = await blobToBase64(blob);
+    const cleanMime = mimeType.split(';')[0];
+
+    const prompt = `당신은 전문 인터뷰 분석 AI입니다. 인터뷰이: "${interviewee}", 주제: "${topic}"
+
+아래 오디오를 분석하여 반드시 다음 JSON 형식으로만 응답하세요:
+
+{
+  "transcript": "음성의 전체 대화 내용을 한국어로 정확히 받아쓰기",
+  "keywords": ["핵심 키워드1", "핵심 키워드2", "핵심 키워드3", "핵심 키워드4", "핵심 키워드5"],
+  "summary": ["첫 번째 줄 요약", "두 번째 줄 요약", "세 번째 줄 요약"],
+  "analysis": {
+    "text": "화자의 성향, 감정 상태, 특이 패턴에 대한 2-3문장 분석",
+    "openness": 75,
+    "emotionality": 60,
+    "confidence": 80,
+    "storytelling": 70
+  },
+  "next_question": "대화를 이어갈 가장 효과적인 추천 질문 1가지"
+}
+
+openness(개방성), emotionality(감정표현), confidence(자신감), storytelling(이야기꾼 성향)은 0~100 점수로.`;
+
+    // 🛠️ 수정 포인트: 안정적인 v1 API와 최신 모델명 사용
+    const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{
+          parts: [
+            { inline_data: { mime_type: cleanMime, data: base64 } },
+            { text: prompt }
+          ]
+        }],
+        generationConfig: {
+          temperature: 0.4,
+          response_mime_type: 'application/json'
+        }
+      })
+    });
+
+    if (!response.ok) {
+      const errData = await response.json();
+      throw new Error(errData.error?.message || `서버 응답 오류 (HTTP ${response.status})`);
+    }
+
+    const data = await response.json();
+    const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    
+    if (!responseText) throw new Error('AI 응답 데이터가 비어있습니다.');
+
+    let result;
+    try {
+      result = JSON.parse(responseText);
+    } catch (e) {
+      // JSON 형식이 완벽하지 않을 경우를 위한 예외 처리
+      const match = responseText.match(/\{[\s\S]*\}/);
+      if (match) result = JSON.parse(match[0]);
+      else throw new Error('응답 데이터를 해석할 수 없습니다.');
+    }
+
+    renderResult(result);
+    saveSession(result);
+
+  } catch (err) {
+    console.error('Analysis Error:', err);
+    renderError(err.message);
+  }
+}
+
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+// ══════════════════════════════════════
+//  RENDER RESULT
+// ══════════════════════════════════════
+function renderResult(r) {
+  document.getElementById('result-loading').style.display = 'none';
+  document.getElementById('result-content').style.display = 'block';
+  document.getElementById('result-nav-title').textContent = `분석 완료 · #${sessionCount}`;
+  document.getElementById('result-session-tag').textContent = `📍 인터뷰 #${sessionCount} — ${interviewee}`;
+
+  if (currentAudioUrl) {
+    const player = document.getElementById('audio-player');
+    player.src = currentAudioUrl;
+    document.getElementById('audio-player-wrap').style.display = 'flex';
+  }
+
+  document.getElementById('result-transcript').textContent = r.transcript || '—';
+
+  const kwWrap = document.getElementById('result-keywords');
+  kwWrap.innerHTML = (r.keywords || []).map(k => `<div class="keyword-chip"># ${k}</div>`).join('');
+
+  const sumWrap = document.getElementById('result-summary');
+  sumWrap.innerHTML = (r.summary || []).map((line, i) =>
+    `<div class="summary-line"><div class="summary-num">${i + 1}</div><div>${line}</div></div>`
+  ).join('');
+
+  const analysis = r.analysis || {};
+  document.getElementById('result-analysis-text').textContent = typeof analysis.text === 'string' ? analysis.text : '—';
+
+  const meters = ['openness', 'emotionality', 'confidence', 'storytelling'];
+  const labels = { openness: '개방성', emotionality: '감정표현', confidence: '자신감', storytelling: '이야기꾼' };
+  const metersEl = document.getElementById('result-meters');
+  
+  metersEl.innerHTML = meters.map(m => {
+    const val = analysis[m] ?? 50;
+    return `<div class="meter-row">
+      <div class="meter-label">${labels[m]}</div>
+      <div class="meter-track"><div class="meter-fill" style="width:0%" data-val="${val}%"></div></div>
+      <div class="meter-val">${val}</div>
+    </div>`;
+  }).join('');
+
+  setTimeout(() => {
+    document.querySelectorAll('.meter-fill').forEach(el => {
+      el.style.width = el.dataset.val;
+    });
+  }, 100);
+
+  const nextQ = r.next_question || '—';
+  document.getElementById('result-next-q').textContent = nextQ;
+
+  const aiChipsEl = document.getElementById('q-chips-ai');
+  aiChipsEl.innerHTML = `<div class="q-chip ai-chip" onclick="copyQ(this)">🤖 ${nextQ}</div>`;
+  aiChipsEl.style.display = 'block';
+}
+
+function renderError(msg) {
+  document.getElementById('result-loading').style.display = 'none';
+  document.getElementById('result-content').style.display = 'block';
+  document.getElementById('result-nav-title').textContent = '분석 실패';
+  document.getElementById('result-content').innerHTML = `
+    <div class="error-card">
+      <h3>⚠️ 분석 중 오류가 발생했어요</h3>
+      <p style="color:#ffb8b8; margin: 10px 0;">${msg}</p>
+      <p style="margin-top:12px;font-size:12px; opacity: 0.8;">API 키가 유효한지, 혹은 마이크로 녹음된 데이터가 너무 짧은지 확인해 주세요.</p>
+    </div>
+    <div class="result-actions">
+      <button class="btn-action primary" style="grid-column:span 2" onclick="goTo('page-record')">← 다시 녹음하기</button>
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════
+//  LOADING STEPS ANIMATION
+// ══════════════════════════════════════
+function animateLoadingSteps() {
+  const steps = ['step-stt', 'step-summary', 'step-analysis', 'step-question'];
+  steps.forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.classList.remove('done', 'active');
+  });
+  
+  const sttStep = document.getElementById('step-stt');
+  if(sttStep) sttStep.classList.add('active');
+
+  let i = 0;
+  const interval = setInterval(() => {
+    const current = document.getElementById(steps[i]);
+    if(current) current.classList.replace('active', 'done');
+    i++;
+    if (i >= steps.length) { clearInterval(interval); return; }
+    const next = document.getElementById(steps[i]);
+    if(next) next.classList.add('active');
+  }, 1000);
+}
+
+// ══════════════════════════════════════
+//  SESSION HISTORY
+// ══════════════════════════════════════
+function saveSession(result) {
+  const session = {
+    num: sessionCount,
+    transcript: result.transcript,
+    keywords: result.keywords || [],
+    nextQ: result.next_question,
+    time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })
+  };
+  sessions.unshift(session);
+  renderSessionHistory();
+
+  const zone = document.getElementById('recorder-zone');
+  const btn = document.getElementById('rec-btn');
+  zone.classList.remove('processing');
+  btn.textContent = '🎙️';
+  btn.classList.add('idle');
+  btn.disabled = false;
+}
+
+function renderSessionHistory() {
+  const card = document.getElementById('session-history-card');
+  const list = document.getElementById('session-list');
+  const badge = document.getElementById('session-count-badge');
+
+  if (sessions.length === 0) { card.style.display = 'none'; return; }
+  card.style.display = 'block';
+  badge.textContent = sessions.length;
+
+  list.innerHTML = sessions.slice(0, 5).map(s => `
+    <div class="session-item">
+      <div class="session-item-header">
+        <div class="session-num">#${s.num} — ${s.keywords.slice(0, 2).join(', ')}</div>
+        <div class="session-time">${s.time}</div>
+      </div>
+      <div class="session-preview">${s.transcript || '—'}</div>
+    </div>
+  `).join('');
+}
+
+// ══════════════════════════════════════
+//  UTILITIES
+// ══════════════════════════════════════
+function copyQ(el) {
+  const text = el.textContent.replace(/^🤖\s*/, '').trim();
+  navigator.clipboard.writeText(text).then(() => showToast('📋 질문이 복사됐어요!'));
+}
+
+function copyNextQ() {
+  const text = document.getElementById('result-next-q').textContent;
+  navigator.clipboard.writeText(text).then(() => showToast('📋 질문이 복사됐어요!'));
+}
+
+function shareResult() {
+  const transcript = document.getElementById('result-transcript').textContent;
+  const nextQ = document.getElementById('result-next-q').textContent;
+  const text = `[로드 인터뷰 #${sessionCount}]\n${interviewee}의 썰\n\n📝 요약:\n${transcript.slice(0, 100)}...\n\n💡 다음 질문: ${nextQ}`;
+  if (navigator.share) {
+    navigator.share({ title: '로드 인터뷰 분석 결과', text });
+  } else {
+    navigator.clipboard.writeText(text).then(() => showToast('📋 결과가 복사됐어요!'));
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+buildWaveform();
+</script>
+</body>
+</html>
