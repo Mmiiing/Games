@@ -1,3 +1,18 @@
 [build]
   publish = "."
   functions = "netlify/functions"
+
+[[redirects]]
+  from = "/api/gemini"
+  to = "/.netlify/functions/gemini"
+  status = 200
+
+[[redirects]]
+  from = "/api/gemini-image"
+  to = "/.netlify/functions/gemini-image"
+  status = 200
+
+  [[redirects]]
+  from = "/api/*"                   # 사용자가 이 주소로 들어오면
+  to = "/.netlify/functions/:splat"  # 실제 공식 주소인 여기로 연결해줘!
+  status = 200                       # (사용자 몰래 감쪽같이 주소만 바꿔서)
