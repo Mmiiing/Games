@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>썰푸드 — 당신의 음식과 썰은?</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF3E8;
+    --toast: #D4956A;
+    --caramel: #B8622A;
+    --dark: #2C1810;
+    --muted: #7A5C4A;
+    --accent: #E8734A;
+    --green: #5A7A52;
+    --border: rgba(180,130,90,0.25);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--cream);
+    font-family: 'Noto Sans KR', sans-serif;
+    color: var(--dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content:''; position:fixed; inset:0;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(212,149,106,0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(91,122,82,0.06) 0%, transparent 50%);
+    pointer-events:none; z-index:0;
+  }
+
+  .page { display:none; position:relative; z-index:1; min-height:100vh; }
+  .page.active { display:flex; flex-direction:column; }
+
+  #page-splash {
+    align-items:center; justify-content:center;
+    background:linear-gradient(160deg,#FFF9F0 0%,#FAF0E0 40%,#F5E8CC 100%);
+    text-align:center; padding:40px 20px;
+  }
+  .splash-title { font-family:'Noto Serif KR',serif; font-size:clamp(28px,8vw,52px); font-weight:900; color:var(--dark); line-height:1.25; letter-spacing:-1px; margin-bottom:10px; animation:fadeUp .8s ease both; }
+  .splash-title em { color:var(--caramel); font-style:normal; }
+  .splash-sub { font-size:14px; color:var(--muted); margin-bottom:44px; animation:fadeUp .8s .15s ease both; opacity:0; animation-fill-mode:both; }
+  .splash-chars { display:flex; gap:12px; align-items:flex-end; justify-content:center; flex-wrap:wrap; margin-bottom:48px; animation:fadeUp .8s .25s ease both; opacity:0; animation-fill-mode:both; }
+  .splash-char { display:flex; flex-direction:column; align-items:center; gap:6px; animation:bobble 2s ease-in-out infinite; }
+  .splash-char:nth-child(2){animation-delay:.2s;} .splash-char:nth-child(3){animation-delay:.4s;} .splash-char:nth-child(4){animation-delay:.6s;}
+  .splash-char svg { width:70px; height:78px; filter:drop-shadow(0 6px 12px rgba(44,24,16,.13)); }
+  .splash-char-name { font-size:11px; font-weight:700; color:var(--muted); letter-spacing:.5px; }
+  @keyframes bobble { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  .splash-btn { padding:16px 52px; border-radius:50px; border:none; background:linear-gradient(135deg,var(--caramel),var(--accent)); color:white; font-size:18px; font-weight:700; cursor:pointer; font-family:'Noto Serif KR',serif; box-shadow:0 8px 24px rgba(184,98,42,.35); transition:all .25s; animation:fadeUp .8s .4s ease both; opacity:0; animation-fill-mode:both; }
+  .splash-btn:hover { transform:translateY(-3px); box-shadow:0 12px 32px rgba(184,98,42,.45); }
+
+  .page-wrap { max-width:640px; margin:0 auto; width:100%; padding:0 20px 80px; flex:1; }
+  .page-header { text-align:center; padding:44px 0 28px; }
+  .page-tag { display:inline-block; background:var(--toast); color:white; font-size:11px; letter-spacing:2px; padding:5px 14px; border-radius:20px; margin-bottom:14px; font-weight:500; }
+  .page-header h2 { font-family:'Noto Serif KR',serif; font-size:clamp(22px,5vw,32px); font-weight:900; line-height:1.3; letter-spacing:-.5px; }
+  .page-header h2 em { color:var(--caramel); font-style:normal; }
+  .page-header p { margin-top:10px; color:var(--muted); font-size:13px; line-height:1.7; }
+
+  .quiz-card { background:linear-gradient(135deg,#FFF9F0,#FFF3E0); border-radius:20px; padding:26px; border:1.5px solid rgba(212,149,106,.3); box-shadow:0 4px 24px rgba(44,24,16,.06); }
+  .quiz-progress { display:flex; gap:6px; margin-bottom:10px; }
+  .quiz-dot { height:4px; flex:1; border-radius:2px; background:var(--border); transition:background .3s; }
+  .quiz-dot.active{background:var(--toast);} .quiz-dot.done{background:var(--caramel);}
+  .quiz-step-label { font-size:11px; color:var(--muted); margin-bottom:18px; letter-spacing:.5px; font-weight:600; }
+  .quiz-question { font-family:'Noto Serif KR',serif; font-size:18px; font-weight:700; line-height:1.5; margin-bottom:20px; color:var(--dark); }
+  .quiz-options { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .quiz-option { padding:14px 12px; border-radius:14px; border:2px solid var(--border); background:white; cursor:pointer; font-size:13px; color:var(--dark); text-align:center; line-height:1.4; transition:all .2s; font-family:'Noto Sans KR',sans-serif; }
+  .quiz-option:hover { border-color:var(--toast); background:#FFF8F0; transform:translateY(-2px); }
+  .quiz-option.selected { border-color:var(--caramel); background:linear-gradient(135deg,#FFF0E0,#FFE8CC); font-weight:500; }
+  .quiz-option .opt-emoji { display:block; font-size:24px; margin-bottom:6px; }
+  .btn-next { width:100%; padding:15px; border-radius:12px; border:none; background:var(--dark); color:white; font-size:15px; font-weight:700; cursor:pointer; font-family:'Noto Serif KR',serif; transition:all .2s; margin-top:18px; }
+  .btn-next:hover { background:var(--caramel); transform:translateY(-2px); }
+
+  .story-card { background:white; border-radius:20px; padding:28px; border:1px solid var(--border); box-shadow:0 4px 24px rgba(44,24,16,.06); margin-bottom:20px; }
+  .story-intro { font-size:13px; color:var(--muted); margin-bottom:22px; line-height:1.7; padding:14px 16px; background:rgba(212,149,106,.07); border-radius:12px; border-left:3px solid var(--toast); }
+  .theme-label { font-size:12px; font-weight:600; color:var(--muted); letter-spacing:.5px; margin-bottom:10px; }
+  .theme-chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
+  .theme-chip { padding:7px 15px; border-radius:20px; border:1.5px solid var(--border); background:transparent; font-size:13px; color:var(--muted); cursor:pointer; transition:all .2s; font-family:'Noto Sans KR',sans-serif; }
+  .theme-chip:hover { border-color:var(--toast); color:var(--toast); }
+  .theme-chip.active { background:var(--dark); border-color:var(--dark); color:white; }
+  .story-field { position:relative; margin-bottom:18px; }
+  .story-field label { display:block; font-size:12px; font-weight:600; color:var(--muted); margin-bottom:8px; letter-spacing:.5px; }
+  .story-field textarea { width:100%; padding:14px 16px; border-radius:12px; border:1.5px solid var(--border); background:#FDFAF6; font-size:14px; color:var(--dark); font-family:'Noto Sans KR',sans-serif; resize:none; outline:none; transition:border-color .2s; line-height:1.7; min-height:140px; }
+  .story-field textarea:focus { border-color:var(--toast); background:white; }
+  .char-count { position:absolute; bottom:10px; right:14px; font-size:11px; color:var(--border); }
+  .temp-label { font-size:12px; font-weight:600; color:var(--muted); letter-spacing:.5px; margin-bottom:10px; }
+  .temp-track { display:flex; align-items:center; gap:8px; margin-bottom:22px; }
+  .temp-end { font-size:11px; color:var(--muted); white-space:nowrap; flex-shrink:0; }
+  .temp-btns { display:flex; gap:6px; flex:1; justify-content:center; }
+  .temp-btn { width:38px; height:38px; border-radius:50%; border:1.5px solid var(--border); background:white; font-size:13px; font-weight:600; color:var(--muted); cursor:pointer; transition:all .2s; }
+  .temp-btn:hover { border-color:var(--toast); color:var(--toast); }
+  .temp-btn.active { background:var(--dark); border-color:var(--dark); color:white; }
+  .btn-submit { width:100%; padding:16px; border-radius:14px; border:none; background:linear-gradient(135deg,var(--caramel),var(--accent)); color:white; font-size:16px; font-weight:700; cursor:pointer; font-family:'Noto Serif KR',serif; letter-spacing:.5px; transition:all .25s; box-shadow:0 6px 20px rgba(184,98,42,.3); }
+  .btn-submit:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(184,98,42,.4); }
+
+  #page-result { background:var(--cream); }
+  .result-wrap { max-width:640px; margin:0 auto; padding:40px 20px 80px; }
+  .result-loading-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:70vh; gap:20px; text-align:center; }
+  .result-loading-screen p { font-size:14px; color:var(--muted); line-height:1.8; }
+  .big-spinner { width:52px; height:52px; border:4px solid var(--border); border-top-color:var(--toast); border-radius:50%; animation:spin .9s linear infinite; }
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .result-card { background:white; border-radius:24px; padding:32px 28px; border:1.5px solid rgba(212,149,106,.3); box-shadow:0 8px 32px rgba(44,24,16,.08); margin-bottom:20px; text-align:center; animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both; }
+  .char-img-wrap { width:200px; height:200px; margin:0 auto 20px; border-radius:50%; background:linear-gradient(135deg,#FFF8F0,#FFF0E0); border:3px solid rgba(212,149,106,.3); display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  .char-img { width:100%; height:100%; object-fit:cover; animation:popIn .5s cubic-bezier(.34,1.56,.64,1); }
+  .char-loading-inner { display:flex; flex-direction:column; align-items:center; gap:10px; color:var(--muted); font-size:12px; }
+  .small-spinner { width:28px; height:28px; border:3px solid var(--border); border-top-color:var(--toast); border-radius:50%; animation:spin .8s linear infinite; }
+  .result-food { font-family:'Noto Serif KR',serif; font-size:24px; font-weight:900; color:var(--caramel); margin-bottom:10px; }
+  .result-desc { font-size:14px; color:var(--muted); line-height:1.8; margin-bottom:14px; }
+  .result-tag { display:inline-block; padding:6px 16px; background:var(--toast); color:white; border-radius:20px; font-size:12px; font-weight:500; }
+
+  .ai-box { background:linear-gradient(135deg,#f0f4ff,#e8f0fe); border-radius:16px; padding:20px; border:1.5px solid rgba(100,130,220,.25); margin-bottom:20px; text-align:left; animation:popIn .5s .2s cubic-bezier(.34,1.56,.64,1) both; }
+  .ai-box-title { font-family:'Noto Serif KR',serif; font-size:14px; font-weight:700; color:#3a56b0; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+  .ai-content { font-size:13px; color:#2a3a6a; line-height:1.9; }
+  .ai-loading { display:flex; align-items:center; gap:10px; color:#6678aa; font-size:12px; }
+  .ai-dots { display:flex; gap:4px; }
+  .ai-dots span { width:6px; height:6px; border-radius:50%; background:#6678aa; animation:dotBounce 1.2s ease-in-out infinite; }
+  .ai-dots span:nth-child(2){animation-delay:.2s;} .ai-dots span:nth-child(3){animation-delay:.4s;}
+  @keyframes dotBounce{0%,80%,100%{transform:scale(.7);opacity:.5}40%{transform:scale(1);opacity:1}}
+  .ai-tag { display:inline-block; margin:4px 3px 0; padding:3px 10px; background:rgba(100,130,220,.15); color:#3a56b0; border-radius:12px; font-size:11px; font-weight:600; }
+  .ai-section { margin-bottom:14px; padding-bottom:14px; border-bottom:1px dashed rgba(100,130,220,.2); }
+  .ai-section:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+  .ai-section-title { font-size:11px; font-weight:700; color:#7a90cc; letter-spacing:1px; margin-bottom:8px; }
+
+  .recap-card { background:white; border-radius:20px; padding:24px; border:1px solid var(--border); box-shadow:0 4px 24px rgba(44,24,16,.05); margin-bottom:20px; text-align:left; animation:popIn .5s .35s cubic-bezier(.34,1.56,.64,1) both; }
+  .recap-title { font-size:11px; color:var(--muted); letter-spacing:1px; font-weight:600; margin-bottom:14px; }
+  .recap-q { margin-bottom:10px; border-radius:12px; overflow:hidden; border:1px solid var(--border); }
+  .recap-q-text { font-size:12px; font-weight:700; color:var(--dark); padding:9px 12px; background:rgba(44,24,16,.04); border-bottom:1px solid var(--border); line-height:1.4; }
+  .recap-opt-chosen { display:flex; align-items:center; gap:8px; padding:8px 12px; font-size:13px; font-weight:600; color:var(--dark); background:linear-gradient(90deg,#FFF0E0,#FFF8F4); }
+  .recap-check { width:18px; height:18px; border-radius:50%; background:var(--caramel); display:flex; align-items:center; justify-content:center; font-size:10px; color:white; flex-shrink:0; }
+  .recap-story { margin-bottom:10px; border-radius:12px; overflow:hidden; border:1px solid var(--border); }
+  .recap-story-label { font-size:12px; font-weight:700; color:var(--dark); padding:9px 12px; background:rgba(44,24,16,.04); border-bottom:1px solid var(--border); }
+  .recap-story-content { padding:12px 14px; font-size:13px; color:var(--muted); line-height:1.8; }
+
+  .btn-to-phone { width:100%; padding:16px; border-radius:14px; border:none; background:linear-gradient(135deg,var(--caramel),var(--accent)); color:white; font-size:16px; font-weight:700; cursor:pointer; font-family:'Noto Serif KR',serif; box-shadow:0 6px 20px rgba(184,98,42,.3); transition:all .25s; margin-top:20px; animation:fadeUp .5s .5s ease both; opacity:0; animation-fill-mode:both; }
+  .btn-to-phone:hover { transform:translateY(-2px); }
+
+  #page-phone { background:var(--cream); }
+  .phone-wrap { max-width:480px; margin:0 auto; padding:60px 20px 80px; text-align:center; }
+  .phone-emoji { font-size:56px; margin-bottom:20px; animation:popIn .6s cubic-bezier(.34,1.56,.64,1) both; }
+  .phone-title { font-family:'Noto Serif KR',serif; font-size:26px; font-weight:900; color:var(--dark); margin-bottom:12px; }
+  .phone-desc { font-size:14px; color:var(--muted); line-height:1.8; margin-bottom:32px; }
+  .phone-input { width:100%; padding:16px 20px; border-radius:14px; border:2px solid var(--border); background:white; font-size:16px; color:var(--dark); font-family:'Noto Sans KR',sans-serif; outline:none; transition:border-color .2s; text-align:center; letter-spacing:1px; margin-bottom:12px; }
+  .phone-input:focus { border-color:var(--toast); }
+  .phone-skip { font-size:12px; color:var(--muted); text-decoration:underline; cursor:pointer; margin-bottom:20px; display:block; }
+  .permission-row { display:flex; align-items:flex-start; gap:12px; padding:14px 16px; background:#F8F5F0; border-radius:12px; margin-bottom:24px; text-align:left; }
+  .custom-cb { width:20px; height:20px; border:2px solid var(--border); border-radius:5px; flex-shrink:0; cursor:pointer; display:flex; align-items:center; justify-content:center; margin-top:1px; transition:all .2s; }
+  .custom-cb.checked { background:var(--green); border-color:var(--green); }
+  .custom-cb.checked::after { content:'✓'; color:white; font-size:12px; font-weight:700; }
+  .permission-text { font-size:12px; color:var(--muted); line-height:1.6; }
+  .permission-text strong { color:var(--dark); }
+  .btn-finish { width:100%; padding:16px; border-radius:14px; border:none; background:linear-gradient(135deg,var(--caramel),var(--accent)); color:white; font-size:16px; font-weight:700; cursor:pointer; font-family:'Noto Serif KR',serif; box-shadow:0 6px 20px rgba(184,98,42,.3); transition:all .25s; }
+  .btn-finish:hover { transform:translateY(-2px); }
+
+  #page-done { background:var(--cream); }
+  .done-wrap { max-width:480px; margin:0 auto; padding:80px 20px; text-align:center; }
+  .done-emoji { font-size:64px; margin-bottom:24px; animation:popIn .6s cubic-bezier(.34,1.56,.64,1) both; }
+  .done-title { font-family:'Noto Serif KR',serif; font-size:26px; font-weight:900; color:var(--dark); margin-bottom:12px; animation:fadeUp .6s .1s ease both; opacity:0; animation-fill-mode:both; }
+  .done-desc { font-size:14px; color:var(--muted); line-height:1.9; margin-bottom:28px; animation:fadeUp .6s .2s ease both; opacity:0; animation-fill-mode:both; }
+  .done-tag { display:inline-block; background:var(--dark); color:white; padding:10px 24px; border-radius:20px; font-size:13px; font-weight:500; animation:fadeUp .6s .3s ease both; opacity:0; animation-fill-mode:both; }
+
+  .deco { position:fixed; font-size:28px; opacity:.06; pointer-events:none; z-index:0; animation:floatUp linear infinite; }
+  @keyframes floatUp{0%{transform:translateY(100vh) rotate(0)}100%{transform:translateY(-100px) rotate(360deg)}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes popIn{0%{transform:scale(.8);opacity:0}100%{transform:scale(1);opacity:1}}
+  .fade-in{animation:fadeUp .35s ease both;}
+</style>
+</head>
+<body>
+
+<div class="deco" style="left:5%;animation-duration:18s;animation-delay:-3s">🍜</div>
+<div class="deco" style="left:85%;animation-duration:22s;animation-delay:-8s">🍞</div>
+<div class="deco" style="left:55%;animation-duration:15s;animation-delay:-12s">🥚</div>
+<div class="deco" style="left:70%;animation-duration:19s;animation-delay:-15s">🧅</div>
+
+<!-- SPLASH -->
+<div class="page active" id="page-splash">
+  <div class="splash-title">썰푸드!!<br><em>당신의 음식과 썰은??</em></div>
+  <div class="splash-sub">나를 닮은 음식 캐릭터와 함께 썰을 풀어봐요 🍽️</div>
+  <div class="splash-chars">
+    <div class="splash-char">
+      <svg viewBox="0 0 72 80" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="36" cy="44" rx="26" ry="22" fill="#fff8f0"/>
+        <rect x="10" y="38" width="52" height="16" rx="4" fill="#f9d0a0"/>
+        <rect x="10" y="28" width="52" height="12" rx="4" fill="#fff"/>
+        <rect x="10" y="20" width="52" height="10" rx="4" fill="#f9d0a0"/>
+        <path d="M12 20 Q20 12 28 18 Q36 10 44 18 Q52 12 60 20" stroke="#fff" stroke-width="3" fill="none"/>
+        <ellipse cx="24" cy="17" rx="5" ry="4" fill="#e8504a"/>
+        <ellipse cx="36" cy="13" rx="5" ry="4" fill="#e8504a"/>
+        <ellipse cx="48" cy="17" rx="5" ry="4" fill="#e8504a"/>
+        <rect x="34" y="5" width="4" height="9" rx="2" fill="#f9c74f"/>
+        <ellipse cx="36" cy="4" rx="2" ry="3" fill="#f4a261" opacity=".8"/>
+        <circle cx="28" cy="36" r="2" fill="#2c1810"/><circle cx="44" cy="36" r="2" fill="#2c1810"/>
+        <path d="M30 41 Q36 46 42 41" stroke="#2c1810" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <line x1="10" y1="38" x2="2" y2="30" stroke="#2c1810" stroke-width="2" stroke-linecap="round"/>
+        <line x1="62" y1="38" x2="70" y2="30" stroke="#2c1810" stroke-width="2" stroke-linecap="round"/>
+        <line x1="28" y1="60" x2="24" y2="72" stroke="#2c1810" stroke-width="2" stroke-linecap="round"/>
+        <line x1="44" y1="60" x2="48" y2="72" stroke="#2c1810" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span class="splash-char-name">케이크</span>
+    </div>
+    <div class="splash-char" style="animation-delay:.2s">
+      <svg viewBox="0 0 72 80" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="36" cy="72" rx="18" ry="4" fill="#b8905a" opacity=".2"/>
+        <path d="M10 46 Q10 68 36 68 Q62 68 62 46 Z" fill="#2a1408"/>
+        <path d="M12 46 Q12 64 36 64 Q60 64 60 46 Z" fill="#8db87a"/>
+        <circle cx="36" cy="36" r="26" fill="#5c2e10"/>
+        <circle cx="28" cy="34" r="2.5" fill="#1a0a04"/><circle cx="44" cy="34" r="2.5" fill="#1a0a04"/>
+        <path d="M30 40 Q36 45 42 40" stroke="#1a0a04" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <line x1="10" y1="38" x2="2" y2="30" stroke="#2c1810" stroke-width="2" stroke-linecap="round"/>
+        <line x1="62" y1="38" x2="70" y2="30" stroke="#2c1810" stroke-width="2" stroke-linecap="round"/>
+        <line x1="28" y1="62" x2="24" y2="74" stroke="#2c1810" stroke-width="2" stroke-linecap="round"/>
+        <line x1="44" y1="62" x2="48" y2="74" stroke="#2c1810" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span class="splash-char-name">두쫀쿠</span>
+    </div>
+    <div class="splash-char" style="animation-delay:.4s;margin-bottom:8px">
+      <svg viewBox="0 0 72 80" xmlns="http://www.w3.org/2000/svg">
+        <rect x="34" y="58" width="4" height="22" rx="2" fill="#8B6347"/>
+        <ellipse cx="36" cy="56" rx="10" ry="10" fill="#e03c31"/>
+        <ellipse cx="36" cy="40" rx="9" ry="9" fill="#7b4fa6"/>
+        <ellipse cx="36" cy="26" rx="8" ry="8" fill="#f4a261"/>
+        <circle cx="30" cy="40" r="2" fill="#2c1810"/><circle cx="42" cy="40" r="2" fill="#2c1810"/>
+        <path d="M32 45 Q36 49 40 45" stroke="#2c1810" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      </svg>
+      <span class="splash-char-name">탕후루</span>
+    </div>
+    <div class="splash-char" style="animation-delay:.6s">
+      <svg viewBox="0 0 72 80" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 52 Q10 70 36 70 Q62 70 62 52 Z" fill="#d4956a"/>
+        <ellipse cx="36" cy="40" rx="26" ry="20" fill="#fdfaf6"/>
+        <ellipse cx="36" cy="52" rx="26" ry="6" fill="#b8622a"/>
+        <circle cx="28" cy="42" r="2" fill="#2c1810"/><circle cx="44" cy="42" r="2" fill="#2c1810"/>
+        <path d="M30 48 Q36 53 42 48" stroke="#2c1810" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <line x1="10" y1="46" x2="2" y2="38" stroke="#2c1810" stroke-width="2" stroke-linecap="round"/>
+        <line x1="62" y1="46" x2="70" y2="38" stroke="#2c1810" stroke-width="2" stroke-linecap="round"/>
+        <line x1="28" y1="70" x2="24" y2="80" stroke="#2c1810" stroke-width="2" stroke-linecap="round"/>
+        <line x1="44" y1="70" x2="48" y2="80" stroke="#2c1810" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span class="splash-char-name">공깃밥</span>
+    </div>
+  </div>
+  <button class="splash-btn" onclick="goTo('page-quiz')">시작하기 🍽️</button>
+</div>
+
+<!-- QUIZ -->
+<div class="page" id="page-quiz">
+  <div class="page-wrap">
+    <div class="page-header">
+      <div class="page-tag">🎲 STEP 1 / 2</div>
+      <h2>나는 어떤 <em>음식</em>일까?</h2>
+      <p>7가지 질문에 솔직하게 답해주세요!</p>
+    </div>
+    <div class="quiz-card">
+      <div class="quiz-progress" id="quiz-progress"></div>
+      <div class="quiz-step-label" id="quiz-step-label"></div>
+      <div id="quiz-body"></div>
+    </div>
+  </div>
+</div>
+
+<!-- STORY -->
+<div class="page" id="page-story">
+  <div class="page-wrap">
+    <div class="page-header">
+      <div class="page-tag">✍️ STEP 2 / 2</div>
+      <h2>당신의 <em>썰</em>을 풀어봐요</h2>
+      <p>썰 속 음식으로 나만의 캐릭터가 탄생해요!</p>
+    </div>
+    <div class="story-card">
+      <div class="story-intro">
+        📢 썰에 등장하는 음식을 알려주면, 그 음식이 나의 음식 캐릭터가 돼요!
+      </div>
+      <div class="story-field">
+        <label>🍽️ 내 썰의 주인공 음식은? <span style="color:var(--accent)">*</span></label>
+        <div style="position:relative">
+          <input type="text" id="food-input"
+            placeholder="예) 떡볶이, 치킨, 라면, 삼겹살..."
+            style="width:100%;padding:14px 16px;border-radius:12px;border:2px solid var(--border);background:#FDFAF6;font-size:15px;color:var(--dark);font-family:'Noto Sans KR',sans-serif;outline:none;transition:border-color .2s;"
+            oninput="this.style.borderColor=this.value.trim()?'var(--caramel)':'var(--border)'"
+            onfocus="this.style.borderColor='var(--toast)'"
+            onblur="this.style.borderColor=this.value.trim()?'var(--caramel)':'var(--border)'"
+          >
+          <span id="food-emoji-preview" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:22px;transition:all .3s">🍽️</span>
+        </div>
+        <p style="font-size:11px;color:var(--muted);margin-top:6px;padding-left:2px">이 음식으로 귀여운 캐릭터를 AI가 그려드려요 🎨</p>
+      </div>
+      <div class="theme-label">썰의 주제를 골라주세요</div>
+      <div class="theme-chips">
+        <button class="theme-chip" onclick="toggleChip(this)">💘 연애 썰</button>
+        <button class="theme-chip" onclick="toggleChip(this)">✂️ 인간관계 썰</button>
+        <button class="theme-chip" onclick="toggleChip(this)">😵 직장/학교 썰</button>
+        <button class="theme-chip" onclick="toggleChip(this)">👨‍👩‍👧 가족 썰</button>
+        <button class="theme-chip" onclick="toggleChip(this)">🛏️ 흑역사 썰</button>
+        <button class="theme-chip" onclick="toggleChip(this)">☀️ 일상 썰</button>
+      </div>
+      <div class="story-field">
+        <label>썰을 적어주세요</label>
+        <textarea id="story-text" placeholder="예) 취업 준비 3년째인데, 매일 밤 어머니가 끓여주시는 라면이 제 유일한 위로예요. 그 냄비 뚜껑 여는 소리가 세상에서 제일 따뜻한 소리 같아서..." oninput="updateCount(this,'story-count',300)"></textarea>
+        <span class="char-count"><span id="story-count">0</span>/300</span>
+      </div>
+      <div class="temp-label">이 썰의 감정 온도는? 🌡️</div>
+      <div class="temp-track">
+        <span class="temp-end">😢 차갑게</span>
+        <div class="temp-btns" id="temp-btns"></div>
+        <span class="temp-end">뜨겁게 😊</span>
+      </div>
+      <button class="btn-submit" onclick="goToResult()">🍽️ 내 음식 캐릭터 보기</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div class="page" id="page-result">
+  <div class="result-wrap">
+    <div id="result-loading-screen" class="result-loading-screen">
+      <div class="big-spinner"></div>
+      <p>당신의 음식 캐릭터를<br>열심히 그리고 있어요... 🎨<br><span style="font-size:12px;opacity:.6">썰 속 음식 + 성향 분석 중</span></p>
+    </div>
+    <div id="result-content" style="display:none">
+      <div style="text-align:center;padding:32px 0 20px">
+        <div class="page-tag">🎉 결과 공개!</div>
+      </div>
+      <div class="result-card">
+        <div class="char-img-wrap" id="char-img-wrap">
+          <div class="char-loading-inner" id="char-loading-inner">
+            <div class="small-spinner"></div>
+            <p>캐릭터 생성 중...</p>
+          </div>
+          <img class="char-img" id="char-img" src="" alt="" style="display:none">
+        </div>
+        <div class="result-food" id="result-food"></div>
+        <div class="result-desc" id="result-desc"></div>
+        <div class="result-tag" id="result-tag"></div>
+      </div>
+      <div class="ai-box">
+        <div class="ai-box-title">🤖 AI 성향 분석</div>
+        <div class="ai-loading" id="ai-loading">
+          <div class="ai-dots"><span></span><span></span><span></span></div>
+          <span>썰 + 성향을 분석하는 중...</span>
+        </div>
+        <div class="ai-content" id="ai-content" style="display:none"></div>
+      </div>
+      <div class="recap-card" id="recap-card"></div>
+      <button class="btn-to-phone" onclick="goTo('page-phone')">📱 연락처 남기기</button>
+      <div style="text-align:center;margin-top:14px">
+        <button onclick="restartAll()" style="padding:9px 22px;border-radius:20px;border:1.5px solid var(--toast);background:transparent;color:var(--toast);font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .2s;">↩ 처음부터 다시</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PHONE -->
+<div class="page" id="page-phone">
+  <div class="phone-wrap">
+    <div class="phone-emoji">📱</div>
+    <div class="phone-title">마지막으로<br>연락처를 남겨주세요!</div>
+    <div class="phone-desc">당신의 썰이 웹툰으로 제작될 경우<br>가장 먼저 연락드릴게요 🎨<br><span style="font-size:12px;opacity:.7">(선택 사항이에요)</span></div>
+    <input type="tel" class="phone-input" id="phone-input" placeholder="010-0000-0000" inputmode="numeric" oninput="formatPhone(this)">
+    <span class="phone-skip" onclick="goTo('page-done')">건너뛰기</span>
+    <div class="permission-row">
+      <div class="custom-cb" id="consent-cb" onclick="toggleConsent()"></div>
+      <div class="permission-text">
+        <strong>사연 및 연락처 활용에 동의합니다.</strong><br>
+        제출된 내용은 웹툰 스토리 제작에 참고될 수 있으며, 실명/개인정보는 공개되지 않습니다.
+      </div>
+    </div>
+    <button class="btn-finish" onclick="submitPhone()">🍽️ 완료하기</button>
+  </div>
+</div>
+
+<!-- DONE -->
+<div class="page" id="page-done">
+  <div class="done-wrap">
+    <div class="done-emoji">🫶</div>
+    <div class="done-title">고마워요, 소중한 썰!</div>
+    <div class="done-desc">당신의 이야기가 따뜻한 음식 캐릭터로<br>다시 세상에 나올 날을 기다려주세요.<br><br>썰푸드가 응원할게요 🍽️</div>
+    <div class="done-tag">#썰푸드 #당신의음식과썰은</div>
+  </div>
+</div>
+
+<script>
+// ── PAGE NAV ──
+function goTo(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function restartAll() {
+  answers=[]; answerLabels=[]; currentQ=0; selectedIdx=null;
+  initQuiz(); initTempBtns();
+  document.getElementById('food-input').value='';
+  document.getElementById('story-text').value='';
+  document.getElementById('story-count').textContent='0';
+  goTo('page-quiz');
+}
+
+// ── QUIZ ──
+const questions = [
+  { q:"지금 당장 먹고 싶은 건?", opts:[{e:"🌶️",t:"매콤한 거",score:{A:2}},{e:"🍰",t:"달달한 거",score:{B:2}},{e:"🧂",t:"짭짤한 거",score:{C:2}},{e:"🍲",t:"뜨끈한 국물",score:{D:2}}] },
+  { q:"너는 어떤 \"끼\"야?", opts:[{e:"🕐",t:"세끼 — 규칙적이고 루틴 있는 생활",score:{C:2}},{e:"🕑",t:"두끼 — 바쁘지만 챙길 건 챙김",score:{B:2}},{e:"🕒",t:"한끼 — 정신없이 하루 보냄",score:{A:2}},{e:"💨",t:"떼끼 — 대충 때우는 요즘",score:{D:2}}] },
+  { q:"배고프면 나는?", opts:[{e:"😤",t:"예민해짐",score:{A:2}},{e:"🤐",t:"조용해짐",score:{B:2}},{e:"🗣️",t:"아무 말이나 함",score:{C:2}},{e:"🍴",t:"그냥 아무거나 먹음",score:{D:2}}] },
+  { q:"친구랑 메뉴 고를 때 나는?", opts:[{e:"👆",t:"내가 정함",score:{A:2}},{e:"🙃",t:"\"아무거나\" 해놓고 결국 의견 냄",score:{B:2}},{e:"🫶",t:"상대 의견 존중",score:{C:2}},{e:"💭",t:"속으로 딴 메뉴 생각함",score:{D:2}}] },
+  { q:"연애를 음식에 비유하면?", opts:[{e:"🫕",t:"마라탕 (중독적이고 자극적)",score:{A:3}},{e:"🎂",t:"케이크 (기념일 많고 달달)",score:{B:3}},{e:"🍷",t:"와인 (시간 지나야 깊어짐)",score:{C:3}},{e:"🔺",t:"편의점 삼각김밥 (갑자기 시작, 갑자기 끝)",score:{D:3}}] },
+  { q:"스트레스 받을 때 당신은?", opts:[{e:"🔥",t:"매운 거로 풀어버린다",score:{A:2}},{e:"🍫",t:"달달한 디저트 찾는다",score:{B:2}},{e:"⚡",t:"그냥 아무거나 빨리 먹는다",score:{C:2}},{e:"🚫",t:"아예 안 먹는다",score:{D:2}}] },
+  { q:"요즘 내가 많이 푸는 나의 썰은?", opts:[{e:"💘",t:"매운 연애 썰 (연애)",score:{A:3}},{e:"✂️",t:"친구 손절 썰 (인간관계)",score:{D:3}},{e:"😵",t:"스트레스인 회사/학교 썰 (진로 고민)",score:{C:3}},{e:"🛏️",t:"혼자 이불킥하는 흑역사 썰",score:{B:3}}] },
+];
+const scoreResults = [
+  {type:"A",e:"🌶️",food:"마라탕",desc:"자극적이고 강렬한 매력의 소유자! 한 번 빠지면 못 헤어나오는 중독적인 존재예요. 다음에 또 찾게 되는 사람.",tag:"#중독주의 #자극남자_자극여자"},
+  {type:"B",e:"🎂",food:"딸기 케이크",desc:"달달하고 사랑스러운 에너지를 가진 사람. 특별한 순간마다 생각나는, 소중한 날의 주인공 같은 존재예요.",tag:"#달달함주의 #기념일장인"},
+  {type:"C",e:"🍷",food:"와인",desc:"처음엔 낯설지만 알아갈수록 깊어지는 사람. 섣불리 판단하면 손해예요. 시간이 지날수록 진가가 드러납니다.",tag:"#숙성형인간 #천천히알아가자"},
+  {type:"D",e:"🍲",food:"해장국",desc:"힘든 날 가장 먼저 생각나는 사람. 말 없어도 곁에 있으면 든든하고, 거창하지 않아도 진심이 느껴지는 존재예요.",tag:"#진국인생 #있어야완성"},
+];
+
+let answers=[], answerLabels=[], currentQ=0, selectedIdx=null;
+
+function initQuiz() {
+  answers=[]; answerLabels=[]; currentQ=0; selectedIdx=null;
+  renderProgress(); renderQuestion();
+}
+function renderProgress() {
+  const p=document.getElementById('quiz-progress'); p.innerHTML='';
+  questions.forEach((_,i)=>{ const d=document.createElement('div'); d.className='quiz-dot'+(i===currentQ?' active':i<currentQ?' done':''); p.appendChild(d); });
+  document.getElementById('quiz-step-label').textContent=`${currentQ+1} / ${questions.length}`;
+}
+function renderQuestion() {
+  const q=questions[currentQ]; const isLast=currentQ===questions.length-1;
+  document.getElementById('quiz-body').innerHTML=`
+    <div class="quiz-question fade-in">${q.q}</div>
+    <div class="quiz-options fade-in">${q.opts.map((o,i)=>`<button class="quiz-option" onclick="selectOption(${i},this)"><span class="opt-emoji">${o.e}</span>${o.t}</button>`).join('')}</div>
+    <div id="next-wrap" style="display:none"><button class="btn-next" onclick="goNext()">${isLast?'썰 입력하기 ✍️':'다음 질문 →'}</button></div>`;
+}
+function selectOption(idx,btn) {
+  document.querySelectorAll('.quiz-option').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected'); selectedIdx=idx;
+  document.getElementById('next-wrap').style.display='block';
+}
+function goNext() {
+  if(selectedIdx===null)return;
+  const q=questions[currentQ];
+  answers.push(q.opts[selectedIdx].score);
+  answerLabels.push({q:q.q,opts:q.opts,chosen:selectedIdx});
+  selectedIdx=null; currentQ++;
+  if(currentQ>=questions.length) goTo('page-story');
+  else { renderProgress(); renderQuestion(); }
+}
+
+// ── STORY ──
+function toggleChip(btn){ btn.classList.toggle('active'); }
+function updateCount(el,id,max){ const len=Math.min(el.value.length,max); document.getElementById(id).textContent=len; if(el.value.length>max)el.value=el.value.substring(0,max); }
+function initTempBtns() {
+  const c=document.getElementById('temp-btns'); c.innerHTML='';
+  for(let i=1;i<=5;i++){ const b=document.createElement('button'); b.className='temp-btn'; b.textContent=i; b.onclick=()=>{ document.querySelectorAll('.temp-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); }; c.appendChild(b); }
+}
+
+// ── IMAGE PROMPT (핵심 개선) ──
+const GEMINI_API_KEY='AIzaSyALM4DZgw-FAL9cPmeq5EtY8ViydZJ8iMA';
+
+// 음식별 시각적 특징 사전 — 모델이 음식을 정확히 그리도록 유도
+const FOOD_VISUAL_HINTS = {
+  '떡볶이': 'glossy red gochujang-coated cylindrical rice cakes (tteok), bright red sauce coating, fish cake pieces visible',
+  '라면': 'wavy yellow instant noodles with swirling broth steam, red soup base, floating green onion',
+  '치킨': 'golden-brown crispy fried chicken pieces with crunchy breading texture, glistening surface',
+  '삼겹살': 'thick slices of grilled pork belly with distinct fat and meat layers, charred grill marks',
+  '피자': 'round pizza with thick melted cheese pull, red tomato sauce, toppings visible from above',
+  '햄버거': 'tall stacked burger with sesame bun top, visible lettuce, tomato, beef patty layers',
+  '초밥': 'nigiri sushi — oval white rice mound topped with salmon or tuna, pink fish draping over',
+  '마라탕': 'deep red spicy broth with floating chili peppers, various ingredients, heavy red oil sheen',
+  '순대': 'dark grey cylindrical blood sausage stuffed with glass noodles and vegetables, sliced cross-section',
+  '감자탕': 'pork spine bones in deep red spicy broth with whole potatoes, perilla leaves floating',
+  '파스타': 'twirled spaghetti with red tomato sauce or creamy white sauce, parmesan shavings',
+  '케이크': 'layered cake with pink strawberry cream frosting, whole strawberries on top, cross-section layers',
+  '아이스크림': 'soft-serve ice cream swirl in a cone, pastel colors, melting slightly at edges',
+  '도넛': 'ring-shaped donut with pink glaze and rainbow sprinkles on top',
+  '빵': 'round golden-brown bread loaf with cracked crust, fluffy interior texture visible',
+  '김밥': 'cylindrical gimbap roll sliced to show colorful cross-section: yellow egg, orange carrot, green spinach, white rice',
+  '만두': 'plump pleated dumpling with pinched folds on top, semi-translucent steamed skin',
+  '국밥': 'large bowl of pork and rice soup with green onions and clear broth, steam rising',
+  '탕수육': 'crispy pork pieces in glossy sweet-and-sour red sauce with pineapple chunks',
+  '짜장면': 'black bean paste noodles — dark brown glossy sauce coating thick noodles, julienned cucumber on top',
+};
+
+function getFoodVisualHint(foodName) {
+  // 직접 매칭
+  if(FOOD_VISUAL_HINTS[foodName]) return FOOD_VISUAL_HINTS[foodName];
+  // 부분 매칭
+  for(const [key, val] of Object.entries(FOOD_VISUAL_HINTS)) {
+    if(foodName.includes(key) || key.includes(foodName)) return val;
+  }
+  // 매칭 없으면 음식 이름 그대로 영어로 직접 묘사하도록 위임
+  return `recognizable Korean dish called "${foodName}" — show its most distinctive visual features: characteristic colors, textures, and shape`;
+}
+
+function makeFoodImagePrompt(foodName) {
+  const visualHint = getFoodVisualHint(foodName);
+  return `Create a cute kawaii chibi food character illustration on a pure white background.
+
+FOOD BODY (most important — the character's entire HEAD and TORSO must be the food itself):
+The character's body IS a ${foodName}. Visual reference: ${visualHint}.
+Make the food INSTANTLY RECOGNIZABLE — use accurate colors, textures, and distinctive features of the food.
+The food shape should be realistic and detailed enough that anyone could identify what food it is at a glance.
+
+FOOD VISUAL REQUIREMENTS:
+- Show the food's authentic colors (e.g. if it's red spicy food, use vivid red; if it's golden fried food, use golden-brown)
+- Show key identifying textures (glossy sauce, crispy coating, layered structure, etc.)
+- The food should be the DOMINANT visual element — large, centered, clearly rendered
+
+CHARACTER DETAILS (added ON TOP of the food body):
+- Two tiny black dot eyes with white highlights
+- A small curved black smile line for mouth
+- Two thin black stick arms extending from the sides of the food body (with tiny rounded hands)
+- Two thin black stick legs below the food body (with tiny rounded feet)
+- Optional: small rosy cheek circles for cuteness
+
+STYLE:
+- Clean, flat illustration style (like LINE Friends or Kakao Friends characters)
+- Bold outlines on the food body
+- Pure white (#FFFFFF) background — nothing else
+- No text, no labels, no shadows
+- Centered composition, full character visible
+
+The result should feel like an adorable sticker where the food is unmistakably "${foodName}".`;
+}
+
+async function generateCharImage(foodName) {
+  const prompt = makeFoodImagePrompt(foodName);
+  for(const {ver,model} of [
+    {ver:'v1alpha',model:'gemini-2.0-flash-exp-image-generation'},
+    {ver:'v1beta',model:'gemini-2.0-flash-exp'}
+  ]) {
+    try {
+      const r=await fetch(`https://generativelanguage.googleapis.com/${ver}/models/${model}:generateContent?key=${GEMINI_API_KEY}`,{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{responseModalities:['IMAGE','TEXT']}})
+      });
+      if(!r.ok){console.warn(`[${model}]`,r.status);continue;}
+      const d=await r.json();
+      const ip=(d.candidates?.[0]?.content?.parts||[]).find(p=>p.inlineData);
+      if(ip) return `data:${ip.inlineData.mimeType};base64,${ip.inlineData.data}`;
+    } catch(e){console.warn(e);}
+  }
+  throw new Error('이미지 생성 실패');
+}
+
+// ── ANALYSIS PROMPT (핵심 개선) ──
+async function generateGeminiAnalysis(answerLabels, res, story, foodName) {
+  const chosenList = answerLabels.map((item,qi)=>{
+    const c = item.opts[item.chosen];
+    return `Q${qi+1}. ${item.q} → ${c.e} ${c.t}`;
+  }).join('\n');
+
+  const storySection = story
+    ? `[썰 내용]\n"${story}"`
+    : `[썰 없음 — 음식 선택과 성향 데이터만으로 분석]`;
+
+  const prompt = `당신은 한국의 인기 MBTI 분석가이자 음식 칼럼니스트예요. 
+재치 있고 공감 가는 문장으로, 읽다 보면 "이거 나 얘기잖아?!" 하고 무릎 탁 치게 만드는 성향 분석을 써주세요.
+반말+존댓말 혼용 금지. 친근한 존댓말로 통일해주세요.
+
+━━━ 입력 데이터 ━━━
+[성향 유형] ${res.food} 타입 (${res.tag})
+[테스트 답변]
+${chosenList}
+[썰 속 음식] ${foodName}
+${storySection}
+
+━━━ 출력 형식 (라벨 그대로 유지, 각 항목 한 줄씩) ━━━
+
+한줄요약: [이 사람을 음식+MBTI 스타일로 압축한 한 줄. 재치있는 비유나 반전 포함. 이모지 1~2개]
+
+특징1: [이 사람만의 독특한 행동 패턴이나 습관. "~하는 타입이에요" 형태로]
+특징2: [관계에서 드러나는 이 사람의 특성. 구체적 상황 묘사 포함]
+특징3: [이 사람이 스스로는 잘 모르는 매력 포인트. 따뜻하게]
+
+음식분석: [왜 하필 "${foodName}"을 썰의 주인공으로 선택했는지, 그 심리를 분석. 음식 특성과 이 사람 성향 연결. 썰이 있으면 썰 내용도 반영]
+
+결정적한마디: [이 사람에게 해주고 싶은 따뜻하고 인상적인 한마디. 쉼표 호흡 살려서]
+
+태그: #태그1 #태그2 #태그3 #태그4
+
+━━━ 작성 가이드 ━━━
+- 진부한 표현 금지: "특별한", "매력적인", "소중한" 같은 뻔한 단어는 쓰지 마세요
+- 구체성: 추상적 표현 대신 실생활 상황으로 묘사해주세요  
+- 음식 연결: 반드시 "${foodName}"의 맛/질감/먹는 방식과 이 사람의 성향을 연결해주세요
+- 길이: 각 항목 1~2문장 (결정적한마디는 1문장)
+- 태그: 이 사람에게 딱 맞는 신조어/밈 스타일로`;
+
+  const textModels = [
+    {ver:'v1beta', model:'gemini-2.0-flash-lite'},
+    {ver:'v1beta', model:'gemini-2.0-flash'},
+    {ver:'v1beta', model:'gemini-1.5-flash'},
+    {ver:'v1beta', model:'gemini-1.5-flash-latest'},
+    {ver:'v1beta', model:'gemini-pro'},
+  ];
+  for(const {ver, model} of textModels) {
+    try {
+      const r = await fetch(`https://generativelanguage.googleapis.com/${ver}/models/${model}:generateContent?key=${GEMINI_API_KEY}`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({contents:[{parts:[{text:prompt}]}], generationConfig:{temperature:0.92, maxOutputTokens:700}})
+      });
+      if(!r.ok){console.warn(`[text:${model}]`,r.status); continue;}
+      const d = await r.json();
+      const text = d.candidates?.[0]?.content?.parts?.[0]?.text||'';
+      if(text) return text;
+    } catch(e){console.warn(`[text:${model}]`,e);}
+  }
+  return null;
+}
+
+function parseGeminiText(text, res, foodName) {
+  const get = key => {
+    const m = text.match(new RegExp(key + ':\\s*(.+?)(?=\\n[가-힣A-Za-z]+:|$)', 's'));
+    return m ? m[1].trim().replace(/\n/g,' ') : '';
+  };
+  const hl = get('한줄요약') || get('한줄성향') || `${foodName} 캐릭터를 닮은 독보적인 당신 ✨`;
+  const traits = [get('특징1'),get('특징2'),get('특징3')].filter(Boolean);
+  if(!traits.length) traits.push('읽을수록 공감 가는 성향의 소유자예요.','주변 사람들이 먼저 알아보는 숨은 매력이 있어요.','자기 자신을 잘 아는 사람이에요.');
+  const storyLine = get('음식분석') || get('썰분석');
+  const reason = get('결정적한마디') || get('이유') || `${foodName}처럼, 알고 보면 더 맛있는 사람이에요.`;
+  const tagStr = get('태그');
+  const tags = (tagStr.match(/#[^\s#]+/g)||[]).slice(0,4);
+  if(!tags.length) tags.push('#나다운썰','#음식캐릭터','#썰푸드','#찐분석');
+  return {hl, traits, storyLine, reason, tags};
+}
+
+function localAnalysis(answerLabels, res, story, foodName) {
+  const chosenTexts=answerLabels.map(item=>item.opts[item.chosen].t);
+  const is=key=>chosenTexts.some(t=>t.includes(key));
+  const db={
+    A:{
+      hl:`🌶️ 한 번 맛보면 자꾸 생각나는 그 사람 — 마라탕형 인간`,
+      traits:[
+        `배고플 때 예민해진다고 하셨죠? 솔직히 그게 매력이에요. 감정 숨기는 법을 모르는 사람이라 오히려 신뢰가 가요.`,
+        `메뉴 정할 때 내가 정하는 타입 — 결정 장애 친구들한테 없어선 안 될 존재예요. 대신 본인 취향은 확실히 있어요.`,
+        `자극적인 걸 좋아하는 성향 덕분에 삶의 온도가 항상 높아요. 지루할 틈이 없는 사람이에요.`
+      ],
+      storyLine:`${foodName}을 선택한 건 우연이 아니에요. 강하고 기억에 남는 인상을 주고 싶은 마음이 무의식 중에 반영된 거예요.`,
+      reason:`마라탕처럼 처음엔 "이게 맞나?" 싶다가도, 결국 다음에 또 찾게 되는 사람이에요.`,
+      tags:['#자극주의','#감정직진','#중독매력','#마라탕인간']
+    },
+    B:{
+      hl:`🎂 조용히 당신 생일 기억하고 있는 사람 — 케이크형 인간`,
+      traits:[
+        `스트레스 받으면 달달한 걸 찾는다고 하셨죠? 감정을 폭발시키는 대신 단 것으로 스스로 달래는 — 자기 돌봄의 고수예요.`,
+        `이불 속 흑역사 썰이 많다면, 감수성이 그만큼 풍부하다는 뜻이에요. 남들이 그냥 지나친 순간도 오래 기억해요.`,
+        `겉으론 평온해 보이지만 속으론 끊임없이 생각 중 — 조용한 감동을 주는 타입이에요.`
+      ],
+      storyLine:`${foodName}이라는 선택, 특별한 날에 어울리는 음식이죠. 평범한 하루에도 의미를 찾는 당신의 감수성이 담겨있어요.`,
+      reason:`딸기케이크처럼 — 기분 좋을 때도, 위로가 필요할 때도, 결국 생각나는 사람이에요.`,
+      tags:['#감성충만','#기념일장인','#조용한낭만주의','#케이크인간']
+    },
+    C:{
+      hl:`🍷 1회차엔 절대 모르는 사람 — 와인형 인간`,
+      traits:[
+        `세끼 다 챙기는 규칙파 — 겉으론 철저해 보이지만 사실 자기 자신한테 가장 엄격해요. 남한테는 의외로 관대해요.`,
+        `스트레스 받으면 빨리 먹고 해결하는 타입 — 감정을 오래 끌지 않고 리셋하는 능력이 있어요.`,
+        `처음 만나면 조금 어렵게 느껴질 수 있는데, 가까워지면 완전 다른 사람 나와요. 그게 이 사람의 반전 매력이에요.`
+      ],
+      storyLine:`${foodName} 선택에서 보여요 — 유행 따르기보다 내 기준이 있는 사람. 남들 다 시킬 때 혼자 다른 메뉴 생각하는 스타일.`,
+      reason:`와인처럼, 시간이 지날수록 깊어지는 맛 — 빨리 판단하면 이 사람 모르는 거예요.`,
+      tags:['#숙성형인간','#천천히알아가자','#1회차는모름','#와인인간']
+    },
+    D:{
+      hl:`🍲 새벽 3시에 생각나는 그 사람 — 해장국형 인간`,
+      traits:[
+        `배고파도 그냥 아무거나 먹는다고 하셨죠? 사소한 것에 에너지 쏟는 걸 효율적으로 아끼는 사람이에요.`,
+        `손절 썰이 있다면 — 조용히 오래 참다가 한 번에 정리하는 타입이에요. 말 없이 떠나는 사람이 가장 무서운 타입.`,
+        `거창한 표현은 없어도 곁에 있으면 왠지 모르게 안심이 되는 사람 — 그게 제일 어려운 거예요.`
+      ],
+      storyLine:`${foodName}이라는 선택, 화려하진 않지만 진짜 필요할 때 생각나는 음식이잖아요. 그게 바로 이 사람이에요.`,
+      reason:`해장국처럼 — 있을 때는 당연하고, 없으면 진짜 빈자리가 느껴지는 사람이에요.`,
+      tags:['#진국인생','#있어야완성','#새벽세시에생각나는사람','#해장국인간']
+    }
+  }[res.type];
+  return {hl:db.hl, traits:db.traits, storyLine:db.storyLine, reason:db.reason, tags:db.tags};
+}
+
+function renderAIContent(parsed) {
+  const {hl, traits, storyLine, reason, tags} = parsed;
+  let html = '';
+
+  // 한줄요약
+  html += `<div class="ai-section">
+    <div class="ai-section-title">✦ 한줄 요약</div>
+    <p style="font-weight:700;font-size:15px;color:#1a2a6a;line-height:1.6">${hl}</p>
+  </div>`;
+
+  // 성향 특징
+  html += `<div class="ai-section">
+    <div class="ai-section-title">✦ 이런 사람이에요</div>
+    ${traits.map(t=>`<p style="margin-bottom:8px;padding-left:12px;border-left:2px solid rgba(100,130,220,.3)">• ${t}</p>`).join('')}
+  </div>`;
+
+  // 음식 분석
+  if(storyLine) {
+    html += `<div class="ai-section">
+      <div class="ai-section-title">✦ 음식 선택 심리</div>
+      <p style="color:#3a4a8a;line-height:1.8;font-style:italic">${storyLine}</p>
+    </div>`;
+  }
+
+  // 결정적 한마디
+  html += `<div class="ai-section">
+    <div class="ai-section-title">✦ 결정적 한마디</div>
+    <p style="font-size:14px;font-weight:600;color:#2a3a7a;border-left:3px solid #7090d8;padding:10px 12px;background:rgba(100,130,220,.07);border-radius:0 8px 8px 0;line-height:1.7">"${reason}"</p>
+  </div>`;
+
+  // 태그
+  html += `<div style="margin-top:4px">${tags.map(t=>`<span class="ai-tag">${t}</span>`).join('')}</div>`;
+
+  return html;
+}
+
+function goToResult() {
+  const foodName = document.getElementById('food-input').value.trim();
+  if(!foodName){ alert('썰의 주인공 음식을 입력해주세요! 🍽️'); document.getElementById('food-input').focus(); return; }
+  const story=document.getElementById('story-text').value.trim();
+  goTo('page-result');
+  buildResult(story, foodName);
+}
+
+function buildResult(story, foodName) {
+  const totals={A:0,B:0,C:0,D:0};
+  answers.forEach(sc=>Object.entries(sc).forEach(([k,v])=>totals[k]+=v));
+  const topType=Object.entries(totals).sort((a,b)=>b[1]-a[1])[0][0];
+  const res=scoreResults.find(r=>r.type===topType);
+
+  setTimeout(()=>{
+    document.getElementById('result-loading-screen').style.display='none';
+    document.getElementById('result-content').style.display='block';
+    document.getElementById('result-food').textContent=`당신의 썰 음식 : " ${foodName} "`;
+    document.getElementById('result-desc').textContent=res.desc;
+    document.getElementById('result-tag').textContent=res.tag;
+
+    // 이미지 생성
+    generateCharImage(foodName).then(url=>{
+      document.getElementById('char-img').src=url;
+      document.getElementById('char-img').style.display='block';
+      document.getElementById('char-loading-inner').style.display='none';
+    }).catch(()=>{
+      document.getElementById('char-loading-inner').innerHTML=`<span style="font-size:48px">🍽️</span><p style="font-size:12px;margin-top:6px;color:var(--muted)">${foodName}</p>`;
+    });
+
+    // Gemini 텍스트 분석
+    generateGeminiAnalysis(answerLabels, res, story, foodName).then(text=>{
+      const loadingEl=document.getElementById('ai-loading');
+      const contentEl=document.getElementById('ai-content');
+      loadingEl.style.display='none';
+      let parsed;
+      if(text) {
+        parsed = parseGeminiText(text, res, foodName);
+      } else {
+        parsed = localAnalysis(answerLabels, res, story, foodName);
+      }
+      contentEl.innerHTML=renderAIContent(parsed);
+      contentEl.style.display='block';
+    });
+
+    buildRecap(story, foodName);
+  }, 1800);
+}
+
+function buildRecap(story, foodName) {
+  let html='<div class="recap-title">📋 나의 선택 모아보기</div>';
+  if(foodName) html+=`<div class="recap-q"><div class="recap-q-text">🍽️ 내 썰의 주인공 음식</div><div class="recap-opt-chosen"><span class="recap-check">✓</span><span>${foodName}</span></div></div>`;
+  answerLabels.forEach((item,qi)=>{
+    const c=item.opts[item.chosen];
+    html+=`<div class="recap-q"><div class="recap-q-text">Q${qi+1}. ${item.q}</div><div class="recap-opt-chosen"><span class="recap-check">✓</span><span style="font-size:16px">${c.e}</span><span>${c.t}</span></div></div>`;
+  });
+  if(story){ html+=`<div class="recap-story"><div class="recap-story-label">✍️ 내가 쓴 썰</div><div class="recap-story-content">${story}</div></div>`; }
+  document.getElementById('recap-card').innerHTML=html;
+}
+
+// ── PHONE ──
+let consented=false;
+function toggleConsent(){ consented=!consented; document.getElementById('consent-cb').classList.toggle('checked',consented); }
+function formatPhone(el){ let v=el.value.replace(/\D/g,'').substring(0,11); if(v.length<=3)el.value=v; else if(v.length<=7)el.value=v.slice(0,3)+'-'+v.slice(3); else el.value=v.slice(0,3)+'-'+v.slice(3,7)+'-'+v.slice(7); }
+function submitPhone(){ const p=document.getElementById('phone-input').value.trim(); if(p&&!consented){alert('개인정보 활용 동의를 체크해주세요!');return;} goTo('page-done'); }
+
+initQuiz();
+initTempBtns();
+</script>
+</body>
+</html>
