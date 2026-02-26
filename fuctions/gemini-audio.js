@@ -24,9 +24,11 @@ exports.handler = async (event) => {
 {"transcript":"전체 내용","keywords":["키워드1","키워드2","키워드3"],"mood":"happy|excited|sad|angry|lonely|nostalgic|nervous|neutral 중 하나"}
 JSON 외 다른 텍스트 없이.`;
 
+  // gemini.js 와 동일한 패턴 — SDK 미사용, fetch 직접 호출
   const models = [
+    { ver: 'v1beta', model: 'gemini-2.0-flash-lite' },
     { ver: 'v1beta', model: 'gemini-2.0-flash' },
-    { ver: 'v1beta', model: 'gemini-1.5-flash' },
+    { ver: 'v1beta', model: 'gemini-1.5-flash-latest' },
   ];
 
   for (const { ver, model } of models) {
@@ -47,7 +49,7 @@ JSON 외 다른 텍스트 없이.`;
           }),
         }
       );
-      if (!r.ok) continue;
+      if (!r.ok) { console.warn(`[gemini-audio] ${model} failed: ${r.status}`); continue; }
 
       const d = await r.json();
       const text = d.candidates?.[0]?.content?.parts?.[0]?.text || '';
@@ -66,7 +68,7 @@ JSON 외 다른 텍스트 없이.`;
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
         body: JSON.stringify({ result: parsed, model }),
       };
-    } catch (e) { console.warn(e); }
+    } catch (e) { console.warn(`[gemini-audio] ${model} error:`, e.message); }
   }
 
   return {
