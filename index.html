@@ -322,6 +322,61 @@
   @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
   @keyframes popIn{0%{transform:scale(.8);opacity:0}100%{transform:scale(1);opacity:1}}
   .fade-in{animation:fadeUp .35s ease both;}
+
+  /* ══ CHOICE PAGE ══ */
+  .choice-card {
+    display:flex; align-items:center; gap:16px;
+    background:white; border-radius:20px; padding:20px;
+    border:2px solid var(--border); cursor:pointer;
+    transition:all .2s; margin-bottom:12px;
+    box-shadow:0 4px 16px rgba(44,24,16,.05);
+  }
+  .choice-card:hover { border-color:var(--toast); transform:translateY(-2px); box-shadow:0 8px 24px rgba(44,24,16,.1); }
+  .choice-card-highlight { background:linear-gradient(135deg,#FFF9F0,#FFF3E0); border-color:rgba(212,149,106,.4); }
+  .choice-card-highlight:hover { border-color:var(--caramel); }
+  .choice-icon { font-size:32px; flex-shrink:0; }
+  .choice-body { flex:1; }
+  .choice-title { font-family:'Noto Serif KR',serif; font-size:16px; font-weight:900; color:var(--dark); margin-bottom:4px; }
+  .choice-desc { font-size:12px; color:var(--muted); line-height:1.6; }
+  .choice-arrow { font-size:20px; color:var(--muted); flex-shrink:0; }
+  .choice-or { text-align:center; font-size:12px; color:var(--muted); font-weight:600; letter-spacing:2px; margin:4px 0 12px; }
+
+  /* ══ STORY ONELINER — 메인 하이라이트 ══ */
+  .story-oneliner-card {
+    background:linear-gradient(135deg,#1a1a2e,#16213e);
+    border-radius:24px; padding:24px 22px; margin-bottom:14px;
+    box-shadow:0 8px 32px rgba(0,0,0,.2);
+    animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  .story-oneliner-label {
+    font-size:11px; font-weight:700; letter-spacing:2px;
+    color:rgba(255,255,255,.5); margin-bottom:14px;
+  }
+  .story-oneliner-text {
+    font-family:'Noto Serif KR',serif;
+    font-size:clamp(17px,4.5vw,22px); font-weight:900;
+    color:white; line-height:1.5; margin-bottom:14px;
+  }
+  .story-oneliner-to {
+    font-size:13px; color:rgba(255,255,255,.7); line-height:1.8;
+    padding:12px 14px;
+    background:rgba(255,255,255,.07);
+    border-radius:12px; border-left:3px solid rgba(255,255,255,.3);
+    font-style:italic;
+  }
+
+  /* ══ CHARACTER CARD MINI ══ */
+  .character-card-mini {
+    display:flex; gap:16px; align-items:flex-start;
+    background:white; border-radius:20px; padding:20px;
+    border:1.5px solid var(--story-border);
+    box-shadow:0 4px 20px rgba(44,24,16,.06);
+    margin-bottom:14px;
+    animation:popIn .5s .05s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  .character-card-mini .char-img-wrap {
+    width:100px; height:100px; border-radius:16px; flex-shrink:0;
+  }
 </style>
 </head>
 <body>
@@ -402,7 +457,7 @@
 <div class="page" id="page-quiz">
   <div class="page-wrap">
     <div class="page-header">
-      <div class="page-tag">🎲 STEP 1 / 2</div>
+      <div class="page-tag">🎲 성향 테스트</div>
       <h2>나는 어떤 <em>음식</em>일까?</h2>
       <p>7가지 질문에 솔직하게 답해주세요!</p>
     </div>
@@ -414,11 +469,42 @@
   </div>
 </div>
 
+<!-- ════════════ CHOICE (썰 녹음 여부 선택) ════════════ -->
+<div class="page" id="page-choice">
+  <div class="page-wrap">
+    <div class="page-header" style="padding-bottom:16px">
+      <div class="page-tag">🎉 퀴즈 완료!</div>
+      <h2>결과를 <em>어떻게</em> 볼까요?</h2>
+      <p>썰을 녹음하면 AI가 더 재밌게 분석해드려요 🎙️</p>
+    </div>
+
+    <div class="choice-card" onclick="goTo('page-result');buildResult(null)">
+      <div class="choice-icon">📊</div>
+      <div class="choice-body">
+        <div class="choice-title">결과 바로 보기</div>
+        <div class="choice-desc">7가지 질문 분석으로<br>나의 음식 성향 알아보기</div>
+      </div>
+      <div class="choice-arrow">→</div>
+    </div>
+
+    <div class="choice-or">또는</div>
+
+    <div class="choice-card choice-card-highlight" onclick="goTo('page-record')">
+      <div class="choice-icon">🎙️</div>
+      <div class="choice-body">
+        <div class="choice-title">썰 녹음하고 결과 보기</div>
+        <div class="choice-desc">음식 캐릭터 생성 + AI 썰 분석까지<br><span style="font-size:11px;color:var(--accent);font-weight:700">✦ 더 재밌는 결과를 볼 수 있어요</span></div>
+      </div>
+      <div class="choice-arrow">→</div>
+    </div>
+  </div>
+</div>
+
 <!-- ════════════ RECORD (썰 녹음) ════════════ -->
 <div class="page" id="page-record">
   <div class="record-wrap">
     <div class="page-header">
-      <div class="page-tag">🎙️ STEP 2 / 2</div>
+      <div class="page-tag">🎙️ 썰 녹음</div>
       <h2>썰을 <em>말로</em> 풀어봐요</h2>
       <p>음성으로 녹음하면 AI가 캐릭터를 그려드려요 🎨</p>
     </div>
@@ -476,7 +562,7 @@
   <div class="result-wrap">
     <div id="result-loading-screen" class="result-loading-screen">
       <div class="big-spinner"></div>
-      <p id="loading-msg">썰의 분위기를 읽는 중...<br><span style="font-size:12px;opacity:.6">감정 온도 측정 → 캐릭터 표정 결정 중 🎭</span></p>
+      <p id="loading-msg">분석 중...<br><span style="font-size:12px;opacity:.6">나의 음식 성향을 파악하는 중 🍽️</span></p>
       <div class="loading-steps">
         <div class="loading-step-item" id="lstep-stt"><span class="loading-step-icon">📝</span>음성 → 텍스트 변환 중</div>
         <div class="loading-step-item" id="lstep-mood"><span class="loading-step-icon">🎭</span>분위기 파악 중</div>
@@ -487,21 +573,91 @@
 
     <div id="result-content" style="display:none">
 
-      <!-- ══ 상단 BLOCK: 객관식 성향 분석 ══ -->
-      <div class="result-section-header">
-        <div class="result-badge warm">🎲 성향 테스트 결과</div>
-        <div class="result-section-title">7개 질문으로 알아보는 나의 음식 성향</div>
-      </div>
-
-      <div class="personality-card">
+      <!-- ══ ① 퀴즈 결과 메인 ══ -->
+      <div class="personality-card" style="margin-top:28px">
         <span class="personality-emoji" id="personality-emoji"></span>
         <div class="personality-food-type" id="personality-food-type"></div>
         <div class="personality-type-tag" id="personality-type-tag"></div>
         <div class="personality-desc" id="personality-desc"></div>
       </div>
 
+      <!-- ══ ② 썰한줄 — 메인 하이라이트 (썰 있을 때만) ══ -->
+      <div id="story-oneliner-block" style="display:none">
+        <div class="story-oneliner-card">
+          <div class="story-oneliner-label">🔥 AI가 읽은 내 썰 한 줄 요약</div>
+          <div class="loading-row" id="oneliner-loading">
+            <div class="ai-dots"><span></span><span></span><span></span></div>
+            <span>썰 읽는 중...</span>
+          </div>
+          <div class="story-oneliner-text" id="story-oneliner-text" style="display:none"></div>
+          <!-- 이사람에게 -->
+          <div class="story-oneliner-to" id="story-oneliner-to" style="display:none"></div>
+          <!-- 태그 -->
+          <div id="story-oneliner-tags" style="display:none;margin-top:10px"></div>
+        </div>
+      </div>
+
+      <!-- ══ ③ 캐릭터 소소하게 (썰 있을 때만) ══ -->
+      <div id="character-block" style="display:none">
+        <div class="section-divider" style="margin:20px 0 16px">
+          <div class="section-divider-line"></div>
+          <div class="section-divider-label">✦ 나의 음식 캐릭터 ✦</div>
+          <div class="section-divider-line"></div>
+        </div>
+        <div class="character-card character-card-mini">
+          <div class="char-img-wrap" id="char-img-wrap">
+            <div class="char-loading-inner" id="char-loading-inner">
+              <div class="small-spinner"></div>
+              <p>그리는 중...</p>
+            </div>
+            <img class="char-img" id="char-img" src="" alt="" style="display:none">
+          </div>
+          <div class="character-info">
+            <div class="character-food-name" id="char-food-name"></div>
+            <div id="mood-badge-wrap"></div>
+            <div class="character-sub-tag" id="char-sub-tag"></div>
+            <div class="character-base-desc" id="char-base-desc"></div>
+            <!-- 명대사 -->
+            <div id="char-quote-wrap" style="display:none;margin-top:10px;padding:9px 12px;background:rgba(100,130,220,.08);border-radius:10px;border-left:3px solid var(--story-blue)">
+              <div style="font-size:10px;font-weight:700;color:var(--story-blue);letter-spacing:1px;margin-bottom:4px">💬 이 캐릭터의 한마디</div>
+              <div id="char-quote-text" style="font-size:13px;color:#1a2a6a;font-style:italic;line-height:1.6"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 썰 분석 (공감포인트·웹툰장면 제거, 음식심리만) -->
+        <div class="story-ai-box" id="story-analysis-box">
+          <div class="story-ai-box-title">🍽️ 왜 하필 그 음식이었을까?</div>
+          <div class="loading-row" id="story-ai-loading">
+            <div class="ai-dots"><span></span><span></span><span></span></div>
+            <span>분석 중...</span>
+          </div>
+          <div class="story-ai-content" id="story-ai-content" style="display:none"></div>
+        </div>
+
+        <!-- 녹음 내용 텍스트 -->
+        <div class="story-recap-card" id="story-recap-card" style="display:none">
+          <div class="recap-title">📝 AI가 받아쓴 내 썰</div>
+          <div class="recap-story">
+            <div class="recap-story-label">녹음된 내용</div>
+            <div class="recap-story-content" id="story-recap-content"></div>
+          </div>
+          <div id="keywords-wrap" style="display:none;margin-top:12px">
+            <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:7px;">핵심 키워드</div>
+            <div class="keywords-row" id="keywords-row"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ ④ 7가지 성향 분석 ══ -->
+      <div class="section-divider" style="margin:24px 0 16px">
+        <div class="section-divider-line"></div>
+        <div class="section-divider-label">✦ 성향 심층 분석 ✦</div>
+        <div class="section-divider-line"></div>
+      </div>
+
       <div class="quiz-ai-box">
-        <div class="quiz-ai-box-title">🔍 성향 심층 분석</div>
+        <div class="quiz-ai-box-title">🔍 7개 질문이 말해주는 나</div>
         <div class="loading-row" id="quiz-ai-loading">
           <div class="ai-dots"><span></span><span></span><span></span></div>
           <span>성향 패턴 분석 중...</span>
@@ -512,72 +668,6 @@
       <div class="quiz-recap-card">
         <div class="recap-title">📋 내가 고른 7가지 답변</div>
         <div id="quiz-recap-body"></div>
-      </div>
-
-      <!-- 구분선 -->
-      <div class="section-divider">
-        <div class="section-divider-line"></div>
-        <div class="section-divider-label">✦ 나의 음식 캐릭터 ✦</div>
-        <div class="section-divider-line"></div>
-      </div>
-
-      <!-- ══ 하단 BLOCK: 썰 기반 캐릭터 ══ -->
-      <div class="result-section-header">
-        <div class="result-badge cool">🍽️ 썰 속 음식 캐릭터</div>
-        <div class="result-section-title">썰의 감정을 담은 나만의 캐릭터</div>
-      </div>
-
-      <!-- 캐릭터 이미지 + 기본 정보 -->
-      <div class="character-card">
-        <div class="character-card-inner">
-          <div class="char-img-wrap" id="char-img-wrap">
-            <div class="char-loading-inner" id="char-loading-inner">
-              <div class="small-spinner"></div>
-              <p>표정<br>그리는 중...</p>
-            </div>
-            <img class="char-img" id="char-img" src="" alt="" style="display:none">
-          </div>
-          <div class="character-info">
-            <div class="character-food-name" id="char-food-name"></div>
-            <div id="mood-badge-wrap"></div>
-            <div class="character-sub-tag" id="char-sub-tag"></div>
-            <div class="character-base-desc" id="char-base-desc"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 캐릭터 특징 카드 -->
-      <div class="character-traits-card">
-        <div class="character-traits-title">✨ 이 캐릭터는 이런 특징을 가지고 있어요!</div>
-        <div class="loading-row" id="char-traits-loading">
-          <div class="ai-dots"><span></span><span></span><span></span></div>
-          <span>캐릭터 특징 분석 중...</span>
-        </div>
-        <div id="char-traits-content" style="display:none"></div>
-      </div>
-
-      <!-- 썰 심층 분석 -->
-      <div class="story-ai-box">
-        <div class="story-ai-box-title">🤖 썰 심층 분석</div>
-        <div class="loading-row" id="story-ai-loading">
-          <div class="ai-dots"><span></span><span></span><span></span></div>
-          <span>썰을 분석하는 중...</span>
-        </div>
-        <div class="story-ai-content" id="story-ai-content" style="display:none"></div>
-      </div>
-
-      <!-- 녹음된 썰 내용 (텍스트 변환본만 표시) -->
-      <div class="story-recap-card" id="story-recap-card" style="display:none">
-        <div class="recap-title">📝 AI가 받아쓴 내 썰</div>
-        <div class="recap-story">
-          <div class="recap-story-label">📝 녹음된 내용 (텍스트 변환)</div>
-          <div class="recap-story-content" id="story-recap-content"></div>
-        </div>
-        <!-- keywords -->
-        <div id="keywords-wrap" style="display:none;margin-top:12px">
-          <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:7px;">핵심 키워드</div>
-          <div class="keywords-row" id="keywords-row"></div>
-        </div>
       </div>
 
       <button class="btn-to-phone" onclick="goTo('page-phone')">마지막이에요!!</button>
@@ -660,9 +750,9 @@ let answers=[],answerLabels=[],currentQ=0,selectedIdx=null;
 
 function initQuiz(){answers=[];answerLabels=[];currentQ=0;selectedIdx=null;renderProgress();renderQuestion();}
 function renderProgress(){const p=document.getElementById('quiz-progress');p.innerHTML='';questions.forEach((_,i)=>{const d=document.createElement('div');d.className='quiz-dot'+(i===currentQ?' active':i<currentQ?' done':'');p.appendChild(d);});document.getElementById('quiz-step-label').textContent=`${currentQ+1} / ${questions.length}`;}
-function renderQuestion(){const q=questions[currentQ];const isLast=currentQ===questions.length-1;document.getElementById('quiz-body').innerHTML=`<div class="quiz-question fade-in">${q.q}</div><div class="quiz-options fade-in">${q.opts.map((o,i)=>`<button class="quiz-option" onclick="selectOption(${i},this)"><span class="opt-emoji">${o.e}</span>${o.t}</button>`).join('')}</div><div id="next-wrap" style="display:none"><button class="btn-next" onclick="goNext()">${isLast?'썰 녹음하기 🎙️':'다음 질문 →'}</button></div>`;}
+function renderQuestion(){const q=questions[currentQ];const isLast=currentQ===questions.length-1;document.getElementById('quiz-body').innerHTML=`<div class="quiz-question fade-in">${q.q}</div><div class="quiz-options fade-in">${q.opts.map((o,i)=>`<button class="quiz-option" onclick="selectOption(${i},this)"><span class="opt-emoji">${o.e}</span>${o.t}</button>`).join('')}</div><div id="next-wrap" style="display:none"><button class="btn-next" onclick="goNext()">${isLast?'결과 보기 ✨':'다음 질문 →'}</button></div>`;}
 function selectOption(idx,btn){document.querySelectorAll('.quiz-option').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');selectedIdx=idx;document.getElementById('next-wrap').style.display='block';}
-function goNext(){if(selectedIdx===null)return;const q=questions[currentQ];answers.push(q.opts[selectedIdx].score);answerLabels.push({q:q.q,opts:q.opts,chosen:selectedIdx});selectedIdx=null;currentQ++;if(currentQ>=questions.length)goTo('page-record');else{renderProgress();renderQuestion();}}
+function goNext(){if(selectedIdx===null)return;const q=questions[currentQ];answers.push(q.opts[selectedIdx].score);answerLabels.push({q:q.q,opts:q.opts,chosen:selectedIdx});selectedIdx=null;currentQ++;if(currentQ>=questions.length)goTo('page-choice');else{renderProgress();renderQuestion();}}
 
 // ─────────────────────────────────────
 //  STORY UTILS
@@ -960,52 +1050,54 @@ function doneLoadingStep(id){document.getElementById(id)?.classList.replace('act
 //  MAIN BUILD RESULT
 // ─────────────────────────────────────
 async function buildResult(foodName){
-  // Reset result UI
+  const hasStory=!!foodName;
+
   document.getElementById('result-loading-screen').style.display='flex';
   document.getElementById('result-content').style.display='none';
   ['lstep-stt','lstep-mood','lstep-img','lstep-analysis'].forEach(id=>{
     const el=document.getElementById(id);
     el.classList.remove('active','done');
+    el.style.display=(id==='lstep-stt'||id==='lstep-img')&&!hasStory?'none':'';
   });
 
   const totals={A:0,B:0,C:0,D:0};
   answers.forEach(sc=>Object.entries(sc).forEach(([k,v])=>totals[k]+=v));
   const topType=Object.entries(totals).sort((a,b)=>b[1]-a[1])[0][0];
   const res=scoreResults.find(r=>r.type===topType);
-
-  // 1) STT — 음성 → 텍스트
-  setLoadingStep('lstep-stt');
   const loadingMsg=document.getElementById('loading-msg');
-  loadingMsg.innerHTML='음성을 텍스트로 변환 중...<br><span style="font-size:12px;opacity:.6">Gemini가 받아쓰고 있어요 📝</span>';
 
-  const mime=getSupportedMimeType()||'audio/webm';
-  const sttResult=currentBlob?await transcribeAudio(currentBlob,mime):null;
+  let story='',keywords=[],emotionDetail='',storyContext={},moodIntensity='medium',mood='neutral';
 
-  const story=sttResult?.transcript||'';
-  const keywords=sttResult?.keywords||[];
-  const sttMood=sttResult?.mood;
-  // 새로 추출된 풍부한 컨텍스트
-  const emotionDetail=sttResult?.emotion_detail||'';
-  const storyContext=sttResult?.story_context||{};
-  const moodIntensity=sttResult?.mood_intensity||'medium';
+  if(hasStory){
+    setLoadingStep('lstep-stt');
+    loadingMsg.innerHTML='음성을 텍스트로 변환 중...<br><span style="font-size:12px;opacity:.6">Gemini가 받아쓰고 있어요 📝</span>';
+    const mime=getSupportedMimeType()||'audio/webm';
+    const sttResult=currentBlob?await transcribeAudio(currentBlob,mime):null;
+    story=sttResult?.transcript||'';
+    keywords=sttResult?.keywords||[];
+    emotionDetail=sttResult?.emotion_detail||'';
+    storyContext=sttResult?.story_context||{};
+    moodIntensity=sttResult?.mood_intensity||'medium';
+    const sttMood=sttResult?.mood;
+    doneLoadingStep('lstep-stt');
 
-  doneLoadingStep('lstep-stt');
-
-  // 2) 분위기 분석
-  setLoadingStep('lstep-mood');
-  loadingMsg.innerHTML='썰의 감정을 읽는 중...<br><span style="font-size:12px;opacity:.6">분위기 파악 → 캐릭터 표정 결정 중 🎭</span>';
-
-  let mood;
-  if(sttMood&&MOOD_MAP[sttMood])mood=sttMood;
-  else{
-    const moodFromApi=await callGemini(`아래 썰의 핵심 감정을 딱 하나만 골라주세요.\n선택지: happy / excited / sad / angry / lonely / nostalgic / nervous / neutral\n[썰] "${story.slice(0,200)}"\n반드시 위 선택지 중 영어 하나만 답하세요. 설명 없이.`,10);
-    const parsedMood=moodFromApi?.trim().toLowerCase().split(/\W/)[0];
-    mood=MOOD_MAP[parsedMood]?parsedMood:detectMoodLocal(story);
+    setLoadingStep('lstep-mood');
+    loadingMsg.innerHTML='썰의 감정을 읽는 중...<br><span style="font-size:12px;opacity:.6">분위기 파악 → 캐릭터 표정 결정 중 🎭</span>';
+    if(sttMood&&MOOD_MAP[sttMood])mood=sttMood;
+    else{
+      const moodFromApi=await callGemini(`아래 썰의 핵심 감정을 딱 하나만 골라주세요.\n선택지: happy / excited / sad / angry / lonely / nostalgic / nervous / neutral\n[썰] "${story.slice(0,200)}"\n반드시 위 선택지 중 영어 하나만 답하세요. 설명 없이.`,10);
+      const parsedMood=moodFromApi?.trim().toLowerCase().split(/\W/)[0];
+      mood=MOOD_MAP[parsedMood]?parsedMood:detectMoodLocal(story);
+    }
+    doneLoadingStep('lstep-mood');
+  } else {
+    loadingMsg.innerHTML='성향 분석 중...<br><span style="font-size:12px;opacity:.6">나의 음식 유형을 파악하는 중 🍽️</span>';
+    setLoadingStep('lstep-analysis');
+    await new Promise(r=>setTimeout(r,400));
   }
-  const moodData=MOOD_MAP[mood];
-  doneLoadingStep('lstep-mood');
 
-  // 3) 결과 화면 표시
+  const moodData=MOOD_MAP[mood]||MOOD_MAP.neutral;
+
   document.getElementById('result-loading-screen').style.display='none';
   document.getElementById('result-content').style.display='block';
 
@@ -1020,60 +1112,69 @@ async function buildResult(foodName){
   answerLabels.forEach((item,qi)=>{const c=item.opts[item.chosen];recapHtml+=`<div class="recap-q"><div class="recap-q-text">Q${qi+1}. ${item.q}</div><div class="recap-opt-chosen"><span class="recap-check">✓</span><span style="font-size:16px">${c.e}</span><span>${c.t}</span></div></div>`;});
   document.getElementById('quiz-recap-body').innerHTML=recapHtml;
 
-  // 캐릭터 기본 정보
-  document.getElementById('char-food-name').textContent=`${foodName} 캐릭터`;
-  const intensityLabel={'low':'잔잔하게','medium':'','high':'강렬하게'}[moodIntensity]||'';
-  document.getElementById('mood-badge-wrap').innerHTML=`<div class="mood-badge" style="background:${moodData.badgeBg};border-color:${moodData.border};color:${moodData.badgeColor}">${moodData.emoji} ${intensityLabel?intensityLabel+' ':''} ${moodData.label}</div>`;
-  document.getElementById('char-sub-tag').textContent=`#${foodName}캐릭터 #썰푸드${storyContext.tone?` #${storyContext.tone}`:''} `;
-  document.getElementById('char-base-desc').textContent=emotionDetail||`썰의 분위기(${moodData.label})를 담아 AI가 그린 나만의 ${foodName} 캐릭터예요.`;
-  document.getElementById('char-img-wrap').style.background=moodData.bg;
+  if(hasStory){
+    document.getElementById('story-oneliner-block').style.display='block';
+    document.getElementById('character-block').style.display='block';
 
-  // 썰 텍스트 / 키워드 표시
-  if(story){
-    document.getElementById('story-recap-content').textContent=story;
-    document.getElementById('story-recap-card').style.display='block';
+    const intensityLabel={'low':'잔잔하게 ','medium':'','high':'강렬하게 '}[moodIntensity]||'';
+    document.getElementById('char-food-name').textContent=`${foodName} 캐릭터`;
+    document.getElementById('mood-badge-wrap').innerHTML=`<div class="mood-badge" style="background:${moodData.badgeBg};border-color:${moodData.border};color:${moodData.badgeColor}">${moodData.emoji} ${intensityLabel}${moodData.label}</div>`;
+    document.getElementById('char-sub-tag').textContent=`#${foodName}캐릭터 #썰푸드${storyContext.tone?` #${storyContext.tone}`:''}`;
+    document.getElementById('char-base-desc').textContent=emotionDetail||`${moodData.label} 감정이 담긴 나만의 ${foodName} 캐릭터예요.`;
+    document.getElementById('char-img-wrap').style.background=moodData.bg;
 
-    // 감정 상세 뉘앙스 표시
-    if(emotionDetail){
-      const emotionEl=document.createElement('div');
-      emotionEl.style.cssText='margin-bottom:10px;padding:10px 12px;background:rgba(100,130,220,.07);border-radius:10px;border:1px solid rgba(100,130,220,.2);font-size:12px;color:#3a5080;line-height:1.7;';
-      emotionEl.innerHTML=`<span style="font-weight:700;font-size:10px;letter-spacing:1px;display:block;margin-bottom:4px;color:var(--story-blue)">🎭 감정 뉘앙스</span>${emotionDetail}`;
-      document.getElementById('story-recap-card').querySelector('.recap-story').before(emotionEl);
+    if(story){
+      document.getElementById('story-recap-content').textContent=story;
+      document.getElementById('story-recap-card').style.display='block';
+      if(storyContext.situation||storyContext.tone){
+        const ctxEl=document.createElement('div');
+        ctxEl.style.cssText='display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;';
+        const ctxItems=[storyContext.situation?`📍 ${storyContext.situation}`:'',storyContext.relation?`👥 ${storyContext.relation}`:'',storyContext.tone?`🎭 ${storyContext.tone}`:''].filter(Boolean);
+        ctxEl.innerHTML=ctxItems.map(c=>`<span style="padding:4px 10px;background:rgba(212,149,106,.1);border:1px solid rgba(212,149,106,.25);border-radius:20px;font-size:11px;color:var(--caramel);font-weight:600">${c}</span>`).join('');
+        document.getElementById('story-recap-card').querySelector('.recap-story').before(ctxEl);
+      }
+      if(keywords.length){
+        document.getElementById('keywords-row').innerHTML=keywords.map(k=>`<span class="kw-chip"># ${k}</span>`).join('');
+        document.getElementById('keywords-wrap').style.display='block';
+      }
     }
 
-    // 썰 상황 뱃지 (상황/관계/톤)
-    if(storyContext.situation||storyContext.tone){
-      const ctxEl=document.createElement('div');
-      ctxEl.style.cssText='display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;';
-      const ctxItems=[
-        storyContext.situation?`📍 ${storyContext.situation}`:'',
-        storyContext.relation?`👥 ${storyContext.relation}`:'',
-        storyContext.tone?`🎭 ${storyContext.tone}`:'',
-      ].filter(Boolean);
-      ctxEl.innerHTML=ctxItems.map(c=>`<span style="padding:4px 10px;background:rgba(212,149,106,.1);border:1px solid rgba(212,149,106,.25);border-radius:20px;font-size:11px;color:var(--caramel);font-weight:600">${c}</span>`).join('');
-      document.getElementById('story-recap-card').querySelector('.recap-story').before(ctxEl);
-    }
+    setLoadingStep('lstep-img');
+    generateCharImage(foodName,mood,moodIntensity,emotionDetail,storyContext).then(url=>{
+      doneLoadingStep('lstep-img');
+      document.getElementById('char-img').src=url;
+      document.getElementById('char-img').style.display='block';
+      document.getElementById('char-loading-inner').style.display='none';
+    }).catch(()=>{
+      doneLoadingStep('lstep-img');
+      document.getElementById('char-loading-inner').innerHTML=`<span style="font-size:36px">${moodData.emoji}</span>`;
+    });
 
-    // 키워드
-    if(keywords.length){
-      document.getElementById('keywords-row').innerHTML=keywords.map(k=>`<span class="kw-chip"># ${k}</span>`).join('');
-      document.getElementById('keywords-wrap').style.display='block';
-    }
+    doStoryOneliner(res,story,foodName,mood,emotionDetail,storyContext,moodIntensity).then(text=>{
+      document.getElementById('oneliner-loading').style.display='none';
+      const olText=document.getElementById('story-oneliner-text');
+      const olTo=document.getElementById('story-oneliner-to');
+      const olTags=document.getElementById('story-oneliner-tags');
+      if(text){
+        const summary=getField(text,'썰한줄');
+        const toYou=getField(text,'이사람에게');
+        const tags=(getField(text,'태그').match(/#[^\s#]+/g)||[]).slice(0,5);
+        const charQuote=getField(text,'캐릭터한마디');
+        const foodPsy=getField(text,'음식심리');
+        if(summary){olText.textContent=summary;olText.style.display='block';}
+        if(toYou){olTo.textContent=`"${toYou}"`;olTo.style.display='block';}
+        if(tags.length){olTags.innerHTML=tags.map(t=>`<span class="ai-tag" style="background:rgba(255,255,255,.12);color:rgba(255,255,255,.8);border:none">${t}</span>`).join('');olTags.style.display='block';}
+        if(charQuote){document.getElementById('char-quote-text').textContent=charQuote;document.getElementById('char-quote-wrap').style.display='block';}
+        if(foodPsy){document.getElementById('story-ai-loading').style.display='none';const el=document.getElementById('story-ai-content');el.innerHTML=`<p style="color:#2a3a6a;line-height:1.9;font-size:13px">${foodPsy}</p>`;el.style.display='block';}
+      } else {
+        olText.textContent='내 썰, AI도 어이없었나봐요 😅';olText.style.display='block';
+        document.getElementById('story-ai-loading').style.display='none';
+        document.getElementById('story-ai-content').innerHTML=`<p style="color:#4a5fa0;line-height:1.8">녹음이 없거나 인식되지 않았어요.<br>더 크게 말씀해보세요 🎙️</p>`;
+        document.getElementById('story-ai-content').style.display='block';
+      }
+    });
   }
 
-  // 4) 이미지 생성 — 썰 감정 컨텍스트 전달
-  setLoadingStep('lstep-img');
-  generateCharImage(foodName,mood,moodIntensity,emotionDetail,storyContext).then(url=>{
-    doneLoadingStep('lstep-img');
-    document.getElementById('char-img').src=url;
-    document.getElementById('char-img').style.display='block';
-    document.getElementById('char-loading-inner').style.display='none';
-  }).catch(()=>{
-    doneLoadingStep('lstep-img');
-    document.getElementById('char-loading-inner').innerHTML=`<span style="font-size:40px">${moodData.emoji}</span><p style="font-size:12px;margin-top:6px;color:var(--muted)">${foodName}<br>${moodData.label}</p>`;
-  });
-
-  // 5) 성향 AI 분석
   setLoadingStep('lstep-analysis');
   doQuizAnalysis(answerLabels,res).then(text=>{
     doneLoadingStep('lstep-analysis');
@@ -1083,30 +1184,6 @@ async function buildResult(foodName){
     el.style.display='block';
   });
 
-  // 6) 캐릭터 특징 — 풍부한 썰 컨텍스트 전달
-  doCharTraits(foodName,res,story,mood,emotionDetail,storyContext,moodIntensity).then(text=>{
-    document.getElementById('char-traits-loading').style.display='none';
-    const el=document.getElementById('char-traits-content');
-    const fallback=`캐릭터이름: ${foodName}이\n한줄소개: ${foodName}의 매력을 가득 담은 귀여운 존재예요 🌟\n특징1제목: 첫인상\n특징1내용: 처음 만나면 분위기를 바꿔버리는 존재감이에요. ${moodData.emoji} ${moodData.label} 상태로 오늘도 열심히 살아가는 중이에요 🌟\n특징2제목: 오늘의기분\n특징2내용: 지금 이 캐릭터는 ${moodData.label} 상태예요. ${foodName}처럼 솔직하게 감정을 드러내는 타입이에요 💫\n특징3제목: 특기\n특징3내용: 어떤 상황에서도 ${foodName}만의 맛을 잃지 않아요 ✨\n필살기: 상대방을 무장해제시키는 ${foodName} 특유의 향기 공격`;
-    el.innerHTML=renderTraits(text||fallback,foodName,mood);
-    el.style.display='block';
-  });
-
-  // 7) 썰 심층 분석 — 풍부한 컨텍스트 전달
-  doStoryAnalysis(res,story,foodName,mood,emotionDetail,storyContext,moodIntensity).then(text=>{
-    document.getElementById('story-ai-loading').style.display='none';
-    const el=document.getElementById('story-ai-content');
-    if(text){
-      el.innerHTML=renderStoryAI(text,foodName,mood);
-    }else if(story){
-      el.innerHTML=renderStoryAI(`썰한줄: ${foodName}과 함께한 이 순간, 오래 기억될 것 같아요 ${moodData.emoji}\n음식심리: ${foodName}이라는 선택 자체가 이미 많은 걸 말해주고 있어요. 지금 이 감정(${moodData.label})을 담기에 가장 잘 어울리는 음식이었을 거예요. ${foodName}이 가진 맛과 온도가 이 썰의 감정과 닮아있어요.\n이사람에게: 이 썰을 쓰면서 어떤 기분이었는지 알 것 같아요. 그 감정, 다 맞아요.\n웹툰장면: ${foodName} 캐릭터가 ${moodData.emoji} 표정으로 조용히 앉아있는 장면 — 말 없이도 모든 게 전해지는 그 한 컷이에요.\n태그: #${foodName}썰 #썰푸드 #나의이야기 #음식심리`,foodName,mood);
-    }else{
-      el.innerHTML=`<p style="color:#4a5fa0;line-height:1.8">녹음이 없거나 인식되지 않았어요 😊<br>다시 한 번 시도해보시거나, API 키를 확인해주세요.</p>`;
-    }
-    el.style.display='block';
-  });
-
-  // 레코더 리셋
   resetRecorder();
 }
 
@@ -1136,64 +1213,14 @@ ${list}
   return await callGemini(prompt,700);
 }
 
-async function doCharTraits(foodName,res,story,mood,emotionDetail='',storyContext={},moodIntensity='medium'){
-  const moodData=MOOD_MAP[mood]||MOOD_MAP.neutral;
-  const hasRichContext=story&&story.length>30;
-
-  // 썰 맥락 요약 블록
-  const contextBlock=hasRichContext?`
-━━ 이 캐릭터가 겪은 일 (썰 내용 기반) ━━
-전체 썰: "${story.slice(0,300)}${story.length>300?'...(이하 생략)':''}"
-상황: ${storyContext.situation||'미파악'}
-등장 관계: ${storyContext.relation||'미파악'}
-핵심 사건: ${storyContext.turning_point||'미파악'}
-썰의 톤: ${storyContext.tone||'미파악'}
-감정 뉘앙스: ${emotionDetail||moodData.label}
-감정 강도: ${moodIntensity==='high'?'매우 강렬함':moodIntensity==='low'?'잔잔함':'보통'}`:'';
-
-  const prompt=`당신은 인기 웹툰 캐릭터 디렉터예요. "${foodName}"이 살아있는 존재가 된 캐릭터를 만들어주세요.
-이 캐릭터는 단순한 음식이 아니라, 아래 썰을 직접 겪은 당사자예요.
-${contextBlock}
-
-[성향 유형] ${res.food} 타입 (${res.tag})
-[현재 감정] ${moodData.label} ${moodData.emoji} (강도: ${moodIntensity})
-
-━━ 출력 형식 (라벨 정확히, 1줄씩) ━━
-
-캐릭터이름: [${foodName} + 개성있는 이름. "~이", "~군", "~씨" 등. 예: "라볶이씨", "치킨군", "삼겹이" 등]
-
-한줄소개: ["${foodName}의 [맛/온도/질감] 처럼 [성격 묘사]한 존재예요" 형식. 이모지 1개. ${hasRichContext?'썰 내용의 감정이 자연스럽게 녹아들 것':''}]
-
-특징1제목: [3~5글자, 썰 속 상황이나 감정과 연결된 제목]
-특징1내용: [${foodName}의 실제 음식 특성(맛/질감/온도/먹는 방식)과 이 캐릭터의 성격/행동 패턴을 연결. ${hasRichContext?`"${storyContext.situation||'이 상황'}"을 겪은 캐릭터답게 구체적으로.`:'피식 웃기는 톤으로.'} 이모지 포함. 2문장]
-
-특징2제목: [썰의 감정(${moodData.label})을 담은 제목]
-특징2내용: [지금 이 순간 이 캐릭터의 상태를 구체적으로 묘사. ${hasRichContext?`"${storyContext.turning_point||'핵심 사건'}"을 겪고 난 후 지금 어떤 표정과 행동을 하고 있는지.`:'오늘의 감정 상태.'} 2문장]
-
-특징3제목: [이 캐릭터만의 숨겨진 매력 제목]
-특징3내용: [겉으론 ${moodData.label}이지만 속으로 가진 반전 매력이나 장점. ${foodName}의 의외의 특성과 연결. 따뜻하고 귀엽게. 2문장]
-
-특징4제목: [관계 스타일 또는 인간관계 패턴 제목]
-특징4내용: [${storyContext.relation?`"${storyContext.relation}"과의 관계에서 드러나는 이 캐릭터의 패턴.`:`이 캐릭터가 다른 음식 캐릭터들과 어울리는 방식.`} ${res.food} 타입답게. 2문장]
-
-좋아하는것: [이 캐릭터가 좋아하는 것 3가지. 썰 내용/감정 반영. "A, B, C" 형식]
-싫어하는것: [이 캐릭터가 싫어하는 것 2가지. 썰 내용/감정 반영. "A, B" 형식]
-필살기: [이 캐릭터만의 능력. "~을 한방에 무너뜨리는 [${foodName} 특성] 공격" 형식. 유머 필수]
-명대사: [이 캐릭터가 할 법한 말 한마디. 썰의 감정이 담긴 말. 따옴표 포함]
-
-친근한 존댓말. 뻔한 단어 금지.`;
-  return await callGemini(prompt,900);
-}
-
-async function doStoryAnalysis(res,story,foodName,mood,emotionDetail='',storyContext={},moodIntensity='medium'){
+async function doStoryOneliner(res,story,foodName,mood,emotionDetail='',storyContext={},moodIntensity='medium'){
   if(!story)return null;
   const moodData=MOOD_MAP[mood]||MOOD_MAP.neutral;
-  const intensityDesc=moodIntensity==='high'?'감정이 매우 강렬하게':moodIntensity==='low'?'감정이 잔잔하게':'감정이 적당히';
+  const intensityDesc=moodIntensity==='high'?'감정이 터질 듯 강렬하게':moodIntensity==='low'?'감정이 잔잔하게':'감정이 적당히';
 
-  const prompt=`당신은 따뜻한 감성의 웹툰 작가이자 인간 관찰자예요.
-이 사람이 방금 들려준 썰을 진짜 귀 기울여 들은 오랜 친구처럼 반응해주세요.
-"맞아, 그 순간 딱 그런 기분이었겠다" 싶은 공감이 핵심.
-뻔한 위로 금지, 썰 내용을 진짜 읽고 분석한 것처럼 구체적으로.
+  const prompt=`당신은 썰 전문 콘텐츠 크리에이터예요.
+이 사람 썰을 읽고 나서 "ㅋㅋㅋㅋ 이거 완전 나잖아" 또는 "헉 진짜?" 반응을 이끌어내는 게 목표예요.
+유머, 밈, 현실 공감, 약간의 드립이 핵심이에요.
 
 ━━ 썰 정보 ━━
 [전체 내용] "${story}"
@@ -1206,121 +1233,22 @@ async function doStoryAnalysis(res,story,foodName,mood,emotionDetail='',storyCon
 [썰의 톤] ${storyContext.tone||'미파악'}
 [작성자 성향] ${res.food} 타입
 
-━━ 출력 형식 (라벨 정확히) ━━
+━━ 출력 형식 (라벨 정확히, 절대 빠뜨리지 말 것) ━━
 
-썰한줄: [이 썰의 핵심 감정을 한 문장으로 꿰뚫는 말. 읽으면 찡하거나 피식 웃게 되는 문장. 이모지 1개]
+썰한줄: [이 썰을 한 줄로 압축. 유머/밈 스타일로. 읽으면 피식 or 찡 or 납득. 이모지 1-2개 포함. 예시 느낌: "치킨 앞에서 차인 뒤 치킨으로 치유한 남자의 미친 회복력 🍗" / "사실상 본인이 제일 억울한 손절 썰 ㅋㅋ" / "연락 안 되는 사람한테 라면 먹으러 가자고 문자 보낸 인간 🍜" 이 정도 톤]
 
-음식심리: [왜 하필 "${foodName}"이 이 썰의 주인공이 됐는지 분석. ${foodName}의 맛/온도/먹는 상황/질감 중 이 썰의 감정(${moodData.label}, ${storyContext.tone||''})과 닮은 포인트를 구체적으로 연결. 단순한 연결이 아니라 "아 이래서 이 음식이었구나" 싶은 납득 포인트. 3~4문장]
+이사람에게: [뻔한 위로 말고, 이 썰 당사자에게만 해주는 현실 공감 한 마디. "맞아 나라도 그랬을 것 같아"하는 톤. 1-2문장. 드립 살짝 가능]
 
-이사람에게: [이 썰을 털어놓은 사람에게만 해주는 말. ${storyContext.turning_point?`"${storyContext.turning_point}"을 겪은 사람에게 진짜 해주고 싶은 말.`:'그 순간의 감정에 정확히 꽂히는 말.'} 위로가 아니라 "맞아 나라도 그랬을 것 같아"하는 공감의 말. 2문장]
+음식심리: [왜 하필 "${foodName}"이 이 썰의 주인공인지. ${foodName}의 특성(맛/온도/먹는 상황/질감)이 이 감정/상황과 어떻게 겹치는지. 3문장. 구체적으로. "아 그래서 이 음식이었구나" 싶게]
 
-웹툰장면: ["${foodName} 캐릭터가 ~하는 장면" 형식. ${storyContext.situation||'이 썰의 가장 인상적인 순간'}을 한 컷으로 표현한다면 어떤 장면일지. 시각적으로 생생하게, 감정이 눈에 보이게. 2문장]
+캐릭터한마디: [${foodName} 캐릭터가 이 상황에서 할 법한 말 한 마디. "${foodName} 캐릭터답게" + 이 썰의 감정이 담긴 말. 귀엽거나 웃기거나 공감되게. 따옴표 없이]
 
-공감포인트: [이 썰에서 가장 많은 사람이 공감할 핵심 포인트 1가지. "이거 진짜 다 겪어봤잖아요" 하는 보편적 감정과의 연결. 2문장]
+태그: #태그1 #태그2 #태그3 #태그4 #태그5 (밈/신조어/현실공감 스타일, 이 썰에 딱 맞는 것으로)
 
-태그: #태그1 #태그2 #태그3 #태그4 #태그5 (밈/신조어 스타일, 썰 내용 반영)
-
-"힘내세요", "잘 될 거예요", "파이팅" 같은 뻔한 말 절대 금지.`;
+"힘내세요" 금지. 뻔한 위로 금지. 이 썰만을 위한 맞춤 반응.`;
   return await callGemini(prompt,900);
 }
 
-// ─────────────────────────────────────
-//  RENDER FUNCTIONS (원본 그대로)
-// ─────────────────────────────────────
-function renderQuizAI(text,res){
-  const hl=getField(text,'한줄요약')||`${res.food} 타입의 독보적인 당신 ✨`;
-  const t1=getField(text,'특징1'),t2=getField(text,'특징2'),t3=getField(text,'특징3');
-  const traits=[t1,t2,t3].filter(Boolean);
-  if(!traits.length)traits.push('읽을수록 공감 가는 성향이에요.','주변이 먼저 알아보는 숨은 매력이 있어요.','자기 자신을 잘 아는 사람이에요.');
-  const weakness=getField(text,'약점');
-  const reason=getField(text,'결정적한마디')||`${res.food}처럼 알고 보면 더 깊어지는 사람이에요.`;
-  const tags=(getField(text,'태그').match(/#[^\s#]+/g)||[]).slice(0,5);
-  if(!tags.length)tags.push('#나다운썰','#썰푸드','#찐분석','#음식성향');
-  return`<div class="q-ai-section"><div class="q-ai-section-title">✦ 한줄 요약</div><p style="font-weight:700;font-size:15px;color:var(--dark);line-height:1.6">${hl}</p></div>
-<div class="q-ai-section"><div class="q-ai-section-title">✦ 이런 사람이에요</div>${traits.map((t,i)=>`<div style="margin-bottom:10px;padding:10px 12px;background:rgba(212,149,106,.06);border-radius:10px;border-left:3px solid var(--toast)"><p style="font-size:11px;font-weight:700;color:var(--toast);margin-bottom:4px">특징 ${i+1}</p><p style="font-size:13px;color:var(--dark);line-height:1.7">${t}</p></div>`).join('')}</div>
-${weakness?`<div class="q-ai-section"><div class="q-ai-section-title">⚡ 아킬레스건</div><p style="font-size:13px;color:var(--muted);line-height:1.7;padding:10px 12px;background:rgba(44,24,16,.04);border-radius:10px;font-style:italic">${weakness}</p></div>`:''}
-<div class="q-ai-section"><div class="q-ai-section-title">✦ 결정적 한마디</div><p style="font-size:14px;font-weight:600;color:var(--dark);border-left:3px solid var(--toast);padding:12px 14px;background:rgba(212,149,106,.07);border-radius:0 10px 10px 0;line-height:1.8">"${reason}"</p></div>
-<div style="margin-top:4px">${tags.map(t=>`<span class="q-ai-tag">${t}</span>`).join('')}</div>`;
-}
-
-function renderTraits(text,foodName,mood){
-  const moodData=MOOD_MAP[mood]||MOOD_MAP.neutral;
-  const charName=getField(text,'캐릭터이름')||`${foodName}이`;
-  const charIntro=getField(text,'한줄소개')||`${foodName}의 매력을 담은 귀여운 존재예요.`;
-  const special=getField(text,'필살기');
-  const likes=getField(text,'좋아하는것');
-  const dislikes=getField(text,'싫어하는것');
-  const quote=getField(text,'명대사');
-
-  let html=`<div style="padding:12px 14px;background:white;border-radius:12px;margin-bottom:10px;border:2px solid rgba(100,130,220,.15)">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-    <span style="font-size:26px">${moodData.emoji}</span>
-    <div>
-      <div style="font-family:'Noto Serif KR',serif;font-size:16px;font-weight:900;color:var(--story-blue)">${charName}</div>
-      <div style="font-size:11px;color:var(--muted);margin-top:2px">지금 기분: <strong style="color:var(--story-blue)">${moodData.label}</strong></div>
-    </div>
-  </div>
-  <p style="font-size:13px;color:var(--dark);line-height:1.7;padding-top:8px;border-top:1px dashed rgba(100,130,220,.2)">${charIntro}</p>
-</div>`;
-
-  // 명대사가 있으면 상단에 배치
-  if(quote){
-    html+=`<div style="margin-bottom:10px;padding:14px 16px;background:linear-gradient(135deg,#f0f4ff,#e8ecff);border-radius:14px;border-left:4px solid var(--story-blue)">
-  <div style="font-size:10px;font-weight:700;color:var(--story-blue);letter-spacing:1.5px;margin-bottom:7px">💬 이 캐릭터의 명대사</div>
-  <p style="font-size:14px;color:#1a2a6a;font-weight:600;line-height:1.7;font-style:italic">${quote}</p>
-</div>`;
-  }
-
-  const icons=['🌟','💫','✨','🎯'];
-  for(let i=1;i<=4;i++){
-    const title=getField(text,`특징${i}제목`)||`특징 ${i}`;
-    const content=getField(text,`특징${i}내용`);
-    if(!content&&i===4)continue; // 특징4는 없을 수도 있음
-    html+=`<div class="trait-item"><span class="trait-icon">${icons[i-1]}</span><div class="trait-text"><strong>${title}</strong>${content||`${foodName} 캐릭터만의 독특한 매력이 있어요.`}</div></div>`;
-  }
-
-  // 좋아하는것 / 싫어하는것
-  if(likes||dislikes){
-    html+=`<div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px">`;
-    if(likes){
-      html+=`<div style="padding:10px 12px;background:rgba(90,122,82,.07);border-radius:12px;border:1px solid rgba(90,122,82,.2)">
-  <div style="font-size:10px;font-weight:700;color:var(--green);letter-spacing:1px;margin-bottom:6px">💚 좋아해요</div>
-  <p style="font-size:12px;color:var(--dark);line-height:1.7">${likes}</p>
-</div>`;
-    }
-    if(dislikes){
-      html+=`<div style="padding:10px 12px;background:rgba(220,80,80,.06);border-radius:12px;border:1px solid rgba(220,80,80,.15)">
-  <div style="font-size:10px;font-weight:700;color:#c04040;letter-spacing:1px;margin-bottom:6px">🚫 싫어해요</div>
-  <p style="font-size:12px;color:var(--dark);line-height:1.7">${dislikes}</p>
-</div>`;
-    }
-    html+=`</div>`;
-  }
-
-  if(special)html+=`<div style="margin-top:10px;padding:12px 14px;background:linear-gradient(135deg,rgba(100,130,220,.1),rgba(100,130,220,.05));border-radius:12px;border:1px dashed rgba(100,130,220,.3)"><div style="font-size:11px;font-weight:700;color:var(--story-blue);letter-spacing:1px;margin-bottom:6px">⚔️ 필살기</div><p style="font-size:13px;color:var(--dark);line-height:1.7">${special}</p></div>`;
-  return html;
-}
-
-function renderStoryAI(text,foodName,mood){
-  const moodData=MOOD_MAP[mood]||MOOD_MAP.neutral;
-  const summary=getField(text,'썰한줄');
-  const foodPsy=getField(text,'음식심리')||`${foodName}이라는 선택에서 당신의 진심이 느껴져요.`;
-  const toYou=getField(text,'이사람에게')||'당신의 이야기, 진심으로 잘 들었어요.';
-  const scene=getField(text,'웹툰장면');
-  const empathy=getField(text,'공감포인트');
-  const tags=(getField(text,'태그').match(/#[^\s#]+/g)||[]).slice(0,5);
-  if(!tags.length)tags.push('#썰푸드','#음식썰','#나의이야기');
-  let html=`<div style="display:inline-flex;align-items:center;gap:6px;padding:5px 14px;background:${moodData.badgeBg};border:1px solid ${moodData.border};border-radius:20px;font-size:12px;font-weight:700;color:${moodData.badgeColor};margin-bottom:16px">
-  ${moodData.emoji} 이 썰의 감정: ${moodData.label}
-</div>`;
-  if(summary)html+=`<div class="ai-section"><div class="ai-section-title">✦ 이 썰을 한 줄로</div><p style="font-weight:700;font-size:15px;color:#1a2a6a;line-height:1.6;padding:10px 14px;background:rgba(100,130,220,.07);border-radius:10px">${summary}</p></div>`;
-  html+=`<div class="ai-section"><div class="ai-section-title">✦ ${foodName}을 선택한 심리</div><p style="color:#2a3a6a;line-height:1.9;font-size:13px">${foodPsy}</p></div>`;
-  html+=`<div class="ai-section"><div class="ai-section-title">✦ 이 썰을 쓴 당신에게</div><p style="font-size:14px;color:#2a3a7a;border-left:3px solid #7090d8;padding:12px 14px;background:rgba(100,130,220,.07);border-radius:0 10px 10px 0;line-height:1.8">"${toYou}"</p></div>`;
-  if(empathy)html+=`<div class="ai-section"><div class="ai-section-title">🤝 이 썰의 공감 포인트</div><div style="padding:10px 14px;background:rgba(90,122,82,.06);border-radius:10px;border:1px solid rgba(90,122,82,.2)"><p style="font-size:13px;color:#2a4a2a;line-height:1.9">${empathy}</p></div></div>`;
-  if(scene)html+=`<div class="ai-section"><div class="ai-section-title">🎬 웹툰으로 만든다면</div><div style="padding:12px 14px;background:linear-gradient(135deg,#f8f0ff,#f0f4ff);border-radius:10px;border:1px dashed rgba(130,100,220,.25)"><p style="font-size:13px;color:#3a2a6a;line-height:1.8;font-style:italic">${scene}</p></div></div>`;
-  html+=`<div style="margin-top:4px">${tags.map(t=>`<span class="ai-tag">${t}</span>`).join('')}</div>`;
-  return html;
-}
 
 function localQuizAI(res){
   const db={
