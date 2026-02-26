@@ -13,7 +13,6 @@ exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ error: 'Method Not Allowed' }) };
   }
-
   const API_KEY = process.env.GEMINI_API_KEY;
   if (!API_KEY) return { statusCode: 500, body: JSON.stringify({ error: 'API key not configured' }) };
 
@@ -24,11 +23,10 @@ exports.handler = async (event) => {
 {"transcript":"전체 내용","keywords":["키워드1","키워드2","키워드3"],"mood":"happy|excited|sad|angry|lonely|nostalgic|nervous|neutral 중 하나"}
 JSON 외 다른 텍스트 없이.`;
 
-  // gemini.js 와 동일한 패턴 — SDK 미사용, fetch 직접 호출
   const models = [
-    { ver: 'v1beta', model: 'gemini-2.0-flash-lite' },
     { ver: 'v1beta', model: 'gemini-2.0-flash' },
-    { ver: 'v1beta', model: 'gemini-1.5-flash-latest' },
+    { ver: 'v1beta', model: 'gemini-2.0-flash-lite-001' },
+    { ver: 'v1beta', model: 'gemini-2.5-flash' },
   ];
 
   for (const { ver, model } of models) {

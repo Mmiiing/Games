@@ -17,10 +17,13 @@ exports.handler = async (event) => {
   if (!API_KEY) return { statusCode: 500, body: JSON.stringify({ error: 'API key not configured' }) };
   const { prompt } = JSON.parse(event.body);
   if (!prompt) return { statusCode: 400, body: JSON.stringify({ error: 'prompt is required' }) };
+
   const imageModels = [
+    { ver: 'v1beta', model: 'gemini-2.0-flash-exp-image-generation' },
     { ver: 'v1alpha', model: 'gemini-2.0-flash-exp-image-generation' },
-    { ver: 'v1beta',  model: 'gemini-2.0-flash-exp' },
+    { ver: 'v1beta', model: 'gemini-2.5-flash-image' },
   ];
+
   for (const { ver, model } of imageModels) {
     try {
       const r = await fetch(
@@ -34,7 +37,7 @@ exports.handler = async (event) => {
           }),
         }
       );
-      if (!r.ok) continue;
+      if (!r.ok) { console.warn(`[gemini-image] ${model} failed: ${r.status}`); continue; }
       const d = await r.json();
       const parts = d.candidates?.[0]?.content?.parts || [];
       const imagePart = parts.find(p => p.inlineData);
@@ -47,8 +50,9 @@ exports.handler = async (event) => {
           model,
         }),
       };
-    } catch (e) { console.warn(e); }
+    } catch (e) { console.warn(`[gemini-image] ${model} error:`, e.message); }
   }
+
   return {
     statusCode: 502,
     headers: { 'Access-Control-Allow-Origin': '*' },

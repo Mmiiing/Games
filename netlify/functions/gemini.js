@@ -17,9 +17,9 @@ exports.handler = async (event) => {
   if (!API_KEY) return { statusCode: 500, body: JSON.stringify({ error: 'API key not configured' }) };
   const { prompt, maxTokens = 500, temperature = 0.9 } = JSON.parse(event.body);
   const models = [
-    { ver: 'v1beta', model: 'gemini-2.0-flash-lite' },
     { ver: 'v1beta', model: 'gemini-2.0-flash' },
-    { ver: 'v1beta', model: 'gemini-1.5-flash' },
+    { ver: 'v1beta', model: 'gemini-2.0-flash-lite-001' },
+    { ver: 'v1beta', model: 'gemini-2.5-flash' },
   ];
   for (const { ver, model } of models) {
     try {
@@ -34,7 +34,7 @@ exports.handler = async (event) => {
           }),
         }
       );
-      if (!r.ok) continue;
+      if (!r.ok) { console.warn(`[gemini] ${model} failed: ${r.status}`); continue; }
       const d = await r.json();
       const text = d.candidates?.[0]?.content?.parts?.[0]?.text || '';
       if (text) return {
@@ -42,7 +42,7 @@ exports.handler = async (event) => {
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
         body: JSON.stringify({ text, model }),
       };
-    } catch (e) { console.warn(e); }
+    } catch (e) { console.warn(`[gemini] ${model} error:`, e.message); }
   }
   return {
     statusCode: 502,
