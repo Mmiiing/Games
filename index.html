@@ -322,10 +322,6 @@
   @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
   @keyframes popIn{0%{transform:scale(.8);opacity:0}100%{transform:scale(1);opacity:1}}
   .fade-in{animation:fadeUp .35s ease both;}
-
-  /* Audio tag minimal */
-  .audio-recap-wrap { margin-bottom:10px; }
-  .audio-recap-wrap audio { width:100%; border-radius:8px; }
 </style>
 </head>
 <body>
@@ -570,15 +566,11 @@
         <div class="story-ai-content" id="story-ai-content" style="display:none"></div>
       </div>
 
-      <!-- 녹음된 썰 내용 -->
+      <!-- 녹음된 썰 내용 (텍스트 변환본만 표시) -->
       <div class="story-recap-card" id="story-recap-card" style="display:none">
-        <div class="recap-title">🎙️ AI가 받아쓴 내 썰</div>
-        <!-- 오디오 재생 -->
-        <div class="audio-recap-wrap" id="audio-recap-wrap" style="display:none">
-          <audio id="audio-playback" controls></audio>
-        </div>
+        <div class="recap-title">📝 AI가 받아쓴 내 썰</div>
         <div class="recap-story">
-          <div class="recap-story-label">📝 녹음된 내용</div>
+          <div class="recap-story-label">📝 녹음된 내용 (텍스트 변환)</div>
           <div class="recap-story-content" id="story-recap-content"></div>
         </div>
         <!-- keywords -->
@@ -631,7 +623,6 @@ function restartAll(){
   answers=[];answerLabels=[];currentQ=0;selectedIdx=null;
   initQuiz();
   document.getElementById('food-input').value='';
-  document.getElementById('gemini-api-key').value='';
   // reset recorder
   isRecording=false; recordingSeconds=0;
   clearInterval(recordingInterval);
@@ -701,7 +692,7 @@ buildWaveform();
 //  AUDIO RECORDER
 // ─────────────────────────────────────
 let mediaRecorder=null, audioChunks=[], recordingInterval=null, recordingSeconds=0, isRecording=false;
-let currentBlob=null, currentAudioUrl=null;
+let currentBlob=null;
 
 function getSupportedMimeType(){
   const types=['audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus','audio/mp4'];
@@ -771,7 +762,6 @@ async function handleRecordingStop(){
 
   const mime=getSupportedMimeType()||'audio/webm';
   currentBlob=new Blob(audioChunks,{type:mime});
-  currentAudioUrl=URL.createObjectURL(currentBlob);
 
   // 결과 화면으로 이동 후 분석 시작
   goTo('page-result');
@@ -865,9 +855,23 @@ async function transcribeAudio(blob,mimeType){
       body:JSON.stringify({
         audioData:base64,
         mimeType:cleanMime,
-        prompt:`아래 오디오를 한국어로 정확히 받아쓰기하고, 다음 JSON 형식으로만 응답하세요:
-{"transcript":"전체 내용","keywords":["키워드1","키워드2","키워드3"],"mood":"happy|excited|sad|angry|lonely|nostalgic|nervous|neutral 중 하나"}
-JSON 외 다른 텍스트 없이.`
+        prompt:`아래 오디오를 한국어로 받아쓰기하고, 내용을 깊이 분석하여 아래 JSON 형식으로만 응답하세요.
+
+{
+  "transcript": "전체 받아쓰기 내용 (최대한 원문 그대로)",
+  "keywords": ["핵심 키워드1", "키워드2", "키워드3", "키워드4", "키워드5"],
+  "mood": "happy|excited|sad|angry|lonely|nostalgic|nervous|neutral 중 감정이 가장 강하게 드러난 하나",
+  "mood_intensity": "low|medium|high (감정의 강도)",
+  "emotion_detail": "이 썰에서 느껴지는 감정을 2~3문장으로 섬세하게 묘사. 예: 억울함 속에 서운함이 섞인 복잡한 감정, 웃기지만 찡한 공감각적 이야기 등",
+  "story_context": {
+    "situation": "어떤 상황인지 한 줄 (예: 전 남자친구와의 이별 썰, 직장 상사에게 치인 날)",
+    "relation": "등장하는 관계 (예: 연인, 친구, 가족, 직장동료, 모르는사람 등)",
+    "turning_point": "썰의 반전 또는 핵심 사건 한 줄",
+    "tone": "유머러스|감동적|공감형|황당함|억울함|뭉클함|씁쓸함|설렘 중 하나"
+  }
+}
+
+JSON 외 다른 텍스트 없이. 오디오가 짧거나 불명확해도 들린 내용 최대한 반영.`
       })
     });
     if(!r.ok)throw new Error(`${r.status}`);
@@ -885,14 +889,46 @@ function blobToBase64(blob){
   });
 }
 
-// 이미지 생성
-async function generateCharImage(foodName,mood){
+// 이미지 생성 — 썰 감정/상황을 표정에 완전 반영
+async function generateCharImage(foodName,mood,moodIntensity='medium',emotionDetail='',storyContext={}){
   const face=MOOD_FACE[mood]||MOOD_FACE.neutral;
+
+  // 감정 강도에 따른 표정 강조 레벨
+  const intensityNote={
+    low:'Subtle, understated expression — the emotion is there but quietly simmering beneath the surface.',
+    medium:'Clear and readable expression — the emotion is evident and naturally displayed.',
+    high:'VERY EXAGGERATED expression — push the emotion to its visual extreme, maximum kawaii expressiveness!'
+  }[moodIntensity]||'Clear and readable expression.';
+
+  // 썰 맥락에서 추가 표정 힌트 추출
+  const toneMap={
+    '유머러스':'Add a tiny mischievous smirk or one raised eyebrow for comic effect.',
+    '감동적':'Eyes slightly glistening, warm gentle smile, soft glow around character.',
+    '공감형':'Knowing nod-like expression, warm open eyes, understanding smile.',
+    '황당함':'One eyebrow raised dramatically, mouth slightly open in disbelief, sweat drop.',
+    '억울함':'Furrowed brow, watery frustrated eyes, mouth tight with suppressed feelings.',
+    '뭉클함':'Soft eyes with a single glimmering tear, gentle trembling smile.',
+    '씁쓸함':'Wry half-smile, slightly downcast eyes, nostalgic distant gaze.',
+    '설렘':'Cheeks flushed bright pink, sparkles in eyes, small involuntary smile.',
+  };
+  const toneHint=storyContext.tone?toneMap[storyContext.tone]||'':'';
+  const situationHint=storyContext.situation?`STORY CONTEXT: This character just experienced — "${storyContext.situation}". Let that backstory show in the posture and expression.`:'';
+
   const prompt=`Create a cute kawaii chibi food character illustration.
-CHARACTER: The entire body IS a "${foodName}". Visual: ${getFoodHint(foodName)}. Make it INSTANTLY RECOGNIZABLE.
-FACIAL EXPRESSION (most important part): ${face}. This emotion must be CLEARLY visible and expressive.
-BODY: Thin stick arms with tiny round hands extending from sides. Thin stick legs with small round feet below. Small rosy blush circles on cheeks.
-STYLE: Clean flat kawaii illustration like LINE Friends / Kakao Friends. Bold outlines. Pure white (#FFFFFF) background. No text, no shadows, centered. Character feels ALIVE with clear personality.`;
+
+CHARACTER IDENTITY: The entire body IS a "${foodName}". Visual reference: ${getFoodHint(foodName)}. The food must be INSTANTLY RECOGNIZABLE — this is the most important visual rule.
+
+FACIAL EXPRESSION (second most critical element):
+Base emotion: ${face}
+Intensity level: ${intensityNote}
+${toneHint?`Tone nuance: ${toneHint}`:''}
+${emotionDetail?`Emotional layer: "${emotionDetail}" — translate this nuanced feeling into the face.`:''}
+${situationHint}
+
+BODY LANGUAGE: Thin stick arms and legs. Arm position should subtly reflect the mood — e.g. arms crossed for anger, one hand on cheek for sadness, arms spread wide for excitement, hands clasped nervously. Small rosy blush circles on cheeks.
+
+STYLE RULES: Clean flat kawaii illustration, LINE Friends / Kakao Friends aesthetic. Bold black outlines. Pure white (#FFFFFF) background. No text, no shadows, perfectly centered. The character must feel ALIVE with unmistakable personality that matches the emotional story.`;
+
   try{
     const r=await fetch(`${API_BASE}/gemini-image`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
     if(!r.ok)throw new Error(`${r.status}`);
@@ -948,6 +984,10 @@ async function buildResult(foodName){
   const story=sttResult?.transcript||'';
   const keywords=sttResult?.keywords||[];
   const sttMood=sttResult?.mood;
+  // 새로 추출된 풍부한 컨텍스트
+  const emotionDetail=sttResult?.emotion_detail||'';
+  const storyContext=sttResult?.story_context||{};
+  const moodIntensity=sttResult?.mood_intensity||'medium';
 
   doneLoadingStep('lstep-stt');
 
@@ -982,21 +1022,38 @@ async function buildResult(foodName){
 
   // 캐릭터 기본 정보
   document.getElementById('char-food-name').textContent=`${foodName} 캐릭터`;
-  document.getElementById('mood-badge-wrap').innerHTML=`<div class="mood-badge" style="background:${moodData.badgeBg};border-color:${moodData.border};color:${moodData.badgeColor}">${moodData.emoji} ${moodData.label}</div>`;
-  document.getElementById('char-sub-tag').textContent=`#${foodName}캐릭터 #썰푸드`;
-  document.getElementById('char-base-desc').textContent=`썰의 분위기(${moodData.label})를 담아 AI가 그린 나만의 ${foodName} 캐릭터예요.`;
+  const intensityLabel={'low':'잔잔하게','medium':'','high':'강렬하게'}[moodIntensity]||'';
+  document.getElementById('mood-badge-wrap').innerHTML=`<div class="mood-badge" style="background:${moodData.badgeBg};border-color:${moodData.border};color:${moodData.badgeColor}">${moodData.emoji} ${intensityLabel?intensityLabel+' ':''} ${moodData.label}</div>`;
+  document.getElementById('char-sub-tag').textContent=`#${foodName}캐릭터 #썰푸드${storyContext.tone?` #${storyContext.tone}`:''} `;
+  document.getElementById('char-base-desc').textContent=emotionDetail||`썰의 분위기(${moodData.label})를 담아 AI가 그린 나만의 ${foodName} 캐릭터예요.`;
   document.getElementById('char-img-wrap').style.background=moodData.bg;
 
   // 썰 텍스트 / 키워드 표시
   if(story){
     document.getElementById('story-recap-content').textContent=story;
     document.getElementById('story-recap-card').style.display='block';
-    // 오디오 재생
-    if(currentAudioUrl){
-      const ap=document.getElementById('audio-playback');
-      ap.src=currentAudioUrl;
-      document.getElementById('audio-recap-wrap').style.display='block';
+
+    // 감정 상세 뉘앙스 표시
+    if(emotionDetail){
+      const emotionEl=document.createElement('div');
+      emotionEl.style.cssText='margin-bottom:10px;padding:10px 12px;background:rgba(100,130,220,.07);border-radius:10px;border:1px solid rgba(100,130,220,.2);font-size:12px;color:#3a5080;line-height:1.7;';
+      emotionEl.innerHTML=`<span style="font-weight:700;font-size:10px;letter-spacing:1px;display:block;margin-bottom:4px;color:var(--story-blue)">🎭 감정 뉘앙스</span>${emotionDetail}`;
+      document.getElementById('story-recap-card').querySelector('.recap-story').before(emotionEl);
     }
+
+    // 썰 상황 뱃지 (상황/관계/톤)
+    if(storyContext.situation||storyContext.tone){
+      const ctxEl=document.createElement('div');
+      ctxEl.style.cssText='display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;';
+      const ctxItems=[
+        storyContext.situation?`📍 ${storyContext.situation}`:'',
+        storyContext.relation?`👥 ${storyContext.relation}`:'',
+        storyContext.tone?`🎭 ${storyContext.tone}`:'',
+      ].filter(Boolean);
+      ctxEl.innerHTML=ctxItems.map(c=>`<span style="padding:4px 10px;background:rgba(212,149,106,.1);border:1px solid rgba(212,149,106,.25);border-radius:20px;font-size:11px;color:var(--caramel);font-weight:600">${c}</span>`).join('');
+      document.getElementById('story-recap-card').querySelector('.recap-story').before(ctxEl);
+    }
+
     // 키워드
     if(keywords.length){
       document.getElementById('keywords-row').innerHTML=keywords.map(k=>`<span class="kw-chip"># ${k}</span>`).join('');
@@ -1004,9 +1061,9 @@ async function buildResult(foodName){
     }
   }
 
-  // 4) 이미지 생성
+  // 4) 이미지 생성 — 썰 감정 컨텍스트 전달
   setLoadingStep('lstep-img');
-  generateCharImage(foodName,mood).then(url=>{
+  generateCharImage(foodName,mood,moodIntensity,emotionDetail,storyContext).then(url=>{
     doneLoadingStep('lstep-img');
     document.getElementById('char-img').src=url;
     document.getElementById('char-img').style.display='block';
@@ -1026,8 +1083,8 @@ async function buildResult(foodName){
     el.style.display='block';
   });
 
-  // 6) 캐릭터 특징
-  doCharTraits(foodName,res,story,mood).then(text=>{
+  // 6) 캐릭터 특징 — 풍부한 썰 컨텍스트 전달
+  doCharTraits(foodName,res,story,mood,emotionDetail,storyContext,moodIntensity).then(text=>{
     document.getElementById('char-traits-loading').style.display='none';
     const el=document.getElementById('char-traits-content');
     const fallback=`캐릭터이름: ${foodName}이\n한줄소개: ${foodName}의 매력을 가득 담은 귀여운 존재예요 🌟\n특징1제목: 첫인상\n특징1내용: 처음 만나면 분위기를 바꿔버리는 존재감이에요. ${moodData.emoji} ${moodData.label} 상태로 오늘도 열심히 살아가는 중이에요 🌟\n특징2제목: 오늘의기분\n특징2내용: 지금 이 캐릭터는 ${moodData.label} 상태예요. ${foodName}처럼 솔직하게 감정을 드러내는 타입이에요 💫\n특징3제목: 특기\n특징3내용: 어떤 상황에서도 ${foodName}만의 맛을 잃지 않아요 ✨\n필살기: 상대방을 무장해제시키는 ${foodName} 특유의 향기 공격`;
@@ -1035,14 +1092,14 @@ async function buildResult(foodName){
     el.style.display='block';
   });
 
-  // 7) 썰 심층 분석 (트랜스크립트 기반)
-  doStoryAnalysis(res,story,foodName,mood).then(text=>{
+  // 7) 썰 심층 분석 — 풍부한 컨텍스트 전달
+  doStoryAnalysis(res,story,foodName,mood,emotionDetail,storyContext,moodIntensity).then(text=>{
     document.getElementById('story-ai-loading').style.display='none';
     const el=document.getElementById('story-ai-content');
     if(text){
       el.innerHTML=renderStoryAI(text,foodName,mood);
     }else if(story){
-      el.innerHTML=renderStoryAI(`썰한줄: ${foodName}과 함께한 이 순간, 오래 기억될 것 같아요 ${moodData.emoji}\n음식심리: ${foodName}이라는 선택 자체가 이미 많은 걸 말해주고 있어요. 지금 이 감정(${moodData.label})을 담기에 가장 잘 어울리는 음식이었을 거예요. ${foodName}이 가진 맛과 온도가 이 썰의 감정과 닮아있어요. 음식 하나에도 이렇게 많은 감정이 담길 수 있다는 게 놀라워요.\n이사람에게: 이 썰을 쓰면서 어떤 기분이었는지 알 것 같아요. 그 감정, 다 맞아요.\n웹툰장면: ${foodName} 캐릭터가 ${moodData.emoji} 표정으로 조용히 앉아있는 장면 — 말 없이도 모든 게 전해지는 그 한 컷이에요.\n태그: #${foodName}썰 #썰푸드 #나의이야기 #음식심리`,foodName,mood);
+      el.innerHTML=renderStoryAI(`썰한줄: ${foodName}과 함께한 이 순간, 오래 기억될 것 같아요 ${moodData.emoji}\n음식심리: ${foodName}이라는 선택 자체가 이미 많은 걸 말해주고 있어요. 지금 이 감정(${moodData.label})을 담기에 가장 잘 어울리는 음식이었을 거예요. ${foodName}이 가진 맛과 온도가 이 썰의 감정과 닮아있어요.\n이사람에게: 이 썰을 쓰면서 어떤 기분이었는지 알 것 같아요. 그 감정, 다 맞아요.\n웹툰장면: ${foodName} 캐릭터가 ${moodData.emoji} 표정으로 조용히 앉아있는 장면 — 말 없이도 모든 게 전해지는 그 한 컷이에요.\n태그: #${foodName}썰 #썰푸드 #나의이야기 #음식심리`,foodName,mood);
     }else{
       el.innerHTML=`<p style="color:#4a5fa0;line-height:1.8">녹음이 없거나 인식되지 않았어요 😊<br>다시 한 번 시도해보시거나, API 키를 확인해주세요.</p>`;
     }
@@ -1079,53 +1136,92 @@ ${list}
   return await callGemini(prompt,700);
 }
 
-async function doCharTraits(foodName,res,story,mood){
+async function doCharTraits(foodName,res,story,mood,emotionDetail='',storyContext={},moodIntensity='medium'){
   const moodData=MOOD_MAP[mood]||MOOD_MAP.neutral;
-  const prompt=`귀여운 음식 캐릭터 크리에이터로서 "${foodName}" 캐릭터를 소개해주세요.
-이 캐릭터는 "${foodName}"이 사람이 된 존재예요.
-현재 기분: ${moodData.label} ${moodData.emoji}
-이 사람 성향: ${res.food} 타입${story?`\n썰 힌트: "${story.slice(0,120)}"` :''}
+  const hasRichContext=story&&story.length>30;
 
-━━ 출력 형식 (라벨 그대로) ━━
-캐릭터이름: [${foodName} + 귀여운 닉네임. 예: "라면이", "치킨군" 등]
-한줄소개: ["${foodName}의 맛처럼 ~한 존재예요" 형식. 이모지 1개. 반드시 음식 특성 연결]
+  // 썰 맥락 요약 블록
+  const contextBlock=hasRichContext?`
+━━ 이 캐릭터가 겪은 일 (썰 내용 기반) ━━
+전체 썰: "${story.slice(0,300)}${story.length>300?'...(이하 생략)':''}"
+상황: ${storyContext.situation||'미파악'}
+등장 관계: ${storyContext.relation||'미파악'}
+핵심 사건: ${storyContext.turning_point||'미파악'}
+썰의 톤: ${storyContext.tone||'미파악'}
+감정 뉘앙스: ${emotionDetail||moodData.label}
+감정 강도: ${moodIntensity==='high'?'매우 강렬함':moodIntensity==='low'?'잔잔함':'보통'}`:'';
 
-특징1제목: [3~5글자]
-특징1내용: [${foodName}의 실제 특성(맛/질감/온도)과 이 캐릭터 성격 연결. 피식 웃기는 톤. 이모지 포함. 2문장]
+  const prompt=`당신은 인기 웹툰 캐릭터 디렉터예요. "${foodName}"이 살아있는 존재가 된 캐릭터를 만들어주세요.
+이 캐릭터는 단순한 음식이 아니라, 아래 썰을 직접 겪은 당사자예요.
+${contextBlock}
 
-특징2제목: [제목]
-특징2내용: [현재 기분(${moodData.label})이 반영된 오늘의 상태. 구체적 상황 묘사. 2문장]
+[성향 유형] ${res.food} 타입 (${res.tag})
+[현재 감정] ${moodData.label} ${moodData.emoji} (강도: ${moodIntensity})
 
-특징3제목: [제목]
-특징3내용: [이 캐릭터의 숨겨진 능력. 따뜻하고 귀엽게. 2문장]
+━━ 출력 형식 (라벨 정확히, 1줄씩) ━━
 
-필살기: [이 캐릭터만의 특별한 능력. "~을 무너뜨리는 OO 공격" 같은 재미있는 형식]
+캐릭터이름: [${foodName} + 개성있는 이름. "~이", "~군", "~씨" 등. 예: "라볶이씨", "치킨군", "삼겹이" 등]
 
-친근한 존댓말.`;
-  return await callGemini(prompt,600);
+한줄소개: ["${foodName}의 [맛/온도/질감] 처럼 [성격 묘사]한 존재예요" 형식. 이모지 1개. ${hasRichContext?'썰 내용의 감정이 자연스럽게 녹아들 것':''}]
+
+특징1제목: [3~5글자, 썰 속 상황이나 감정과 연결된 제목]
+특징1내용: [${foodName}의 실제 음식 특성(맛/질감/온도/먹는 방식)과 이 캐릭터의 성격/행동 패턴을 연결. ${hasRichContext?`"${storyContext.situation||'이 상황'}"을 겪은 캐릭터답게 구체적으로.`:'피식 웃기는 톤으로.'} 이모지 포함. 2문장]
+
+특징2제목: [썰의 감정(${moodData.label})을 담은 제목]
+특징2내용: [지금 이 순간 이 캐릭터의 상태를 구체적으로 묘사. ${hasRichContext?`"${storyContext.turning_point||'핵심 사건'}"을 겪고 난 후 지금 어떤 표정과 행동을 하고 있는지.`:'오늘의 감정 상태.'} 2문장]
+
+특징3제목: [이 캐릭터만의 숨겨진 매력 제목]
+특징3내용: [겉으론 ${moodData.label}이지만 속으로 가진 반전 매력이나 장점. ${foodName}의 의외의 특성과 연결. 따뜻하고 귀엽게. 2문장]
+
+특징4제목: [관계 스타일 또는 인간관계 패턴 제목]
+특징4내용: [${storyContext.relation?`"${storyContext.relation}"과의 관계에서 드러나는 이 캐릭터의 패턴.`:`이 캐릭터가 다른 음식 캐릭터들과 어울리는 방식.`} ${res.food} 타입답게. 2문장]
+
+좋아하는것: [이 캐릭터가 좋아하는 것 3가지. 썰 내용/감정 반영. "A, B, C" 형식]
+싫어하는것: [이 캐릭터가 싫어하는 것 2가지. 썰 내용/감정 반영. "A, B" 형식]
+필살기: [이 캐릭터만의 능력. "~을 한방에 무너뜨리는 [${foodName} 특성] 공격" 형식. 유머 필수]
+명대사: [이 캐릭터가 할 법한 말 한마디. 썰의 감정이 담긴 말. 따옴표 포함]
+
+친근한 존댓말. 뻔한 단어 금지.`;
+  return await callGemini(prompt,900);
 }
 
-async function doStoryAnalysis(res,story,foodName,mood){
+async function doStoryAnalysis(res,story,foodName,mood,emotionDetail='',storyContext={},moodIntensity='medium'){
   if(!story)return null;
   const moodData=MOOD_MAP[mood]||MOOD_MAP.neutral;
-  const prompt=`당신은 따뜻한 감성의 작가이자 심리 분석가예요.
-마치 오랜 친구가 "야 그거 알지? 그게 사실은~" 하며 공감해주는 톤.
-친근한 존댓말, 뻔한 위로 금지.
+  const intensityDesc=moodIntensity==='high'?'감정이 매우 강렬하게':moodIntensity==='low'?'감정이 잔잔하게':'감정이 적당히';
 
+  const prompt=`당신은 따뜻한 감성의 웹툰 작가이자 인간 관찰자예요.
+이 사람이 방금 들려준 썰을 진짜 귀 기울여 들은 오랜 친구처럼 반응해주세요.
+"맞아, 그 순간 딱 그런 기분이었겠다" 싶은 공감이 핵심.
+뻔한 위로 금지, 썰 내용을 진짜 읽고 분석한 것처럼 구체적으로.
+
+━━ 썰 정보 ━━
+[전체 내용] "${story}"
+[주인공 음식] ${foodName}
+[감정] ${moodData.label} ${moodData.emoji} — ${intensityDesc} 드러남
+[감정 뉘앙스] ${emotionDetail||moodData.label}
+[상황] ${storyContext.situation||'미파악'}
+[등장 관계] ${storyContext.relation||'미파악'}
+[핵심 사건] ${storyContext.turning_point||'미파악'}
+[썰의 톤] ${storyContext.tone||'미파악'}
 [작성자 성향] ${res.food} 타입
-[썰의 주인공 음식] ${foodName}
-[썰의 감정] ${moodData.label} ${moodData.emoji}
-[썰 내용] "${story}"
 
-━━ 출력 형식 (라벨 그대로) ━━
-썰한줄: [이 썰의 핵심을 한 줄로. 읽으면 찡한 문장. 이모지 1개]
-음식심리: [왜 하필 "${foodName}"이 이 썰의 주인공이 됐는지. 음식의 맛/온도/먹는 상황과 썰의 감정 연결. 3~4문장. 구체적으로]
-이사람에게: [이 썰을 쓴 사람에게만 해주는 말. 뻔한 위로 말고 진짜 그 순간 그 감정에 맞는 말. 2문장]
-웹툰장면: ["${foodName} 캐릭터가 ~하는 장면" 형식. 시각적으로 생생하게. 감정이 잘 담긴 한 컷 묘사. 2문장]
-태그: #태그1 #태그2 #태그3 #태그4
+━━ 출력 형식 (라벨 정확히) ━━
 
-"힘내세요", "잘 될 거예요" 같은 뻔한 위로 금지. 썰 내용을 진짜 읽고 분석한 것처럼 구체적으로.`;
-  return await callGemini(prompt,700);
+썰한줄: [이 썰의 핵심 감정을 한 문장으로 꿰뚫는 말. 읽으면 찡하거나 피식 웃게 되는 문장. 이모지 1개]
+
+음식심리: [왜 하필 "${foodName}"이 이 썰의 주인공이 됐는지 분석. ${foodName}의 맛/온도/먹는 상황/질감 중 이 썰의 감정(${moodData.label}, ${storyContext.tone||''})과 닮은 포인트를 구체적으로 연결. 단순한 연결이 아니라 "아 이래서 이 음식이었구나" 싶은 납득 포인트. 3~4문장]
+
+이사람에게: [이 썰을 털어놓은 사람에게만 해주는 말. ${storyContext.turning_point?`"${storyContext.turning_point}"을 겪은 사람에게 진짜 해주고 싶은 말.`:'그 순간의 감정에 정확히 꽂히는 말.'} 위로가 아니라 "맞아 나라도 그랬을 것 같아"하는 공감의 말. 2문장]
+
+웹툰장면: ["${foodName} 캐릭터가 ~하는 장면" 형식. ${storyContext.situation||'이 썰의 가장 인상적인 순간'}을 한 컷으로 표현한다면 어떤 장면일지. 시각적으로 생생하게, 감정이 눈에 보이게. 2문장]
+
+공감포인트: [이 썰에서 가장 많은 사람이 공감할 핵심 포인트 1가지. "이거 진짜 다 겪어봤잖아요" 하는 보편적 감정과의 연결. 2문장]
+
+태그: #태그1 #태그2 #태그3 #태그4 #태그5 (밈/신조어 스타일, 썰 내용 반영)
+
+"힘내세요", "잘 될 거예요", "파이팅" 같은 뻔한 말 절대 금지.`;
+  return await callGemini(prompt,900);
 }
 
 // ─────────────────────────────────────
@@ -1152,6 +1248,10 @@ function renderTraits(text,foodName,mood){
   const charName=getField(text,'캐릭터이름')||`${foodName}이`;
   const charIntro=getField(text,'한줄소개')||`${foodName}의 매력을 담은 귀여운 존재예요.`;
   const special=getField(text,'필살기');
+  const likes=getField(text,'좋아하는것');
+  const dislikes=getField(text,'싫어하는것');
+  const quote=getField(text,'명대사');
+
   let html=`<div style="padding:12px 14px;background:white;border-radius:12px;margin-bottom:10px;border:2px solid rgba(100,130,220,.15)">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
     <span style="font-size:26px">${moodData.emoji}</span>
@@ -1162,12 +1262,41 @@ function renderTraits(text,foodName,mood){
   </div>
   <p style="font-size:13px;color:var(--dark);line-height:1.7;padding-top:8px;border-top:1px dashed rgba(100,130,220,.2)">${charIntro}</p>
 </div>`;
-  const icons=['🌟','💫','✨'];
-  for(let i=1;i<=3;i++){
-    const title=getField(text,`특징${i}제목`)||`특징 ${i}`;
-    const content=getField(text,`특징${i}내용`)||`${foodName} 캐릭터만의 독특한 매력이 있어요.`;
-    html+=`<div class="trait-item"><span class="trait-icon">${icons[i-1]}</span><div class="trait-text"><strong>${title}</strong>${content}</div></div>`;
+
+  // 명대사가 있으면 상단에 배치
+  if(quote){
+    html+=`<div style="margin-bottom:10px;padding:14px 16px;background:linear-gradient(135deg,#f0f4ff,#e8ecff);border-radius:14px;border-left:4px solid var(--story-blue)">
+  <div style="font-size:10px;font-weight:700;color:var(--story-blue);letter-spacing:1.5px;margin-bottom:7px">💬 이 캐릭터의 명대사</div>
+  <p style="font-size:14px;color:#1a2a6a;font-weight:600;line-height:1.7;font-style:italic">${quote}</p>
+</div>`;
   }
+
+  const icons=['🌟','💫','✨','🎯'];
+  for(let i=1;i<=4;i++){
+    const title=getField(text,`특징${i}제목`)||`특징 ${i}`;
+    const content=getField(text,`특징${i}내용`);
+    if(!content&&i===4)continue; // 특징4는 없을 수도 있음
+    html+=`<div class="trait-item"><span class="trait-icon">${icons[i-1]}</span><div class="trait-text"><strong>${title}</strong>${content||`${foodName} 캐릭터만의 독특한 매력이 있어요.`}</div></div>`;
+  }
+
+  // 좋아하는것 / 싫어하는것
+  if(likes||dislikes){
+    html+=`<div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px">`;
+    if(likes){
+      html+=`<div style="padding:10px 12px;background:rgba(90,122,82,.07);border-radius:12px;border:1px solid rgba(90,122,82,.2)">
+  <div style="font-size:10px;font-weight:700;color:var(--green);letter-spacing:1px;margin-bottom:6px">💚 좋아해요</div>
+  <p style="font-size:12px;color:var(--dark);line-height:1.7">${likes}</p>
+</div>`;
+    }
+    if(dislikes){
+      html+=`<div style="padding:10px 12px;background:rgba(220,80,80,.06);border-radius:12px;border:1px solid rgba(220,80,80,.15)">
+  <div style="font-size:10px;font-weight:700;color:#c04040;letter-spacing:1px;margin-bottom:6px">🚫 싫어해요</div>
+  <p style="font-size:12px;color:var(--dark);line-height:1.7">${dislikes}</p>
+</div>`;
+    }
+    html+=`</div>`;
+  }
+
   if(special)html+=`<div style="margin-top:10px;padding:12px 14px;background:linear-gradient(135deg,rgba(100,130,220,.1),rgba(100,130,220,.05));border-radius:12px;border:1px dashed rgba(100,130,220,.3)"><div style="font-size:11px;font-weight:700;color:var(--story-blue);letter-spacing:1px;margin-bottom:6px">⚔️ 필살기</div><p style="font-size:13px;color:var(--dark);line-height:1.7">${special}</p></div>`;
   return html;
 }
@@ -1178,7 +1307,8 @@ function renderStoryAI(text,foodName,mood){
   const foodPsy=getField(text,'음식심리')||`${foodName}이라는 선택에서 당신의 진심이 느껴져요.`;
   const toYou=getField(text,'이사람에게')||'당신의 이야기, 진심으로 잘 들었어요.';
   const scene=getField(text,'웹툰장면');
-  const tags=(getField(text,'태그').match(/#[^\s#]+/g)||[]).slice(0,4);
+  const empathy=getField(text,'공감포인트');
+  const tags=(getField(text,'태그').match(/#[^\s#]+/g)||[]).slice(0,5);
   if(!tags.length)tags.push('#썰푸드','#음식썰','#나의이야기');
   let html=`<div style="display:inline-flex;align-items:center;gap:6px;padding:5px 14px;background:${moodData.badgeBg};border:1px solid ${moodData.border};border-radius:20px;font-size:12px;font-weight:700;color:${moodData.badgeColor};margin-bottom:16px">
   ${moodData.emoji} 이 썰의 감정: ${moodData.label}
@@ -1186,6 +1316,7 @@ function renderStoryAI(text,foodName,mood){
   if(summary)html+=`<div class="ai-section"><div class="ai-section-title">✦ 이 썰을 한 줄로</div><p style="font-weight:700;font-size:15px;color:#1a2a6a;line-height:1.6;padding:10px 14px;background:rgba(100,130,220,.07);border-radius:10px">${summary}</p></div>`;
   html+=`<div class="ai-section"><div class="ai-section-title">✦ ${foodName}을 선택한 심리</div><p style="color:#2a3a6a;line-height:1.9;font-size:13px">${foodPsy}</p></div>`;
   html+=`<div class="ai-section"><div class="ai-section-title">✦ 이 썰을 쓴 당신에게</div><p style="font-size:14px;color:#2a3a7a;border-left:3px solid #7090d8;padding:12px 14px;background:rgba(100,130,220,.07);border-radius:0 10px 10px 0;line-height:1.8">"${toYou}"</p></div>`;
+  if(empathy)html+=`<div class="ai-section"><div class="ai-section-title">🤝 이 썰의 공감 포인트</div><div style="padding:10px 14px;background:rgba(90,122,82,.06);border-radius:10px;border:1px solid rgba(90,122,82,.2)"><p style="font-size:13px;color:#2a4a2a;line-height:1.9">${empathy}</p></div></div>`;
   if(scene)html+=`<div class="ai-section"><div class="ai-section-title">🎬 웹툰으로 만든다면</div><div style="padding:12px 14px;background:linear-gradient(135deg,#f8f0ff,#f0f4ff);border-radius:10px;border:1px dashed rgba(130,100,220,.25)"><p style="font-size:13px;color:#3a2a6a;line-height:1.8;font-style:italic">${scene}</p></div></div>`;
   html+=`<div style="margin-top:4px">${tags.map(t=>`<span class="ai-tag">${t}</span>`).join('')}</div>`;
   return html;
