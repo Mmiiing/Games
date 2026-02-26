@@ -1225,13 +1225,11 @@ async function buildResult(foodName){
   if(hasStory){
     document.getElementById('story-oneliner-block').style.display='block';
     document.getElementById('quiz-zone-title').textContent='7개 질문이 말하는 나';
-  }
 
     const intensityLabel={'low':'잔잔하게 ','medium':'','high':'강렬하게 '}[moodIntensity]||'';
     document.getElementById('char-food-name').textContent=`${foodName} 캐릭터`;
     document.getElementById('mood-badge-wrap').innerHTML=`<div class="mood-badge" style="background:${moodData.badgeBg};border-color:${moodData.border};color:${moodData.badgeColor}">${moodData.emoji} ${intensityLabel}${moodData.label}</div>`;
     document.getElementById('char-sub-tag').textContent=`#${foodName}캐릭터 #썰푸드${storyContext.tone?` #${storyContext.tone}`:''}`;
-    document.getElementById('char-base-desc').textContent=emotionDetail||`${moodData.label} 감정이 담긴 나만의 ${foodName} 캐릭터예요.`;
     document.getElementById('char-img-wrap').style.background=moodData.bg;
 
     if(story){
