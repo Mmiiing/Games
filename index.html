@@ -55,6 +55,11 @@
   .quiz-option .opt-emoji { display:block; font-size:24px; margin-bottom:6px; }
   .btn-next { width:100%; padding:15px; border-radius:12px; border:none; background:var(--dark); color:white; font-size:15px; font-weight:700; cursor:pointer; font-family:'Noto Serif KR',serif; transition:all .2s; margin-top:18px; }
   .btn-next:hover { background:var(--caramel); transform:translateY(-2px); }
+  .btn-prev { flex:0 0 auto; padding:13px 20px; border-radius:12px; border:2px solid var(--border); background:white; color:var(--muted); font-size:14px; font-weight:600; cursor:pointer; font-family:"Noto Serif KR",serif; transition:all .2s; margin-top:18px; }
+  .btn-prev:hover { border-color:var(--toast); color:var(--toast); transform:translateY(-2px); }
+  .quiz-nav-row { display:flex; gap:10px; align-items:flex-end; }
+  .quiz-nav-row .btn-next { flex:1; margin-top:18px; }
+  #prev-only-wrap { margin-top:14px; }
 
   /* ══ RECORD PAGE ══ */
   #page-record { background:var(--cream); }
@@ -216,6 +221,9 @@
   /* PERSONALITY CARD */
   .personality-card { background:white; border-radius:24px; padding:28px; border:1.5px solid rgba(212,149,106,.3); box-shadow:0 8px 32px rgba(44,24,16,.08); margin-bottom:14px; text-align:center; animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both; }
   .personality-emoji { font-size:52px; display:block; margin-bottom:12px; }
+  .personality-char-svg { display:flex; justify-content:center; margin-bottom:16px; }
+  .personality-char-svg svg { width:110px; height:120px; filter:drop-shadow(0 8px 18px rgba(44,24,16,.15)); animation:bobble 2.5s ease-in-out infinite; }
+  @keyframes bobble { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
   .personality-food-type { font-family:'Noto Serif KR',serif; font-size:24px; font-weight:900; color:var(--caramel); margin-bottom:8px; }
   .personality-type-tag { display:inline-block; padding:5px 14px; background:rgba(212,149,106,.12); border:1px solid rgba(212,149,106,.3); border-radius:20px; font-size:12px; font-weight:600; color:var(--caramel); margin-bottom:14px; }
   .personality-desc { font-size:14px; color:var(--muted); line-height:1.85; text-align:left; padding:14px 16px; background:rgba(212,149,106,.05); border-radius:12px; border-left:3px solid var(--toast); }
@@ -754,7 +762,7 @@
 
         <!-- 성향 타입 카드 -->
         <div class="personality-card">
-          <span class="personality-emoji" id="personality-emoji"></span>
+          <div class="personality-char-svg" id="personality-emoji"></div>
           <div class="personality-food-type" id="personality-food-type"></div>
           <div class="personality-type-tag" id="personality-type-tag"></div>
           <div class="personality-desc" id="personality-desc"></div>
@@ -860,9 +868,10 @@ let answers=[],answerLabels=[],currentQ=0,selectedIdx=null;
 
 function initQuiz(){answers=[];answerLabels=[];currentQ=0;selectedIdx=null;renderProgress();renderQuestion();}
 function renderProgress(){const p=document.getElementById('quiz-progress');p.innerHTML='';questions.forEach((_,i)=>{const d=document.createElement('div');d.className='quiz-dot'+(i===currentQ?' active':i<currentQ?' done':'');p.appendChild(d);});document.getElementById('quiz-step-label').textContent=`${currentQ+1} / ${questions.length}`;}
-function renderQuestion(){const q=questions[currentQ];const isLast=currentQ===questions.length-1;document.getElementById('quiz-body').innerHTML=`<div class="quiz-question fade-in">${q.q}</div><div class="quiz-options fade-in">${q.opts.map((o,i)=>`<button class="quiz-option" onclick="selectOption(${i},this)"><span class="opt-emoji">${o.e}</span>${o.t}</button>`).join('')}</div><div id="next-wrap" style="display:none"><button class="btn-next" onclick="goNext()">${isLast?'결과 보기 ✨':'다음 질문 →'}</button></div>`;}
-function selectOption(idx,btn){document.querySelectorAll('.quiz-option').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');selectedIdx=idx;document.getElementById('next-wrap').style.display='block';}
-function goNext(){if(selectedIdx===null)return;const q=questions[currentQ];answers.push(q.opts[selectedIdx].score);answerLabels.push({q:q.q,opts:q.opts,chosen:selectedIdx});selectedIdx=null;currentQ++;if(currentQ>=questions.length)goTo('page-choice');else{renderProgress();renderQuestion();}}
+function renderQuestion(){const q=questions[currentQ];const isLast=currentQ===questions.length-1;const isFirst=currentQ===0;const prevBtn=isFirst?'':`<button class="btn-prev" onclick="goPrev()">← 이전</button>`;document.getElementById('quiz-body').innerHTML=`<div class="quiz-question fade-in">${q.q}</div><div class="quiz-options fade-in">${q.opts.map((o,i)=>`<button class="quiz-option${answers[currentQ]&&answerLabels[currentQ]&&answerLabels[currentQ].chosen===i?' selected':''}" onclick="selectOption(${i},this)"><span class="opt-emoji">${o.e}</span>${o.t}</button>`).join('')}</div><div id="next-wrap" style="display:${isFirst?'none':selectedIdx!==null||answers[currentQ]!==undefined?'block':'none'}"><div class="quiz-nav-row">${prevBtn}<button class="btn-next" onclick="goNext()">${isLast?'결과 보기 ✨':'다음 질문 →'}</button></div></div>${isFirst&&selectedIdx===null&&answers[currentQ]===undefined?'':`<div id="prev-only-wrap" style="display:${!isFirst&&selectedIdx===null&&answers[currentQ]===undefined?'block':'none'}">${prevBtn}</div>`}`;if(!isFirst){const prevOnlyWrap=document.getElementById('prev-only-wrap');if(prevOnlyWrap)prevOnlyWrap.style.display=(selectedIdx===null&&!answerLabels[currentQ])?'block':'none';}const chosen=answerLabels[currentQ]?.chosen;if(chosen!==undefined){selectedIdx=chosen;document.querySelectorAll('.quiz-option').forEach((b,i)=>{if(i===chosen)b.classList.add('selected');});document.getElementById('next-wrap').style.display='block';}}
+function selectOption(idx,btn){document.querySelectorAll('.quiz-option').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');selectedIdx=idx;document.getElementById('next-wrap').style.display='block';const pOw=document.getElementById('prev-only-wrap');if(pOw)pOw.style.display='none';}
+function goNext(){if(selectedIdx===null)return;const q=questions[currentQ];const sc=q.opts[selectedIdx].score;const lb={q:q.q,opts:q.opts,chosen:selectedIdx};if(currentQ<answers.length){answers[currentQ]=sc;answerLabels[currentQ]=lb;}else{answers.push(sc);answerLabels.push(lb);}selectedIdx=null;currentQ++;if(currentQ>=questions.length)goTo('page-choice');else{renderProgress();renderQuestion();}}
+function goPrev(){if(currentQ===0)return;currentQ--;selectedIdx=null;renderProgress();renderQuestion();}
 
 // ─────────────────────────────────────
 //  STORY UTILS
@@ -1212,7 +1221,223 @@ async function buildResult(foodName){
   document.getElementById('result-content').style.display='block';
 
   // 성향 카드
-  document.getElementById('personality-emoji').textContent=res.e;
+  const charSVGs={
+    A:`<svg viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="broth" cx="50%" cy="40%">
+      <stop offset="0%" stop-color="#ff8c40"/>
+      <stop offset="100%" stop-color="#c0390a"/>
+    </radialGradient>
+    <radialGradient id="pot" cx="40%" cy="30%">
+      <stop offset="0%" stop-color="#e84040"/>
+      <stop offset="100%" stop-color="#9a1010"/>
+    </radialGradient>
+  </defs>
+  <!-- 냄비 그림자 -->
+  <ellipse cx="60" cy="118" rx="38" ry="7" fill="#600" opacity=".18"/>
+  <!-- 냄비 바닥/몸통 -->
+  <path d="M18 72 Q16 108 60 110 Q104 108 102 72 Z" fill="url(#pot)"/>
+  <!-- 냄비 측면 하이라이트 -->
+  <path d="M22 72 Q20 102 60 106 Q100 102 98 72" fill="none" stroke="#ff6060" stroke-width="1.5" opacity=".4"/>
+  <!-- 손잡이 L -->
+  <path d="M18 74 Q6 74 5 82 Q4 90 14 90" stroke="#b01010" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <!-- 손잡이 R -->
+  <path d="M102 74 Q114 74 115 82 Q116 90 106 90" stroke="#b01010" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <!-- 국물 표면 -->
+  <ellipse cx="60" cy="72" rx="42" ry="13" fill="url(#broth)"/>
+  <!-- 국물 윤슬 -->
+  <ellipse cx="48" cy="68" rx="10" ry="4" fill="#ffb060" opacity=".45" transform="rotate(-15 48 68)"/>
+  <ellipse cx="72" cy="75" rx="7" ry="2.5" fill="#ffb060" opacity=".3" transform="rotate(10 72 75)"/>
+  <!-- 빨간 고추기름 방울들 -->
+  <circle cx="38" cy="70" r="4" fill="#e02020" opacity=".85"/>
+  <circle cx="55" cy="64" r="3" fill="#c01010" opacity=".8"/>
+  <circle cx="76" cy="68" r="5" fill="#e02020" opacity=".9"/>
+  <circle cx="65" cy="78" r="3.5" fill="#d01818" opacity=".75"/>
+  <!-- 두부 조각 -->
+  <rect x="28" y="60" width="16" height="10" rx="2" fill="#fff8e8" opacity=".9"/>
+  <rect x="29" y="61" width="14" height="8" rx="1" fill="none" stroke="#e8d0a0" stroke-width="0.8"/>
+  <!-- 버섯 -->
+  <path d="M82 65 Q86 56 94 62 Q92 68 82 65Z" fill="#c8a070"/>
+  <line x1="88" y1="62" x2="88" y2="70" stroke="#c8a070" stroke-width="2"/>
+  <!-- 떡볶이 떡 (원통) -->
+  <rect x="42" y="58" width="8" height="20" rx="4" fill="#fff0d8"/>
+  <ellipse cx="46" cy="58" rx="4" ry="2.5" fill="#ffe0b0"/>
+  <ellipse cx="46" cy="78" rx="4" ry="2.5" fill="#ffe0b0"/>
+  <!-- 숙주나물 -->
+  <path d="M60 62 Q64 55 68 60" stroke="#a0c870" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M56 66 Q58 58 62 63" stroke="#a0c870" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- 김(증기) -->
+  <path d="M34 60 Q31 50 34 40 Q37 32 34 22" stroke="#ddd" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".5"/>
+  <path d="M60 58 Q57 48 60 38 Q63 28 60 18" stroke="#ddd" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".45"/>
+  <path d="M86 60 Q83 50 86 40 Q89 32 86 22" stroke="#ddd" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".5"/>
+  <!-- 냄비 테두리 -->
+  <ellipse cx="60" cy="72" rx="42" ry="13" fill="none" stroke="#ff4040" stroke-width="2.5"/>
+  <ellipse cx="60" cy="72" rx="38" ry="10" fill="none" stroke="#ff8060" stroke-width="1" opacity=".5"/>
+</svg>`,
+    B:`<svg viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cakeBase" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff0f5"/>
+      <stop offset="100%" stop-color="#ffd6e0"/>
+    </linearGradient>
+    <linearGradient id="cakeMid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff"/>
+      <stop offset="100%" stop-color="#ffe8f0"/>
+    </linearGradient>
+    <radialGradient id="strawberry" cx="40%" cy="30%">
+      <stop offset="0%" stop-color="#ff6070"/>
+      <stop offset="100%" stop-color="#cc1030"/>
+    </radialGradient>
+  </defs>
+  <!-- 그림자 -->
+  <ellipse cx="60" cy="122" rx="38" ry="6" fill="#e090a0" opacity=".2"/>
+  <!-- 케이크 하단 레이어 -->
+  <rect x="14" y="85" width="92" height="30" rx="10" fill="url(#cakeBase)"/>
+  <rect x="14" y="85" width="92" height="8" rx="5" fill="#ffc0d0"/>
+  <!-- 하단 크림 파이핑 -->
+  <path d="M14 85 Q20 78 26 85 Q32 78 38 85 Q44 78 50 85 Q56 78 62 85 Q68 78 74 85 Q80 78 86 85 Q92 78 98 85 Q104 78 106 85" fill="#ffb3c6" stroke="none"/>
+  <!-- 하단 잼 -->
+  <rect x="20" y="93" width="80" height="5" rx="2" fill="#ff6080" opacity=".5"/>
+  <!-- 중단 레이어 -->
+  <rect x="18" y="60" width="84" height="27" rx="8" fill="url(#cakeMid)"/>
+  <!-- 중단 크림 파이핑 -->
+  <path d="M18 60 Q24 53 30 60 Q36 53 42 60 Q48 53 54 60 Q60 53 66 60 Q72 53 78 60 Q84 53 90 60 Q96 53 102 60" fill="#ffb3c6" stroke="none"/>
+  <!-- 중단 스트로베리잼 -->
+  <rect x="24" y="68" width="72" height="4" rx="2" fill="#ff4060" opacity=".4"/>
+  <!-- 상단 크림 레이어 -->
+  <rect x="22" y="38" width="76" height="24" rx="8" fill="#fff"/>
+  <!-- 상단 크림 파이핑 -->
+  <path d="M22 38 Q28 31 34 38 Q40 31 46 38 Q52 31 58 38 Q64 31 70 38 Q76 31 82 38 Q88 31 94 38 Q98 34 98 38" fill="#ffc8d8" stroke="none"/>
+  <!-- 딸기들 (상단) -->
+  <path d="M36 34 Q34 22 42 20 Q50 22 48 34 Q44 38 36 34Z" fill="url(#strawberry)"/>
+  <path d="M37 22 Q40 17 43 22" stroke="#228820" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <circle cx="39" cy="28" r="1" fill="#fff" opacity=".5"/>
+  <circle cx="44" cy="25" r="0.8" fill="#fff" opacity=".45"/>
+  <path d="M58 32 Q56 22 63 20 Q70 22 68 32 Q64 36 58 32Z" fill="url(#strawberry)"/>
+  <path d="M59 22 Q62 17 65 22" stroke="#228820" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <circle cx="61" cy="27" r="1" fill="#fff" opacity=".5"/>
+  <path d="M78 35 Q76 25 83 23 Q90 25 88 35 Q84 39 78 35Z" fill="url(#strawberry)"/>
+  <path d="M79 25 Q82 20 85 25" stroke="#228820" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <circle cx="81" cy="30" r="1" fill="#fff" opacity=".5"/>
+  <!-- 생크림 방울 -->
+  <ellipse cx="52" cy="37" rx="4" ry="3" fill="white"/>
+  <ellipse cx="70" cy="38" rx="3.5" ry="2.5" fill="white"/>
+  <!-- 초 -->
+  <rect x="56" y="12" width="8" height="26" rx="4" fill="#ffe066"/>
+  <path d="M60 12 Q58 6 60 4 Q62 2 64 5 Q62 8 60 12Z" fill="#ff8c00"/>
+  <ellipse cx="60" cy="5" rx="2.5" ry="3.5" fill="#ffee44" opacity=".9"/>
+  <!-- 분홍 리본 장식 -->
+  <path d="M14 95 Q60 100 106 95" stroke="#ffb3c6" stroke-width="3" fill="none" stroke-dasharray="4 3" opacity=".7"/>
+</svg>`,
+    C:`<svg viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="wineColor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#b030d0"/>
+      <stop offset="100%" stop-color="#6a0080"/>
+    </linearGradient>
+    <linearGradient id="glassBody" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#e8d0f8" stop-opacity=".9"/>
+      <stop offset="50%" stop-color="#fff" stop-opacity=".15"/>
+      <stop offset="100%" stop-color="#c8a8e8" stop-opacity=".8"/>
+    </linearGradient>
+    <radialGradient id="wineShine" cx="35%" cy="35%">
+      <stop offset="0%" stop-color="#e878ff" stop-opacity=".6"/>
+      <stop offset="100%" stop-color="#9000c0" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <!-- 그림자 -->
+  <ellipse cx="60" cy="124" rx="28" ry="5" fill="#9040b0" opacity=".18"/>
+  <!-- 받침대 -->
+  <ellipse cx="60" cy="120" rx="26" ry="6" fill="#d0a0e8"/>
+  <ellipse cx="60" cy="118" rx="22" ry="4" fill="#e8c0f8"/>
+  <!-- 기둥 -->
+  <rect x="56" y="88" width="8" height="32" rx="4" fill="#d8b0ec"/>
+  <!-- 잔 하단 벌어지는 부분 -->
+  <path d="M40 88 Q48 96 56 92 L64 92 Q72 96 80 88 Q72 82 60 80 Q48 82 40 88Z" fill="#d8b0ec"/>
+  <!-- 와인 액체 -->
+  <path d="M28 50 Q26 75 40 85 Q48 90 60 90 Q72 90 80 85 Q94 75 92 50 Z" fill="url(#wineColor)"/>
+  <!-- 와인 표면 -->
+  <ellipse cx="60" cy="50" rx="32" ry="10" fill="#c040e0"/>
+  <!-- 와인 표면 광택 -->
+  <ellipse cx="50" cy="47" rx="12" ry="4" fill="#d878f0" opacity=".5" transform="rotate(-10 50 47)"/>
+  <!-- 와인 내부 반사광 -->
+  <path d="M36 60 Q40 70 44 80" stroke="#e060f0" stroke-width="3" fill="none" stroke-linecap="round" opacity=".35"/>
+  <!-- 잔 유리 (투명) -->
+  <path d="M28 50 Q24 76 40 86 Q48 92 60 92 Q72 92 80 86 Q96 76 92 50 Q80 30 60 26 Q40 30 28 50Z" fill="url(#glassBody)"/>
+  <!-- 잔 유리 테두리 -->
+  <path d="M28 50 Q24 76 40 86 Q48 92 60 92 Q72 92 80 86 Q96 76 92 50" fill="none" stroke="#c8a0e0" stroke-width="2"/>
+  <!-- 유리 하이라이트 (왼쪽) -->
+  <path d="M32 48 Q28 65 34 80" stroke="white" stroke-width="4" fill="none" stroke-linecap="round" opacity=".35"/>
+  <!-- 유리 하이라이트 (작은) -->
+  <path d="M36 38 Q33 45 35 52" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".25"/>
+  <!-- 잔 테두리 -->
+  <ellipse cx="60" cy="26" rx="32" ry="8" fill="none" stroke="#d0b0e8" stroke-width="2.5"/>
+  <ellipse cx="60" cy="50" rx="32" ry="10" fill="none" stroke="#c090d8" stroke-width="1.5" opacity=".6"/>
+  <!-- 기포들 -->
+  <circle cx="50" cy="70" r="2.5" fill="none" stroke="#e080ff" stroke-width="1.2" opacity=".7"/>
+  <circle cx="65" cy="60" r="2" fill="none" stroke="#e080ff" stroke-width="1" opacity=".6"/>
+  <circle cx="55" cy="55" r="1.5" fill="none" stroke="#e080ff" stroke-width="0.8" opacity=".5"/>
+  <circle cx="72" cy="72" r="3" fill="none" stroke="#e080ff" stroke-width="1.2" opacity=".6"/>
+  <circle cx="44" cy="80" r="2" fill="none" stroke="#e080ff" stroke-width="1" opacity=".5"/>
+  <!-- 반짝이 별 -->
+  <path d="M100 30 L101.5 34 L106 34 L102.5 37 L104 41 L100 38.5 L96 41 L97.5 37 L94 34 L98.5 34Z" fill="#d4a0f0" opacity=".75" transform="scale(0.7) translate(45 18)"/>
+  <path d="M15 45 L16 48 L19 48 L16.5 50 L17.5 53 L15 51.5 L12.5 53 L13.5 50 L11 48 L14 48Z" fill="#d4a0f0" opacity=".6" transform="scale(0.65) translate(-8 14)"/>
+</svg>`,
+    D:`<svg viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="haejang" cx="50%" cy="40%">
+      <stop offset="0%" stop-color="#ff9050"/>
+      <stop offset="100%" stop-color="#c04010"/>
+    </radialGradient>
+    <radialGradient id="dduk" cx="40%" cy="30%">
+      <stop offset="0%" stop-color="#5c3015"/>
+      <stop offset="100%" stop-color="#3a1a08"/>
+    </radialGradient>
+  </defs>
+  <!-- 그림자 -->
+  <ellipse cx="60" cy="122" rx="40" ry="6" fill="#6b3010" opacity=".18"/>
+  <!-- 뚝배기 바닥/몸통 -->
+  <path d="M16 68 Q12 108 60 112 Q108 108 104 68 Z" fill="url(#dduk)"/>
+  <!-- 뚝배기 옆면 텍스처 -->
+  <path d="M20 68 Q17 100 60 108 Q103 100 100 68" fill="none" stroke="#7a4820" stroke-width="1.2" opacity=".5"/>
+  <path d="M24 70 Q22 98 60 105" fill="none" stroke="#8a5020" stroke-width="0.8" opacity=".35"/>
+  <!-- 손잡이 L -->
+  <path d="M16 70 Q4 72 3 82 Q2 92 14 92" stroke="#4a2008" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M16 70 Q5 72 4 82 Q3 91 14 92" stroke="#6a3010" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <!-- 손잡이 R -->
+  <path d="M104 70 Q116 72 117 82 Q118 92 106 92" stroke="#4a2008" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M104 70 Q115 72 116 82 Q117 91 106 92" stroke="#6a3010" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <!-- 국물 표면 -->
+  <ellipse cx="60" cy="68" rx="44" ry="13" fill="url(#haejang)"/>
+  <!-- 국물 광택 -->
+  <ellipse cx="46" cy="63" rx="12" ry="4" fill="#ffb870" opacity=".4" transform="rotate(-12 46 63)"/>
+  <!-- 뚝배기 테두리 -->
+  <ellipse cx="60" cy="68" rx="44" ry="13" fill="none" stroke="#8a4820" stroke-width="3"/>
+  <ellipse cx="60" cy="68" rx="40" ry="10" fill="none" stroke="#c07040" stroke-width="1.2" opacity=".5"/>
+  <!-- 파 (고명) -->
+  <path d="M28 64 Q34 58 40 64" stroke="#4a9040" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M30 66 Q36 60 42 66" stroke="#60a850" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <circle cx="28" cy="64" r="2.5" fill="#3a7830"/>
+  <circle cx="42" cy="64" r="2.5" fill="#3a7830"/>
+  <!-- 파 (오른쪽) -->
+  <path d="M74 62 Q80 56 86 62" stroke="#4a9040" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M76 65 Q82 59 88 65" stroke="#60a850" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- 고기 덩어리 -->
+  <path d="M48 60 Q58 54 68 60 Q70 68 60 70 Q50 68 48 60Z" fill="#c06840"/>
+  <path d="M50 61 Q58 56 66 61" stroke="#e08858" stroke-width="1.5" fill="none" opacity=".6"/>
+  <!-- 달걀 반쪽 -->
+  <ellipse cx="48" cy="74" rx="10" ry="7" fill="#fff8e0"/>
+  <ellipse cx="48" cy="74" rx="5" ry="4" fill="#f5c040"/>
+  <!-- 두부 -->
+  <rect x="74" y="68" width="16" height="10" rx="2" fill="#fff8e8"/>
+  <rect x="75" y="69" width="14" height="8" rx="1" fill="none" stroke="#e0d0a8" stroke-width="0.8"/>
+  <!-- 김(증기) -->
+  <path d="M36 56 Q33 46 36 36 Q39 26 36 16" stroke="#ccc" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".5"/>
+  <path d="M60 54 Q57 44 60 34 Q63 24 60 14" stroke="#ccc" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".45"/>
+  <path d="M84 56 Q81 46 84 36 Q87 26 84 16" stroke="#ccc" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".5"/>
+</svg>`
+  };
+  document.getElementById('personality-emoji').innerHTML=charSVGs[res.type]||res.e;
   document.getElementById('personality-food-type').textContent=`${res.food} 타입`;
   document.getElementById('personality-type-tag').textContent=res.tag;
   document.getElementById('personality-desc').textContent=res.desc;
@@ -1285,105 +1510,395 @@ async function buildResult(foodName){
   }
 
   setLoadingStep('lstep-analysis');
-  doQuizAnalysis(answerLabels,res).then(text=>{
+  setTimeout(()=>{
     doneLoadingStep('lstep-analysis');
     document.getElementById('quiz-ai-loading').style.display='none';
     const el=document.getElementById('quiz-ai-content');
-    el.innerHTML=text?renderQuizAI(text,res):localQuizAI(res);
+    el.innerHTML=deepLocalAnalysis(answerLabels,res);
     el.style.display='block';
-  });
+  },600);
 
   resetRecorder();
 }
 
 // ─────────────────────────────────────
-//  AI FUNCTIONS (원본 그대로)
+//  DEEP LOCAL ANALYSIS (조합 기반)
 // ─────────────────────────────────────
-async function doQuizAnalysis(answerLabels,res){
-  const list=answerLabels.map((it,qi)=>{const c=it.opts[it.chosen];return`Q${qi+1}. ${it.q} → ${c.e} ${c.t}`;}).join('\n');
-  const prompt=`당신은 한국의 인기 심리 분석가예요.
-읽다 보면 "어, 이거 나 얘기잖아?" 하고 무릎 탁 치게 만드는 분석이어야 해요.
-친근한 존댓말, 구체적 생활 상황 묘사 필수.
+function deepLocalAnalysis(answerLabels, res) {
+  // 각 질문별 선택 인덱스 추출
+  const c = answerLabels.map(a => a.chosen); // 0~3, 7개
+  // Q인덱스: 0=지금먹고싶은것 1=몇끼 2=배고프면 3=메뉴고를때 4=연애비유 5=스트레스 6=요즘푸는썰
 
-[성향 유형] ${res.food} 타입 (${res.tag})
-[7가지 선택]
-${list}
+  // ── 한줄요약: type + Q2(배고프면) + Q3(메뉴) 조합 ──
+  const hlMap = {
+    A: [
+      ['🌶️🔥 배고프면 폭발하는데 맛있으면 다 용서되는 마라탕형 인간', // 예민
+       '🌶️😶 배고파도 말 없이 속으로만 끓는 마라탕형 인간',
+       '🌶️🗣️ 배고프면 일단 아무 말이나 하고 보는 마라탕형 인간',
+       '🌶️⚡ 배고파도 그냥 아무거나 먹고 해결하는 마라탕형 인간'],
+      ['👆🌶️ 메뉴는 내가 정하고 맵기도 내가 정하는 마라탕형 인간',
+       '🙃🌶️ 아무거나 해놓고 결국 마라탕 끌고 오는 마라탕형 인간',
+       '🫶🌶️ 상대 의견 존중하지만 속으론 마라탕 외치는 마라탕형 인간',
+       '💭🌶️ 속으로 마라탕 생각하면서 겉으론 아무거나인 척하는 인간']
+    ],
+    B: [
+      ['🎂😤 배고프면 예민해지지만 달달한 거 먹으면 세상이 좋아지는 케이크형 인간',
+       '🎂🤐 혼자 조용히 배고픔 참다가 편의점 디저트로 해결하는 케이크형 인간',
+       '🎂🗣️ 배고프면 아무 말이나 하다가도 케이크 보는 순간 눈빛 달라지는 인간',
+       '🎂🍴 대충 때우다가도 디저트만큼은 진지하게 고르는 케이크형 인간'],
+      ['👆🎂 메뉴 내가 정하는데 디저트만큼은 오래 고민하는 케이크형 인간',
+       '🙃🎂 아무거나 해놓고 결국 카페 데려가는 케이크형 인간',
+       '🫶🎂 상대 의견 존중하지만 생일 때만큼은 케이크 절대 양보 안 하는 인간',
+       '💭🎂 속으론 카페 가고 싶은데 말 못 하고 있는 케이크형 인간']
+    ],
+    C: [
+      ['🍷😤 배고프면 예민해지는데 절대 티 안 내려고 하는 와인형 인간',
+       '🍷🤐 배고파도 조용히 참는데 알고 보면 속이 꽉 찬 와인형 인간',
+       '🍷🗣️ 배고프면 말이 많아지는데 나중엔 다 논리적 대화였던 와인형 인간',
+       '🍷⚡ 배고프면 빠르게 해결하는 효율주의 와인형 인간'],
+      ['👆🍷 메뉴 내가 정하지만 이유가 다 있는 와인형 인간',
+       '🙃🍷 아무거나 해놓고 결국 제일 합리적인 선택 끌고 오는 와인형 인간',
+       '🫶🍷 상대 배려하면서도 와인처럼 은근히 취향 관철시키는 인간',
+       '💭🍷 속으로 이미 다 정해놓고 상대가 먼저 말하길 기다리는 와인형 인간']
+    ],
+    D: [
+      ['🍲😤 배고프면 예민해지는 척 하지만 사실 그냥 배고픈 해장국형 인간',
+       '🍲🤐 배고파도 말 없이 그냥 참는 해장국형 인간',
+       '🍲🗣️ 배고프면 아무 말이나 하는데 나중엔 기억 못 하는 해장국형 인간',
+       '🍲⚡ 배고프면 그냥 제일 빠른 거 먹는 해장국형 인간'],
+      ['👆🍲 일단 내가 정하고 맛없으면 내 책임지는 해장국형 인간',
+       '🙃🍲 아무거나 해놓고 결국 아무거나 먹는 진짜 아무거나형 인간 ㅋㅋ',
+       '🫶🍲 상대가 좋으면 메뉴도 다 좋은 해장국형 인간',
+       '💭🍲 속으로 딴 거 생각하면서 결국 그냥 아무거나 먹는 해장국형 인간']
+    ]
+  };
 
-━━ 출력 형식 (라벨 그대로 쓰세요) ━━
-한줄요약: [이 사람을 딱 한 줄로. 음식 비유 + 반전 포인트. 이모지 2개]
-특징1: [식습관에서 드러나는 성격. "배고플 때 ~한다" 같은 구체적 상황. 2문장]
-특징2: [관계에서 드러나는 패턴. "친구랑 밥 먹을 때 ~" 식 구체적 상황. 2문장]
-특징3: [이 사람이 스스로 모르는 매력. 따뜻하고 구체적으로. 2문장]
-약점: [이 타입의 아킬레스건. 솔직하게 1문장. 너무 직접적이지 않게]
-결정적한마디: [이 사람에게 해주고 싶은 말. 따뜻하지만 진짜인 말. 1문장]
-태그: #태그1 #태그2 #태그3 #태그4 #태그5
+  const typeHl = hlMap[res.type] || hlMap.A;
+  const hl = typeHl[Math.floor(c[2])] ?
+    typeHl[c[2] < 4 ? c[2] : 0] :
+    typeHl[0][0];
+  // Q2 기반 한줄요약 우선, Q3로 보조
+  const hlFinal = (typeHl[0] && typeHl[0][c[2] !== undefined ? Math.min(c[2],3) : 0]) || typeHl[0][0];
 
-"특별한", "매력적인" 같은 뻔한 단어 금지. 태그는 밈/신조어 스타일.`;
-  return await callGemini(prompt,700);
+  // ── 식습관심리 ──
+  const foodPsyData = {
+    A: {
+      meal: [
+        '한 끼도 빼먹지 않는 규칙적인 식사가 에너지와 기분을 결정해요. 세끼 다 챙기는 건 루틴이 아니라 자기 통제의 일부예요. 밥을 제때 못 먹으면 다른 것도 다 틀어지는 기분이 드는 타입이에요.',
+        '하루 두 끼로도 충분히 살지만, 챙길 때는 제대로 챙기는 스타일이에요. 바쁘다는 핑계로 대충 때우는 것처럼 보여도, 정작 먹는 순간만큼은 진지해요. 밥에 투자하는 시간이 곧 자기에게 투자하는 시간이에요.',
+        '하루 한 끼라도 제대로 된 걸 먹어야 직성이 풀리는 타입이에요. 정신없이 살면서도 그 한 끼만큼은 타협 안 하는 고집이 있어요. 식사에 대한 기준이 높은 사람이 삶의 기준도 높아요.',
+        '떼끼 때우는 요즘이지만, 그게 자책거리가 아니에요. 지금 몸이 원하는 게 뭔지 알면서 그냥 때우는 거니까요. 대충 때우는 것처럼 보여도 진짜 배고플 때 뭘 먹어야 하는지는 정확하게 알고 있어요.'
+      ],
+      stress: [
+        '매운 음식으로 스트레스를 푸는 사람은 감정을 억누르지 않아요. 속에서 뭔가 끓어오를 때 그 열기를 음식으로 발산하는 방식이에요. 마라탕집에서 제일 매운 단계 고르면서 오늘 있었던 일 혼자 복기하는 타입이에요.',
+        '달달한 디저트로 감정을 달래는 사람은 자기 자신에게 친절한 사람이에요. 힘든 하루 끝에 편의점 케이크 하나 사는 것도 자기 돌봄이에요. 단 거 먹으면서 기분 풀리는 걸 창피해하지 않아도 돼요.',
+        '스트레스 받으면 뭐든 빨리 먹고 해결하는 타입이에요. 음식을 즐기기보다 연료로 쓰는 경향이 있는데, 사실 그게 더 효율적일 때도 있어요. 밥 빨리 먹고 문제 해결하러 가는 행동력이 진짜 매력이에요.',
+        '아예 안 먹는 타입은 배고픔보다 스트레스가 더 강한 사람이에요. 속이 뒤집히면 음식이 안 넘어가는 건 예민하다는 게 아니라 감각이 솔직하다는 뜻이에요. 스트레스 해소되면 갑자기 폭식하는 패턴 있을 수도 있어요.'
+      ]
+    },
+    B: {
+      meal: [
+        '세끼 꼬박꼬박 챙기는 사람은 규칙과 루틴 안에서 안정감을 찾아요. 식사 시간이 하루의 중심축이고, 그 리듬이 무너지면 하루 전체가 흔들리는 느낌이 드는 타입이에요. 밥상을 차리는 게 곧 자기 자신을 돌보는 의식이에요.',
+        '두 끼 먹는 사람은 효율적이면서도 챙길 건 챙기는 균형파예요. 아침을 거르더라도 점심은 제대로, 저녁도 적당히 챙기는 리듬이 있어요. 바쁜 와중에도 밥 먹을 시간을 일부러 만드는 사람이에요.',
+        '한 끼로 버티는 날이 많지만, 그 한 끼에 온 에너지를 집중하는 스타일이에요. 하루 중 그 식사 시간만큼은 진심으로 즐기려 하는 사람이에요. 많이 먹는 것보다 제대로 먹는 것에 의미를 두는 타입이에요.',
+        '대충 때우는 요즘이지만, 뭔가 허전한 느낌이 드는 건 알고 있어요. 편의점 삼각김밥으로 때우면서도 "나중에 제대로 먹어야지"라는 생각을 달고 사는 타입이에요. 지금은 지쳐 있는 거고, 곧 다시 자기를 챙기게 될 거예요.'
+      ],
+      stress: [
+        '매운 거로 푸는 타입 — 달달한 걸 좋아하는 사람이 매운 걸 찾는다는 건 감정이 그만큼 강하게 요동치고 있다는 뜻이에요. 평소와 다른 음식을 찾는 건 내가 지금 평소와 다른 상태라는 몸의 신호예요.',
+        '달달한 걸 찾는 타입 — 감정이 힘들 때 단 걸 당기는 건 뇌가 보상을 원하는 거예요. 편의점 초코과자 하나로 오늘 하루를 버티는 방법을 아는 사람이에요. 그 작은 위로가 사실 꽤 큰 힘이 돼요.',
+        '빨리 먹고 해결하는 타입 — 스트레스를 음식으로 해결하되 오래 붙잡지 않는 스타일이에요. 감정을 처리하는 속도가 빠른 편이고, 음식이 그 전환점 역할을 해요. 먹고 나서 기분이 리셋되는 경험이 많을 거예요.',
+        '아예 안 먹는 타입 — 스트레스가 식욕까지 잡아먹는 강도라는 뜻이에요. 밥을 거를 때 자기 자신도 같이 방치되고 있는 건 아닌지 한 번쯤 돌아봐야 해요. 작은 것 하나라도 먹는 게 자기한테 보내는 신호가 될 수 있어요.'
+      ]
+    },
+    C: {
+      meal: [
+        '세끼 루틴이 삶의 기준이에요. 식사 스케줄이 곧 하루 스케줄이고, 그 안에서 다른 모든 것을 조율해요. 약속 잡을 때 밥 시간 먼저 고려하는 사람이에요.',
+        '두 끼로 하루를 돌리지만 그 두 끼 안에서 최대한 영양과 맛을 챙기는 타입이에요. 먹는 게 일인 것처럼 진지하게 메뉴를 고르는 편이에요. 대충 먹는 날이 없는 건 아닌데, 대충 먹으면 뭔가 찜찜한 사람이에요.',
+        '한 끼밖에 못 먹는 날이 많지만 그 한 끼를 제대로 먹으려고 하는 완벽주의적 면이 있어요. 시간이 없어서가 아니라 완벽한 식사가 아니면 굳이 먹고 싶지 않은 마음도 있어요.',
+        '대충 때우는 요즘이지만 사실 이 상태가 좀 불편한 사람이에요. 루틴이 무너진 것 같은 찜찜함이 있는데, 그걸 해결하려면 다시 식사 규칙을 만드는 게 제일 빠른 방법이에요.'
+      ],
+      stress: [
+        '매운 거로 푸는 것 — 평소엔 이성적인 사람이 매운 걸 찾는다는 건 지금 감정이 논리를 넘어서고 있다는 뜻이에요. 마라탕 한 그릇으로 오늘의 억울함을 씻어내는 의식을 치르는 거예요.',
+        '달달한 걸 찾는 것 — 효율주의자가 디저트를 찾는다는 건 지금 자신에게 보상이 필요하다는 걸 인정하는 순간이에요. 그 솔직함이 사실 귀여운 면이에요.',
+        '빨리 먹고 해결 — 스트레스를 해결해야 하는 문제로 보는 사람이에요. 밥도 빨리 먹고, 감정도 빨리 정리하고, 다음 스텝으로 가려는 거예요. 다만 너무 빨리 처리하다 보면 감정이 덜 소화될 수 있어요.',
+        '아예 안 먹는 것 — 감정이 신체 반응까지 이어지는 타입이에요. 배가 고픈지 안 고픈지보다 마음이 괜찮은지가 더 중요한 순간이에요.'
+      ]
+    },
+    D: {
+      meal: [
+        '세끼 챙기는 루틴 안에서 하루를 살아가지만, 그 루틴이 무너져도 크게 동요하지 않는 사람이에요. 먹는 게 중요하긴 한데, 그게 삶의 전부는 아닌 거 알고 있어요. 밥 자리가 사람을 만나는 이유가 되는 타입이에요.',
+        '두 끼면 충분해요. 많이 먹는 것보다 필요할 때 제대로 먹는 게 더 중요한 사람이에요. 식사에 의미를 두되 집착하지 않는 균형이 있어요.',
+        '한 끼면 버티는 날이 많지만 그게 힘든 건 아니에요. 음식보다 해야 할 일, 만나야 할 사람이 더 중요한 순간이 많은 타입이에요. 배고픔보다 하고 싶은 게 더 강한 사람이에요.',
+        '대충 때우는 요즘인데, 사실 그게 편하기도 해요. 밥에 에너지를 쏟기보다 다른 데 쏟고 싶은 거니까요. 지금 뭔가에 더 집중하고 있는 시기일 거예요.'
+      ],
+      stress: [
+        '매운 거로 푸는 타입 — 자극적인 걸 찾는다는 건 지금 감각이 무뎌진 느낌이라는 뜻이에요. 뭔가 강렬한 걸로 다시 살아있는 느낌을 찾고 싶은 거예요.',
+        '달달한 걸 찾는 타입 — 해장국 같은 사람이 단 걸 찾는다는 건 지금 자신에게 부드러운 위로가 필요하다는 신호예요.',
+        '빨리 먹고 해결 — 스트레스도 밥도 효율적으로 처리하는 타입이에요. 감정에 오래 머물지 않고 다음으로 넘어가는 힘이 있어요.',
+        '아예 안 먹는 타입 — 속이 편해야 밥이 넘어가는 사람이에요. 몸보다 마음이 먼저인 타입이에요.'
+      ]
+    }
+  };
+
+  const mealIdx = Math.min(c[1] !== undefined ? c[1] : 0, 3);
+  const stressIdx = Math.min(c[5] !== undefined ? c[5] : 0, 3);
+  const foodPsy = (foodPsyData[res.type]?.meal[mealIdx] || foodPsyData.A.meal[0])
+    + ' ' + (foodPsyData[res.type]?.stress[stressIdx] || foodPsyData.A.stress[0]);
+
+  // ── 관계패턴: Q3(메뉴고를때) + Q4(연애비유) ──
+  const relData = {
+    A: {
+      menu: [
+        '메뉴를 직접 정하는 사람은 관계에서도 먼저 움직이는 타입이에요. "뭐 먹을래?" 물음에 바로 답하는 것처럼, 좋아하는 사람한테도 먼저 연락하는 편이에요. 주도권을 갖는 게 불편하지 않고 오히려 책임감으로 느끼는 사람이에요.',
+        '"아무거나"라고 했지만 결국 의견 내는 타입 — 관계에서도 비슷해요. 처음엔 상대에게 맡기는 척하다가 정말 이상한 방향으로 가면 슬쩍 핸들 잡는 스타일이에요. 겉으로는 유연해 보이지만 속으론 분명한 기준이 있어요.',
+        '상대 의견 존중하는 타입 — 관계에서도 먼저 맞춰주는 경향이 있어요. 근데 이 사람이 진짜 원하는 게 뭔지 물어봐 주는 사람이 없어서 답답할 때가 있어요. 맞춰주다 보면 정작 자기가 지쳐있는 줄 모를 수 있어요.',
+        '속으로 딴 메뉴 생각하는 타입 — 관계에서도 속마음을 잘 안 꺼내요. 원하는 게 있어도 말로 먼저 꺼내는 게 어색한 사람이에요. 가까운 사람이 먼저 물어봐줄 때 비로소 진짜 생각을 얘기하는 타입이에요.'
+      ],
+      love: [
+        '마라탕 연애 — 중독적이고 강렬한 연애를 원하는 사람이에요. 설레지 않으면 연애가 아닌 것 같고, 자극이 없으면 금방 지루해지는 타입이에요. 근데 그 강도가 높다 보니 소진되기도 빠른 편이에요.',
+        '케이크 연애 — 기념일 챙기고 달달한 순간을 소중히 여기는 로맨틱 타입이에요. 작은 이벤트 하나에도 큰 의미를 두고, 상대가 기억해주는 것에 감동받는 사람이에요.',
+        '와인 연애 — 처음엔 어색하고 느리지만 시간이 지날수록 깊어지는 연애를 해요. 첫눈에 반하기보다는 알아갈수록 좋아지는 사람과 잘 맞는 타입이에요.',
+        '삼각김밥 연애 — 빠르게 시작하고 빠르게 끝나는 패턴을 경험해봤을 거예요. 그러면서 이제 뭘 원하는지 더 명확해진 사람이에요. 반복 속에서 자기 자신을 더 잘 알게 된 타입이에요.'
+      ]
+    },
+    B: {
+      menu: [
+        '메뉴 직접 정하는 타입 — 달달하고 부드러운 사람 같지만 막상 결정할 때는 확실한 면이 있어요. 관계에서도 필요할 때는 먼저 나서는 사람이에요.',
+        '"아무거나" 하지만 결국 의견 내는 타입 — 상대방이 불편하지 않게 배려하면서도 결국 원하는 방향으로 가는 부드러운 리더십이 있어요.',
+        '상대 존중 타입 — 상대가 좋아하는 게 뭔지 먼저 살피는 사람이에요. 밥 먹을 때 상대 그릇이 비었나 먼저 확인하는 타입이에요.',
+        '속으로 딴 거 생각하는 타입 — 겉으로는 조용하게 맞춰주는 것 같지만 속에는 자기만의 세계가 단단하게 있어요.'
+      ],
+      love: [
+        '마라탕 연애 — 달달한 사람이 마라탕 연애를 꿈꾼다는 건 자극과 설렘에 대한 갈망이 숨어있다는 거예요. 안정적이면서도 가끔은 심장 뛰는 순간을 원하는 사람이에요.',
+        '케이크 연애 — 기념일을 챙기고 소중한 순간에 이름을 붙이는 연애를 원해요. 연애가 곧 추억을 만드는 일이라고 생각하는 로맨티스트예요.',
+        '와인 연애 — 급하게 가지 않고 천천히 서로를 알아가는 연애를 원해요. 처음부터 다 보여주기보다 조금씩 알아가는 과정을 즐기는 타입이에요.',
+        '삼각김밥 연애 — 예상 못 한 연애가 갑자기 시작되고 갑자기 끝나는 경험을 해봤을 거예요. 그래서 지금은 좀 더 안정적인 연애를 원하는 마음이 있어요.'
+      ]
+    },
+    C: {
+      menu: [
+        '메뉴 내가 정하는 타입 — 관계에서도 주도적이에요. 어디 갈지, 뭐 할지 계획 세우는 걸 당연하게 여기고 그 역할에서 오히려 안정감을 느껴요.',
+        '"아무거나" 했지만 결국 의견 내는 타입 — 사실 다 생각이 있는 사람이에요. 처음부터 의견 내기 싫어서 기다리는 거지, 진짜 아무 생각이 없는 게 아니에요.',
+        '상대 의견 존중 타입 — 관계에서 배려가 자연스러운 사람이에요. 근데 배려에 익숙한 사람도 받아야 할 때가 있어요. 상대가 먼저 챙겨줄 때 어색해하지 않아도 돼요.',
+        '속으로 딴 거 생각하는 타입 — 겉으로 드러나지 않는 자기 세계가 있어요. 처음 본 사람은 이 사람 속을 잘 못 읽는데, 가까워지면 완전히 다른 면이 나오는 타입이에요.'
+      ],
+      love: [
+        '마라탕 연애 — 논리적인 사람이 자극적인 연애를 원한다는 건 감정적으로 살아있고 싶다는 뜻이에요. 이성과 감정이 공존하는 연애를 하는 사람이에요.',
+        '케이크 연애 — 기념일을 챙기고 계획적인 데이트를 선호하는 타입이에요. 달력에 기념일 표시해두는 거 절대 빠뜨리지 않는 사람이에요.',
+        '와인 연애 — 이 사람이 제일 잘하는 연애 스타일이에요. 천천히 알아가면서 깊어지는 연애가 본인 성향에 딱 맞아요.',
+        '삼각김밥 연애 — 갑작스럽게 시작되고 끝나는 연애 경험이 있을 거예요. 그 경험이 지금 사람을 보는 눈을 더 날카롭게 만들어줬어요.'
+      ]
+    },
+    D: {
+      menu: [
+        '내가 정하는 타입 — 관계에서도 군말 없이 먼저 움직이는 편이에요. 복잡하게 생각하지 않고 일단 가는 스타일이에요.',
+        '"아무거나" 했다가 진짜 아무거나 먹게 되는 타입 ㅋㅋ — 관계에서도 대부분 상대에게 맞춰주는 편이에요. 크게 고집이 없어서 사람들이 편하게 느끼는 타입이에요.',
+        '상대 의견 존중 타입 — 관계에서 제일 먼저 상대 기분을 살피는 사람이에요. 없으면 진짜 허전한 존재예요.',
+        '속으로 딴 거 생각하는 타입 — 말은 안 해도 속에 생각이 많은 사람이에요. 가까운 사람은 알지만, 처음 보는 사람은 잘 모르는 층위가 있어요.'
+      ],
+      love: [
+        '마라탕 연애 — 잔잔한 사람이 자극적인 연애를 원한다는 건 지금 일상이 조금 단조롭게 느껴진다는 뜻일 수도 있어요.',
+        '케이크 연애 — 소박해 보이지만 알고 보면 기념일 챙기는 로맨티스트예요. 절대 티 안 내지만 상대 생일 절대 잊지 않는 사람이에요.',
+        '와인 연애 — 천천히 알아가는 연애가 편한 타입이에요. 처음부터 모든 걸 보여주지 않아도 되는 연애를 원해요.',
+        '삼각김밥 연애 — 짧게 뜨겁게 타오르는 연애를 경험해봤을 거예요. 그 경험이 지금 이 사람을 더 단단하게 만들어줬어요.'
+      ]
+    }
+  };
+
+  const menuIdx = Math.min(c[3] !== undefined ? c[3] : 0, 3);
+  const loveIdx = Math.min(c[4] !== undefined ? c[4] : 0, 3);
+  const relPsy = (relData[res.type]?.menu[menuIdx] || relData.A.menu[0])
+    + ' ' + (relData[res.type]?.love[loveIdx] || relData.A.love[0]);
+
+  // ── 숨은매력: Q0(먹고싶은것) + Q6(요즘푸는썰) ──
+  const charmData = {
+    A: {
+      crave: [
+        '매콤한 게 당긴다는 건 지금 자극이 필요하다는 뜻이에요. 그 에너지가 주변 사람들을 깨어있게 만드는 힘이기도 해요.',
+        '달달한 게 당긴다는 건 지금 자신에게 부드러운 위로를 주고 싶다는 뜻이에요. 자기 감정에 솔직한 사람이에요.',
+        '짭짤한 게 당긴다는 건 자극적이되 묵직한 걸 원하는 거예요. 화려하진 않지만 진짜 맛을 아는 사람이에요.',
+        '뜨끈한 국물이 당긴다는 건 지금 속이 편안해지고 싶다는 신호예요. 겉으로는 강해 보여도 속은 따뜻한 걸 원하는 사람이에요.'
+      ],
+      story: [
+        '연애 썰을 많이 풀고 있다는 건 관계에 대한 생각이 많다는 뜻이에요. 그 경험들이 쌓여서 지금 사람을 보는 눈이 생긴 거예요. 썰이 많다는 건 그만큼 많이 살아봤다는 증거예요.',
+        '손절 썰을 많이 푼다는 건 이 사람의 기준이 생겼다는 뜻이에요. 맞지 않으면 정리할 줄 아는 사람이에요. 냉정한 게 아니라 자기 자신을 지키는 거예요.',
+        '회사/학교 썰이 많다는 건 지금 치열하게 살고 있다는 뜻이에요. 그 치열함이 언젠가 경험과 통찰로 바뀌는 게 보여요.',
+        '흑역사 썰이 많다는 건 그만큼 많이 시도하고 실패해봤다는 뜻이에요. 이불킥할 기억이 많다는 건 살아있다는 증거예요.'
+      ]
+    },
+    B: {
+      crave: [
+        '매콤한 게 당긴다 — 달달한 사람인데 매운 게 당길 때는 변화가 필요한 시점이에요. 지금 새로운 자극을 원하는 상태예요.',
+        '달달한 게 당긴다 — 자기 자신에게 가장 잘 맞는 걸 고르는 사람이에요. 남들 눈치 보지 않고 내가 먹고 싶은 걸 먹는 솔직함이 있어요.',
+        '짭짤한 게 당긴다 — 달달한 게 아닌 짭조름한 걸 원할 때는 현실적인 무언가가 필요한 시점이에요.',
+        '국물이 당긴다 — 속이 따뜻해지고 싶다는 뜻이에요. 지금 감정적으로 좀 비어있는 상태일 수 있어요.'
+      ],
+      story: [
+        '연애 썰이 많다 — 마음을 많이 써봤다는 뜻이에요. 그 경험이 이 사람을 더 감성 깊게 만들어줬어요.',
+        '손절 썰이 많다 — 상처를 받았지만 그 뒤로 일어서는 사람이에요. 손절을 결정하는 용기가 사실 대단한 거예요.',
+        '직장/학교 썰이 많다 — 지금 많이 지쳐있다는 신호예요. 그 안에서도 버티고 있는 자신을 한 번쯤 인정해줘야 해요.',
+        '흑역사 썰이 많다 — 웃으면서 털어낼 줄 아는 사람이에요. 부끄러운 기억을 썰로 만드는 사람은 회복력이 강한 거예요.'
+      ]
+    },
+    C: {
+      crave: [
+        '매콤한 게 당긴다 — 지금 감정이 꽤 강하게 끓고 있다는 신호예요. 이성적인 사람이 자극을 원할 때는 진짜로 힘든 거예요.',
+        '달달한 게 당긴다 — 효율적인 사람이 달달한 걸 원할 때는 자신에게 보상을 줘야 할 때예요. 그 직관이 맞아요.',
+        '짭짤한 게 당긴다 — 제일 현실적인 선택을 하는 사람이에요. 맛에서도 실용성을 찾는 타입이에요.',
+        '국물이 당긴다 — 겉으로는 단단해 보여도 따뜻함을 원하는 사람이에요. 그 온기가 이 사람을 움직이는 동력이에요.'
+      ],
+      story: [
+        '연애 썰이 많다 — 이성적인 사람이 연애에서는 꽤 감정적인 면이 드러나는 타입이에요. 그 반전이 매력이에요.',
+        '손절 썰이 많다 — 기준이 명확한 사람이에요. 맞지 않으면 선 긋는 게 빠른 타입이에요.',
+        '회사/학교 썰이 많다 — 치열하게 사는 사람이에요. 그 에너지가 이 사람을 성장시키는 원동력이 되고 있어요.',
+        '흑역사 썰이 많다 — 완벽주의자처럼 보이지만 실수도 많이 해봤다는 거예요. 그 인간적인 면이 사람들이 좋아하는 포인트예요.'
+      ]
+    },
+    D: {
+      crave: [
+        '매콤한 게 당긴다 — 자극이 필요한 시점이에요. 뭔가 새로운 걸 시작하고 싶은 마음이 있어요.',
+        '달달한 게 당긴다 — 지금 자신에게 위로가 필요한 상태예요. 그 솔직한 자기인식이 이 사람의 진짜 장점이에요.',
+        '짭짤한 게 당긴다 — 군더더기 없고 실속 있는 것을 좋아하는 성향이 음식 취향에서도 드러나요.',
+        '국물이 당긴다 — 본능적으로 따뜻함을 찾는 사람이에요. 그 따뜻함이 주변 사람들을 끌어당기는 이유이기도 해요.'
+      ],
+      story: [
+        '연애 썰이 많다 — 잔잔해 보이지만 연애에서는 꽤 깊은 감정을 쓰는 사람이에요.',
+        '손절 썰이 많다 — 군말 없이 정리하는 사람이에요. 말이 없어서 쿨한 게 아니라, 이미 다 생각하고 결정한 거예요.',
+        '직장/학교 썰이 많다 — 지금 많이 쌓여있는 상태예요. 그 감정들 어딘가에는 털어낼 출구가 필요해요.',
+        '흑역사 썰이 많다 — 부끄러운 기억도 웃으면서 얘기할 수 있는 사람이에요. 그게 진짜 여유 있는 거예요.'
+      ]
+    }
+  };
+
+  const craveIdx = Math.min(c[0] !== undefined ? c[0] : 0, 3);
+  const storyTypeIdx = Math.min(c[6] !== undefined ? c[6] : 0, 3);
+  const hiddenCharm = (charmData[res.type]?.crave[craveIdx] || charmData.A.crave[0])
+    + ' ' + (charmData[res.type]?.story[storyTypeIdx] || charmData.A.story[0]);
+
+  // ── 약점: Q1(몇끼) + Q2(배고프면) 조합 ──
+  const weakMap = {
+    A: [
+      ['에너지가 넘쳐서 가끔 주변 사람들이 지칠 수 있어요. 페이스 조절이 필요한 순간을 놓치는 게 아킬레스건이에요.', '배고플 때 예민해지는 게 자신도 알지만, 그 순간 감정 조절이 잘 안 되는 게 아킬레스건이에요.'],
+      ['한 끼를 거르는 게 몸뿐 아니라 감정에도 영향을 주는 타입인데, 그걸 스스로 잘 못 인지해요.', '두 끼 생활이 지속되면 에너지가 들쑥날쑥해질 수 있어요.'],
+      ['한 끼로 버티다 보면 집중력이 떨어지는 걸 느끼는데, 그게 생산성에 영향을 줘요.', '아무거나 먹는 습관이 장기적으로는 에너지를 무너뜨릴 수 있어요.']
+    ],
+    B: [
+      ['감정을 음식으로 달래는 패턴이 있어서, 힘든 감정을 직접 다루기보다 회피할 때가 있어요.', '속으로 쌓다가 한 번에 터트리는 패턴이 관계에서 오해를 만들 수 있어요.'],
+      ['두 끼 생활 중 식사 시간을 스트레스 해소 시간으로 쓰다 보면 과식으로 이어질 수 있어요.', '기분이 나빠도 티 안 내다가 나중에 한꺼번에 말하는 패턴이 상대방을 당황하게 해요.'],
+      ['한 끼 먹을 때 감정적인 영향을 많이 받아요. 기분 안 좋으면 밥도 맛없는 타입이에요.', '달달한 걸로 감정을 달래다 보면 정작 감정 원인을 해결하지 못하는 경우가 생겨요.']
+    ],
+    C: [
+      ['완벽주의가 식습관에까지 뻗어있어서, 루틴이 무너지면 전체적으로 흔들리는 느낌이 들어요.', '배고프다는 신호도 이성적으로 판단하려다가 적절한 타이밍을 놓칠 수 있어요.'],
+      ['효율적으로 먹는 게 좋지만 그게 지속되면 식사 자체의 즐거움을 잃어버릴 수 있어요.', '스트레스를 빨리 처리하려다가 감정이 제대로 소화되지 않는 경우가 있어요.'],
+      ['한 끼를 완벽하게 먹으려는 욕구 때문에 오히려 굶는 선택을 하는 패턴이 있을 수 있어요.', '감정을 너무 빠르게 정리하려다 보면 나중에 다시 올라오는 경우가 있어요.']
+    ],
+    D: [
+      ['대충 때우는 게 습관이 되면 자기 자신을 방치하는 느낌이 드는 시기가 올 수 있어요.', '감정 표현이 적어서 가끔 주변 사람들이 이 사람 속을 알 수 없다고 느껴요.'],
+      ['무뎌진 것처럼 보일 수 있는데, 사실 속에서는 꽤 많이 쌓이고 있는 상태일 수 있어요.', '아무거나 먹는 습관이 장기적으로 에너지를 무너뜨릴 수 있어요.'],
+      ['한 끼로 버티는 게 지속되면 몸과 마음 모두 서서히 지쳐가요. 자기 자신을 좀 더 챙겨야 할 타이밍이에요.', '말 없이 혼자 삭히다 보면 가까운 사람도 뭘 도와줘야 할지 모르는 상황이 생겨요.']
+    ]
+  };
+
+  const wMeal = Math.min(mealIdx, 2);
+  const wHungry = Math.min(Math.floor(c[2]/2) || 0, 1);
+  const weakness = (weakMap[res.type]?.[wMeal]?.[wHungry]) || weakMap.A[0][0];
+
+  // ── 결정적 한마디: type + Q4(연애) + Q6(썰) 조합 ──
+  const reasonMap = {
+    A: {
+      '00': '마라탕처럼 자극적이고 중독적인 사람인데, 그 강도를 감당할 수 있는 사람이 있어요. 찾으면 돼요.',
+      '01': '뜨겁게 살았던 흔적이 지금의 당신을 만들었어요. 그 썰들이 쌓여 이야기가 되고, 당신이 돼요.',
+      '02': '치열하게 살고 있는 거 맞아요. 근데 그 열기가 마라탕처럼 사람들을 끌어당기는 이유가 되고 있어요.',
+      '03': '흑역사도 연애도 다 이 사람 이야기예요. 부끄럽지 않아도 돼요, 그게 당신을 살아있게 만드니까요.',
+      '10': '손절할 수 있는 사람이 진짜 자기를 지킬 줄 아는 사람이에요. 그 결단력이 당신의 진짜 힘이에요.',
+      '11': '뭐든 직접 정하고 실행하는 사람이에요. 그 추진력이 당신을 여기까지 오게 한 거예요.',
+      '20': '회사에서 지쳐도 여전히 열심히 하고 있죠? 그 에너지가 마라탕처럼 뜨거운 거예요.',
+      '21': '이불킥 할 기억도, 끓어오르는 감정도, 다 당신이라는 사람의 일부예요.',
+      '30': '삼각김밥처럼 빠르게 시작하고 빠르게 끝내도, 그 안에서 배우는 게 있었을 거예요.',
+      '31': '강렬하게 살아온 흔적들이 있어요. 그게 지금 이 사람을 만든 거예요. 부끄럽지 않아요.',
+    },
+    B: {
+      '00': '달달한 사람이라고 만만하게 보면 안 돼요. 케이크처럼 겹겹이 쌓인 깊이가 있어요.',
+      '01': '연애에서 상처받았어도 여전히 사람에게 온기를 주는 사람이에요. 그게 진짜 강한 거예요.',
+      '02': '일도 열심히, 감정도 풍부하게. 그 양면을 다 가진 게 당신의 진짜 매력이에요.',
+      '03': '흑역사를 웃으며 얘기할 수 있는 사람이에요. 그 회복력이 당신의 가장 큰 무기예요.',
+      '10': '손절하면서도 상대를 탓하지 않는 사람이에요. 그 성숙함이 케이크처럼 달고 깊어요.',
+      '11': '기념일 잊지 않고, 작은 거 챙기는 사람이에요. 그게 당연한 게 아닌데 당신은 자연스럽게 해요.',
+      '20': '힘든 상황에서도 달달한 순간을 찾아내는 능력이 있어요. 그게 생존 본능이자 매력이에요.',
+      '21': '흑역사도 케이크처럼 레이어로 쌓아서 지금의 당신을 만들었어요.',
+      '30': '갑자기 시작됐어도 진심이었어요. 그 진심이 당신을 더 깊은 사람으로 만들었어요.',
+      '31': '이불킥 할 기억이 있는 건 그만큼 감정적으로 살았다는 거예요. 그게 당신의 온기예요.',
+    },
+    C: {
+      '00': '와인처럼 처음엔 어렵지만, 알아갈수록 "이 사람 진짜다" 싶은 순간이 오게 돼 있어요.',
+      '01': '연애에서 뭘 원하는지 이제 알게 됐을 거예요. 그 명확함이 다음 연애를 더 잘 만들어줘요.',
+      '02': '치열하게 살면서도 자기 기준을 잃지 않는 사람이에요. 그 기준이 와인처럼 숙성되고 있어요.',
+      '03': '실수도 했고 흑역사도 있지만, 그게 완벽주의자처럼 보이는 당신의 인간적인 면이에요.',
+      '10': '선 긋는 게 차갑게 보일 수 있지만, 자기 자신을 지키는 거예요. 그 판단력이 장점이에요.',
+      '11': '모든 게 이유가 있는 사람이에요. 메뉴 고르는 것도, 사람 사귀는 것도 다 생각이 있어요.',
+      '20': '회사에서 치이면서도 원칙을 지키려는 사람이에요. 그 원칙이 나중에 당신을 증명해줄 거예요.',
+      '21': '이불킥 기억도 와인처럼 숙성시키면 나중엔 무기가 돼요. 진짜로요.',
+      '30': '빠르게 끝났어도 그 경험이 당신의 사람 보는 눈을 날카롭게 만들었어요.',
+      '31': '완벽하지 않았던 순간들이 와인의 산도처럼 당신을 복잡하고 깊은 사람으로 만들었어요.',
+    },
+    D: {
+      '00': '해장국처럼 있어야 완성되는 존재예요. 그 든든함이 주변 사람들이 당신을 찾는 이유예요.',
+      '01': '연애에서 상처받았어도 여전히 곁에 있어주는 사람이에요. 그 진국 같은 진심이 당신이에요.',
+      '02': '힘든 상황에서도 자리 지키는 사람이에요. 그 묵직함이 당신의 진짜 가치예요.',
+      '03': '흑역사도 해장국처럼 다음날 새벽에 생각나는 이야기가 돼요. 그게 당신 매력이에요.',
+      '10': '손절할 때도 조용히 하는 사람이에요. 말 없이 사라지는 게 더 무서운 법이에요.',
+      '11': '결정하면 바꾸지 않는 사람이에요. 그 묵직한 신뢰감이 사람들이 당신 곁에 있는 이유예요.',
+      '20': '지쳐도 티 안 내면서 버티고 있죠? 당신이 있어서 주변이 안정되는 거 알아요.',
+      '21': '흑역사를 웃으면서 얘기할 수 있는 여유가 당신의 가장 큰 무기예요.',
+      '30': '빠르게 끝났어도 그 사람 생각은 오래 하는 타입이에요. 그 깊이가 당신이에요.',
+      '31': '대충 사는 것 같아도 사실 제일 단단하게 살고 있는 사람이에요.',
+    }
+  };
+
+  const loveKey = String(loveIdx);
+  const storyKey = String(storyTypeIdx);
+  const comboKey = loveKey + storyKey;
+  const reason = reasonMap[res.type]?.[comboKey]
+    || reasonMap[res.type]?.['00']
+    || '지금 이 선택들이 모여 당신이라는 사람을 만들고 있어요.';
+
+  // ── 태그: type + Q6 조합 ──
+  const tagPool = {
+    A: ['#마라탕인간','#자극주의','#감정직진','#중독매력','#배고프면피해','#연애고수','#매운맛인생','#썰부자','#열정과잉','#직진형인간'],
+    B: ['#케이크인간','#달달함주의','#기념일장인','#감성충만','#이불킥장인','#조용한낭만주의','#디저트치료사','#감정부자','#소확행마스터','#공감능력Max'],
+    C: ['#와인인간','#숙성형인간','#천천히알아가자','#1회차는모름','#반전매력','#논리와감성사이','#기준있는사람','#완벽주의자의반전','#와인처럼깊어짐','#효율마스터'],
+    D: ['#해장국인간','#진국인생','#있어야완성','#새벽세시에생각남','#조용한강자','#말없는믿음직함','#묵직한존재감','#아무거나형인간','#쿨한척진심임','#든든한사람']
+  };
+  const baseTags = tagPool[res.type] || tagPool.A;
+  // Q4, Q6 기반 추가 태그
+  const extraTags = {
+    love: [['#마라탕연애','#중독연애'], ['#달달한연애','#기념일연애'], ['#와인연애','#숙성형연애'], ['#삼각김밥연애','#빠른이별']],
+    story: [['#연애고수','#연애썰부자'], ['#손절장인','#기준있는인간'], ['#회사인간','#치열한삶'], ['#흑역사부자','#이불킥마스터']]
+  };
+  const extraL = extraTags.love[loveIdx] || [];
+  const extraS = extraTags.story[storyTypeIdx] || [];
+  const allTags = [...new Set([...baseTags.slice(0,3), ...extraL.slice(0,1), ...extraS.slice(0,1)])].slice(0,5);
+
+  // ── 최종 한줄요약 결정 (Q2 우선) ──
+  const finalHl = hlMap[res.type]?.[0]?.[Math.min(c[2]||0,3)] || hlMap.A[0][0];
+
+  return renderQuizAI_local({ hl: finalHl, foodPsy, relPsy, hiddenCharm, weakness, reason, tags: allTags });
 }
 
-async function doStoryOneliner(res,story,foodName,mood,emotionDetail='',storyContext={},moodIntensity='medium'){
-  if(!story)return null;
-  const moodData=MOOD_MAP[mood]||MOOD_MAP.neutral;
-  const intensityDesc=moodIntensity==='high'?'감정이 터질 듯 강렬하게':moodIntensity==='low'?'감정이 잔잔하게':'감정이 적당히';
-
-  const prompt=`당신은 썰 전문 콘텐츠 크리에이터예요.
-이 사람 썰을 읽고 나서 "ㅋㅋㅋㅋ 이거 완전 나잖아" 또는 "헉 진짜?" 반응을 이끌어내는 게 목표예요.
-유머, 밈, 현실 공감, 약간의 드립이 핵심이에요.
-
-━━ 썰 정보 ━━
-[전체 내용] "${story}"
-[주인공 음식] ${foodName}
-[감정] ${moodData.label} ${moodData.emoji} — ${intensityDesc} 드러남
-[감정 뉘앙스] ${emotionDetail||moodData.label}
-[상황] ${storyContext.situation||'미파악'}
-[등장 관계] ${storyContext.relation||'미파악'}
-[핵심 사건] ${storyContext.turning_point||'미파악'}
-[썰의 톤] ${storyContext.tone||'미파악'}
-[작성자 성향] ${res.food} 타입
-
-━━ 출력 형식 (라벨 정확히, 절대 빠뜨리지 말 것) ━━
-
-썰한줄: [이 썰을 한 줄로 압축. 유머/밈 스타일로. 읽으면 피식 or 찡 or 납득. 이모지 1-2개 포함. 예시 느낌: "치킨 앞에서 차인 뒤 치킨으로 치유한 남자의 미친 회복력 🍗" / "사실상 본인이 제일 억울한 손절 썰 ㅋㅋ" / "연락 안 되는 사람한테 라면 먹으러 가자고 문자 보낸 인간 🍜" 이 정도 톤]
-
-이사람에게: [뻔한 위로 말고, 이 썰 당사자에게만 해주는 현실 공감 한 마디. "맞아 나라도 그랬을 것 같아"하는 톤. 1-2문장. 드립 살짝 가능]
-
-음식심리: [왜 하필 "${foodName}"이 이 썰의 주인공인지. ${foodName}의 특성(맛/온도/먹는 상황/질감)이 이 감정/상황과 어떻게 겹치는지. 3문장. 구체적으로. "아 그래서 이 음식이었구나" 싶게]
-
-캐릭터한마디: [${foodName} 캐릭터가 이 상황에서 할 법한 말 한 마디. "${foodName} 캐릭터답게" + 이 썰의 감정이 담긴 말. 귀엽거나 웃기거나 공감되게. 따옴표 없이]
-
-태그: #태그1 #태그2 #태그3 #태그4 #태그5 (밈/신조어/현실공감 스타일, 이 썰에 딱 맞는 것으로)
-
-"힘내세요" 금지. 뻔한 위로 금지. 이 썰만을 위한 맞춤 반응.`;
-  return await callGemini(prompt,900);
+function renderQuizAI_local({ hl, foodPsy, relPsy, hiddenCharm, weakness, reason, tags }) {
+  const sections = [
+    { icon: '🍽️', title: '음식으로 읽히는 나', content: foodPsy },
+    { icon: '🤝', title: '관계 맺는 방식', content: relPsy },
+    { icon: '✨', title: '나도 몰랐던 내 매력', content: hiddenCharm },
+  ];
+  return `<div class="q-ai-section"><div class="q-ai-section-title">✦ 한줄 요약</div><p style="font-weight:700;font-size:15px;color:var(--dark);line-height:1.6">${hl}</p></div>
+<div class="q-ai-section"><div class="q-ai-section-title">✦ 심층 분석</div>${sections.map(s => `<div style="margin-bottom:12px;padding:12px 14px;background:rgba(212,149,106,.06);border-radius:12px;border-left:3px solid var(--toast)"><p style="font-size:12px;font-weight:700;color:var(--toast);margin-bottom:6px">${s.icon} ${s.title}</p><p style="font-size:13px;color:var(--dark);line-height:1.85">${s.content}</p></div>`).join('')}</div>
+${weakness ? `<div class="q-ai-section"><div class="q-ai-section-title">⚡ 아킬레스건</div><p style="font-size:13px;color:var(--muted);line-height:1.75;padding:12px 14px;background:rgba(44,24,16,.04);border-radius:12px;font-style:italic">${weakness}</p></div>` : ''}
+<div class="q-ai-section"><div class="q-ai-section-title">✦ 결정적 한마디</div><p style="font-size:14px;font-weight:600;color:var(--dark);border-left:3px solid var(--toast);padding:14px 16px;background:rgba(212,149,106,.07);border-radius:0 12px 12px 0;line-height:1.9">"${reason}"</p></div>
+<div style="margin-top:4px">${tags.map(t => `<span class="q-ai-tag">${t}</span>`).join('')}</div>`;
 }
 
 
-function renderQuizAI(text,res){
-  const hl=getField(text,'한줄요약')||`${res.food} 타입의 독보적인 당신 ✨`;
-  const t1=getField(text,'특징1'),t2=getField(text,'특징2'),t3=getField(text,'특징3');
-  const traits=[t1,t2,t3].filter(Boolean);
-  if(!traits.length)traits.push('읽을수록 공감 가는 성향이에요.','주변이 먼저 알아보는 숨은 매력이 있어요.','자기 자신을 잘 아는 사람이에요.');
-  const weakness=getField(text,'약점');
-  const reason=getField(text,'결정적한마디')||`${res.food}처럼 알고 보면 더 깊어지는 사람이에요.`;
-  const tags=(getField(text,'태그').match(/#[^\s#]+/g)||[]).slice(0,5);
-  if(!tags.length)tags.push('#나다운썰','#썰푸드','#찐분석','#음식성향');
-  return`<div class="q-ai-section"><div class="q-ai-section-title">✦ 한줄 요약</div><p style="font-weight:700;font-size:15px;color:var(--dark);line-height:1.6">${hl}</p></div>
-<div class="q-ai-section"><div class="q-ai-section-title">✦ 이런 사람이에요</div>${traits.map((t,i)=>`<div style="margin-bottom:10px;padding:10px 12px;background:rgba(212,149,106,.06);border-radius:10px;border-left:3px solid var(--toast)"><p style="font-size:11px;font-weight:700;color:var(--toast);margin-bottom:4px">특징 ${i+1}</p><p style="font-size:13px;color:var(--dark);line-height:1.7">${t}</p></div>`).join('')}</div>
-${weakness?`<div class="q-ai-section"><div class="q-ai-section-title">⚡ 아킬레스건</div><p style="font-size:13px;color:var(--muted);line-height:1.7;padding:10px 12px;background:rgba(44,24,16,.04);border-radius:10px;font-style:italic">${weakness}</p></div>`:''}
-<div class="q-ai-section"><div class="q-ai-section-title">✦ 결정적 한마디</div><p style="font-size:14px;font-weight:600;color:var(--dark);border-left:3px solid var(--toast);padding:12px 14px;background:rgba(212,149,106,.07);border-radius:0 10px 10px 0;line-height:1.8">"${reason}"</p></div>
-<div style="margin-top:4px">${tags.map(t=>`<span class="q-ai-tag">${t}</span>`).join('')}</div>`;
-}
-
-function localQuizAI(res){
-  const db={
-    A:{hl:`🌶️🔥 한 번 맛보면 자꾸 생각나는 마라탕형 인간`,traits:[`배고플 때 예민해지는 건 감정을 숨기지 않는 솔직함이에요. 친구들은 "쟤 배고프면 피해야 해"라고 하지만, 그게 오히려 신뢰가 가는 이유예요.`,`메뉴 정할 때 내가 정하는 타입 — 단톡에 "아무거나"가 올라오면 제일 먼저 "그럼 여기 어때요?" 하는 사람이에요.`,`자극적인 걸 좋아하는 덕분에 삶의 온도가 항상 높아요. 지루할 틈이 없어서 주변 사람들이 항상 활기차져요.`],weakness:`처음 보는 사람에게 너무 강한 인상을 줄 수 있어요.`,reason:`마라탕처럼 처음엔 "이게 맞나?" 싶다가도, 결국 다음에 또 찾게 되는 사람이에요.`,tags:['#자극주의','#감정직진','#중독매력','#마라탕인간','#배고프면피해']},
-    B:{hl:`🎂🌙 조용히 당신 생일 기억하는 케이크형 인간`,traits:[`스트레스 받으면 달달한 걸 찾는 — 감정을 폭발시키는 대신 편의점 디저트 코너에서 혼자 조용히 해결하는 자기 돌봄의 고수예요.`,`이불 속 흑역사가 많다면, 감수성이 그만큼 풍부하다는 뜻이에요. 남들이 그냥 지나친 상대방의 한마디를 며칠째 곱씹는 사람이에요.`,`겉으론 평온해 보이지만 속으론 끊임없이 생각 중 — 그 생각들이 가끔 명대사로 터져나와요.`],weakness:`기분 나빠도 티 안 내다가 나중에 한꺼번에 터지는 경우가 있어요.`,reason:`딸기케이크처럼 기분 좋을 때도, 위로가 필요할 때도, 결국 생각나는 사람이에요.`,tags:['#감성충만','#기념일장인','#조용한낭만주의','#케이크인간','#이불킥장인']},
-    C:{hl:`🍷⏳ 1회차엔 절대 모르는 와인형 인간`,traits:[`세끼 다 챙기는 규칙파 — 겉으론 철저해 보이지만 사실 자기 자신한테 가장 엄격해요. 남한테는 "괜찮아요~" 하면서 혼자선 기준이 세 배예요.`,`스트레스 받으면 빨리 먹고 해결하는 타입 — 밥을 효율의 관점으로 보는 사람이에요. "밥이 뭔 취미야, 연료지" 하다가도 맛있는 거 앞에서 무너지는 반전 있어요.`,`처음 만나면 조금 어렵게 느껴지지만, 가까워지면 완전 다른 사람 나와요.`],weakness:`처음 인상이 너무 완벽해 보여서 사람들이 먼저 말 걸기 어려워해요.`,reason:`와인처럼 시간이 지날수록 깊어지는 맛 — 빨리 판단하면 이 사람 모르는 거예요.`,tags:['#숙성형인간','#천천히알아가자','#1회차는모름','#와인인간','#반전매력']},
-    D:{hl:`🍲🌙 새벽 3시에 생각나는 해장국형 인간`,traits:[`배고파도 그냥 아무거나 먹는 — 사소한 것에 에너지 쏟지 않는 사람이에요. 메뉴 고르는 데 30분 쓰는 사람들 옆에서 "아무거나 주세요" 하고 바로 결정해요.`,`조용히 오래 참다가 한 번에 정리하는 타입이에요. 단톡에서 말 없이 나가거나, 연락이 서서히 줄어드는 걸로 마음을 표현해요.`,`거창한 표현은 없어도 곁에 있으면 왠지 안심이 되는 사람이에요.`],weakness:`감정 표현이 적다 보니 가끔 속을 알 수 없다는 말을 들어요.`,reason:`해장국처럼 있을 때는 당연하고, 없으면 진짜 빈자리가 느껴지는 사람이에요.`,tags:['#진국인생','#있어야완성','#새벽세시에생각나는사람','#해장국인간','#조용한강자']}
-  }[res.type];
-  return renderQuizAI(`한줄요약: ${db.hl}\n특징1: ${db.traits[0]}\n특징2: ${db.traits[1]}\n특징3: ${db.traits[2]}\n약점: ${db.weakness}\n결정적한마디: ${db.reason}\n태그: ${db.tags.join(' ')}`,res);
-}
 
 // ─────────────────────────────────────
 //  PHONE
