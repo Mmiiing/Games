@@ -822,6 +822,26 @@
   </div>
 </div>
 
+<!-- ════════════ NETLIFY HIDDEN FORM (빌드 타임 감지용) ════════════ -->
+<form name="ssulFood" netlify netlify-honeypot="bot-field" hidden>
+  <input type="hidden" name="form-name" value="ssulFood"/>
+  <input type="hidden" name="bot-field"/>
+  <input type="hidden" name="제출일시"/>
+  <input type="hidden" name="연락처"/>
+  <input type="hidden" name="음식유형"/>
+  <input type="hidden" name="성향태그"/>
+  <input type="hidden" name="썰_주인공음식"/>
+  <input type="hidden" name="녹음_텍스트"/>
+  <input type="hidden" name="감정"/>
+  <input type="hidden" name="Q1_답변"/>
+  <input type="hidden" name="Q2_답변"/>
+  <input type="hidden" name="Q3_답변"/>
+  <input type="hidden" name="Q4_답변"/>
+  <input type="hidden" name="Q5_답변"/>
+  <input type="hidden" name="Q6_답변"/>
+  <input type="hidden" name="Q7_답변"/>
+</form>
+
 <script>
 // ─────────────────────────────────────
 //  NAV
@@ -865,6 +885,8 @@ const scoreResults=[
   {type:"D",e:"🍲",food:"해장국",desc:"힘든 날 가장 먼저 생각나는 사람. 말 없어도 곁에 있으면 든든하고, 거창하지 않아도 진심이 느껴지는 존재예요.",tag:"#진국인생 #있어야완성"},
 ];
 let answers=[],answerLabels=[],currentQ=0,selectedIdx=null;
+// 결과 저장용 글로벌
+let savedResult={type:'',food:'',tag:''},savedStory='',savedFoodName='',savedMood='',savedKeywords=[],savedStoryContext={};
 
 function initQuiz(){answers=[];answerLabels=[];currentQ=0;selectedIdx=null;renderProgress();renderQuestion();}
 function renderProgress(){const p=document.getElementById('quiz-progress');p.innerHTML='';questions.forEach((_,i)=>{const d=document.createElement('div');d.className='quiz-dot'+(i===currentQ?' active':i<currentQ?' done':'');p.appendChild(d);});document.getElementById('quiz-step-label').textContent=`${currentQ+1} / ${questions.length}`;}
@@ -1192,7 +1214,7 @@ async function buildResult(foodName){
     loadingMsg.innerHTML='음성을 텍스트로 변환 중...<br><span style="font-size:12px;opacity:.6">Gemini가 받아쓰고 있어요 📝</span>';
     const mime=getSupportedMimeType()||'audio/webm';
     const sttResult=currentBlob?await transcribeAudio(currentBlob,mime):null;
-    story=sttResult?.transcript||'';
+    story=sttResult?.transcript||''; savedStory=story;
     keywords=sttResult?.keywords||[];
     emotionDetail=sttResult?.emotion_detail||'';
     storyContext=sttResult?.story_context||{};
@@ -1438,6 +1460,7 @@ async function buildResult(foodName){
 </svg>`
   };
   document.getElementById('personality-emoji').innerHTML=charSVGs[res.type]||res.e;
+  savedResult=res; savedFoodName=foodName||''; savedMood=mood;
   document.getElementById('personality-food-type').textContent=`${res.food} 타입`;
   document.getElementById('personality-type-tag').textContent=res.tag;
   document.getElementById('personality-desc').textContent=res.desc;
@@ -1906,7 +1929,38 @@ ${weakness ? `<div class="q-ai-section"><div class="q-ai-section-title">⚡ 아�
 let consented=false;
 function toggleConsent(){consented=!consented;document.getElementById('consent-cb').classList.toggle('checked',consented);}
 function formatPhone(el){let v=el.value.replace(/\D/g,'').substring(0,11);if(v.length<=3)el.value=v;else if(v.length<=7)el.value=v.slice(0,3)+'-'+v.slice(3);else el.value=v.slice(0,3)+'-'+v.slice(3,7)+'-'+v.slice(7);}
-function submitPhone(){const p=document.getElementById('phone-input').value.trim();if(p&&!consented){alert('개인정보 활용 동의를 체크해주세요!');return;}goTo('page-done');}
+function submitPhone(){
+  const p=document.getElementById('phone-input').value.trim();
+  if(p&&!consented){alert('개인정보 활용 동의를 체크해주세요!');return;}
+  submitToNetlify(p);
+}
+
+async function submitToNetlify(phone){
+  // 7개 질문 답변 정리
+  const qAnswers={};
+  answerLabels.forEach((item,qi)=>{
+    const c=item.opts[item.chosen];
+    qAnswers[`Q${qi+1}_답변`]=`${c.e} ${c.t}`;
+  });
+
+  const formData=new FormData();
+  formData.append('form-name','ssulFood');
+  formData.append('제출일시', new Date().toLocaleString('ko-KR'));
+  formData.append('연락처', phone||'미제공');
+  formData.append('음식유형', savedResult.food||'');
+  formData.append('성향태그', savedResult.tag||'');
+  formData.append('썰_주인공음식', savedFoodName||'없음');
+  formData.append('녹음_텍스트', savedStory||'없음');
+  formData.append('감정', savedMood||'');
+  Object.entries(qAnswers).forEach(([k,v])=>formData.append(k,v));
+
+  try{
+    await fetch('/', {method:'POST', body:formData});
+  }catch(e){
+    console.warn('Netlify form 전송 실패 (로컬 환경에선 정상):', e);
+  }
+  goTo('page-done');
+}
 
 // ─────────────────────────────────────
 //  INIT
