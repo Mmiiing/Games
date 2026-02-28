@@ -1545,6 +1545,44 @@ async function buildResult(foodName){
 }
 
 // ─────────────────────────────────────
+//  STORY ONELINER (AI)
+// ─────────────────────────────────────
+async function doStoryOneliner(res,story,foodName,mood,emotionDetail='',storyContext={},moodIntensity='medium'){
+  if(!story)return null;
+  const moodData=MOOD_MAP[mood]||MOOD_MAP.neutral;
+  const intensityDesc=moodIntensity==='high'?'감정이 터질 듯 강렬하게':moodIntensity==='low'?'감정이 잔잔하게':'감정이 적당히';
+  const prompt=`당신은 썰 전문 콘텐츠 크리에이터예요.
+이 사람 썰을 읽고 나서 "ㅋㅋㅋㅋ 이거 완전 나잖아" 또는 "헉 진짜?" 반응을 이끌어내는 게 목표예요.
+유머, 밈, 현실 공감, 약간의 드립이 핵심이에요.
+
+━━ 썰 정보 ━━
+[전체 내용] "${story}"
+[주인공 음식] ${foodName}
+[감정] ${moodData.label} ${moodData.emoji} — ${intensityDesc} 드러남
+[감정 뉘앙스] ${emotionDetail||moodData.label}
+[상황] ${storyContext.situation||'미파악'}
+[등장 관계] ${storyContext.relation||'미파악'}
+[핵심 사건] ${storyContext.turning_point||'미파악'}
+[썰의 톤] ${storyContext.tone||'미파악'}
+[작성자 성향] ${res.food} 타입
+
+━━ 출력 형식 (라벨 정확히, 절대 빠뜨리지 말 것) ━━
+
+썰한줄: [이 썰을 한 줄로 압축. 유머/밈 스타일로. 읽으면 피식 or 찡 or 납득. 이모지 1-2개 포함]
+
+이사람에게: [뻔한 위로 말고, 이 썰 당사자에게만 해주는 현실 공감 한 마디. 1-2문장]
+
+음식심리: [왜 하필 "${foodName}"이 이 썰의 주인공인지. ${foodName}의 특성이 이 감정/상황과 어떻게 겹치는지. 3문장]
+
+캐릭터한마디: [${foodName} 캐릭터가 이 상황에서 할 법한 말 한 마디. 귀엽거나 웃기거나 공감되게. 따옴표 없이]
+
+태그: #태그1 #태그2 #태그3 #태그4 #태그5
+
+"힘내세요" 금지. 뻔한 위로 금지.`;
+  return await callGemini(prompt,900);
+}
+
+// ─────────────────────────────────────
 //  DEEP LOCAL ANALYSIS (조합 기반)
 // ─────────────────────────────────────
 function deepLocalAnalysis(answerLabels, res) {
