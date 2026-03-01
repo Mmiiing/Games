@@ -606,10 +606,10 @@
           </div>
 
           <div class="story-ai-box">
-            <div class="story-ai-box-title">🍽️ 왜 하필 그 음식이었을까?</div>
+            <div class="story-ai-box-title">📖 이 캐릭터의 숨겨진 스토리</div>
             <div class="loading-row" id="story-ai-loading">
               <div class="ai-dots"><span></span><span></span><span></span></div>
-              <span>분석 중...</span>
+              <span>스토리 만드는 중...</span>
             </div>
             <div class="story-ai-content" id="story-ai-content" style="display:none"></div>
           </div>
@@ -1192,17 +1192,20 @@ async function buildResult(foodName){
         const toYou=getField(text,'이사람에게');
         const tags=(getField(text,'태그').match(/#[^\s#]+/g)||[]).slice(0,5);
         const charQuote=getField(text,'캐릭터한마디');
-        const foodPsy=getField(text,'음식심리');
+        const charStory=getField(text,'캐릭터스토리');
 
         if(summary){olText.textContent=summary;olText.style.display='block';}
         if(toYou){olTo.textContent=`"${toYou}"`;olTo.style.display='block';}
         if(tags.length){olTags.innerHTML=tags.map(t=>`<span class="ai-tag" style="background:rgba(255,255,255,.12);color:rgba(255,255,255,.8);border:none">${t}</span>`).join('');olTags.style.display='block';}
         if(charQuote){document.getElementById('char-quote-text').textContent=charQuote;document.getElementById('char-quote-wrap').style.display='block';}
 
-        // ★ 수정 2: foodPsy 성공/실패 여부와 무관하게 로딩 항상 숨김
         document.getElementById('story-ai-loading').style.display='none';
         const el=document.getElementById('story-ai-content');
-        el.innerHTML=`<p style="color:#2a3a6a;line-height:1.9;font-size:13px">${foodPsy||'이 음식과 당신의 썰, 참 잘 어울리는 조합이에요 🍽️'}</p>`;
+        if(charStory){
+          el.innerHTML=`<p style="color:rgba(255,255,255,.55);font-size:10px;font-weight:700;letter-spacing:1.5px;margin-bottom:10px">✦ AI가 지어낸 이 캐릭터의 이야기</p><p style="color:rgba(255,255,255,.88);line-height:2;font-size:13px;font-style:italic">${charStory}</p>`;
+        } else {
+          el.innerHTML=`<p style="color:rgba(255,255,255,.6);line-height:1.9;font-size:13px">스토리를 불러오지 못했어요 😅</p>`;
+        }
         el.style.display='block';
 
       } else {
@@ -1253,7 +1256,7 @@ async function doStoryOneliner(res,story,foodName,mood,emotionDetail='',storyCon
 
 이사람에게: [이 썰 당사자에게만 해주는 현실 공감 한 마디. 1-2문장]
 
-음식심리: [왜 하필 "${foodName}"이 이 썰의 주인공인지. ${foodName}의 특성이 이 감정/상황과 어떻게 겹치는지. 3문장]
+캐릭터스토리: [${foodName} 캐릭터가 이 썰과 똑같은 상황을 겪는 짧은 이야기를 지어내줘. 3인칭으로, 마치 동화나 웹툰 한 장면처럼. 썰 내용을 기반으로 하되 캐릭터가 ${foodName}이라는 걸 녹여서. 읽으면 "맞아 이거야 ㅋㅋ" 또는 "아 찡해" 반응이 나오게. 4~5문장]
 
 캐릭터한마디: [${foodName} 캐릭터가 이 상황에서 할 법한 말 한 마디. 귀엽거나 웃기거나 공감되게. 따옴표 없이]
 
