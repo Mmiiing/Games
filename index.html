@@ -856,7 +856,7 @@ async function generateCharImage(foodName,mood,moodIntensity='medium',emotionDet
   throw new Error('이미지 생성 실패');
 }
 
-function getField(text,key){if(!text)return'';const t=text.replace(/\*\*/g,'');const pat=new RegExp('^'+key+':\\s*(.+?)(?=\n[A-Z]+:|$)','ms');const m=t.match(pat);if(!m)return'';return m[1].trim();}
+function getField(text,key){if(!text)return'';const t=text.replace(/\*\*/g,'');const pats=[new RegExp('^'+key+':\\s*(.+?)(?=\n(?:[A-Z]+:|\[[A-Z]+\])|$)','ms'),new RegExp('\\['+key+'\\]\\s*\\n?(.+?)(?=\n(?:[A-Z]+:|\[[A-Z]+\])|$)','ms')];for(const pat of pats){const m=t.match(pat);if(m&&m[1].trim())return m[1].trim();}return '';}
 
 function setLoadingStep(id){
   ['lstep-stt','lstep-mood','lstep-img','lstep-analysis'].forEach(sid=>{const el=document.getElementById(sid);el.classList.remove('active','done');if(sid===id)el.classList.add('active');});
