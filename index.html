@@ -61,119 +61,43 @@
   .quiz-nav-row .btn-next { flex:1; margin-top:18px; }
   #prev-only-wrap { margin-top:14px; }
 
-  /* ══ RECORD PAGE ══ */
+  /* RECORD PAGE */
   #page-record { background:var(--cream); }
   .record-wrap { max-width:640px; margin:0 auto; padding:0 20px 80px; flex:1; }
-
-  .food-input-card {
-    background:linear-gradient(135deg,#FFF9F0,#FFF3E0);
-    border-radius:20px; padding:22px;
-    border:1.5px solid rgba(212,149,106,.3);
-    box-shadow:0 4px 24px rgba(44,24,16,.06);
-    margin-bottom:18px;
-  }
+  .food-input-card { background:linear-gradient(135deg,#FFF9F0,#FFF3E0); border-radius:20px; padding:22px; border:1.5px solid rgba(212,149,106,.3); box-shadow:0 4px 24px rgba(44,24,16,.06); margin-bottom:18px; }
   .food-input-card label { display:block; font-size:12px; font-weight:700; color:var(--muted); letter-spacing:.5px; margin-bottom:10px; }
   .food-input-row { display:flex; gap:10px; align-items:center; }
-  .food-text-input {
-    flex:1; padding:13px 16px;
-    border-radius:12px; border:2px solid var(--border);
-    background:#FDFAF6; font-size:15px; color:var(--dark);
-    font-family:'Noto Sans KR',sans-serif; outline:none;
-    transition:border-color .2s;
-  }
+  .food-text-input { flex:1; padding:13px 16px; border-radius:12px; border:2px solid var(--border); background:#FDFAF6; font-size:15px; color:var(--dark); font-family:'Noto Sans KR',sans-serif; outline:none; transition:border-color .2s; }
   .food-text-input:focus { border-color:var(--toast); }
   .food-text-input::placeholder { color:rgba(122,92,74,.4); }
   .food-emoji-btn { font-size:26px; flex-shrink:0; cursor:default; }
-
   .theme-row { margin-top:14px; }
   .theme-chips-label { font-size:11px; font-weight:700; color:var(--muted); letter-spacing:.5px; margin-bottom:8px; }
   .theme-chips { display:flex; flex-wrap:wrap; gap:7px; }
   .theme-chip { padding:6px 14px; border-radius:20px; border:1.5px solid var(--border); background:transparent; font-size:12px; color:var(--muted); cursor:pointer; transition:all .2s; font-family:'Noto Sans KR',sans-serif; }
   .theme-chip:hover { border-color:var(--toast); color:var(--toast); }
   .theme-chip.active { background:var(--dark); border-color:var(--dark); color:white; }
-
-  .recorder-zone {
-    background:white;
-    border-radius:24px; padding:28px 24px;
-    border:2px solid var(--border);
-    box-shadow:0 4px 24px rgba(44,24,16,.06);
-    margin-bottom:18px;
-    text-align:center;
-    transition:border-color .3s, box-shadow .3s;
-  }
-  .recorder-zone.recording {
-    border-color:var(--rec-red);
-    box-shadow:0 0 0 4px var(--rec-red-glow), 0 8px 32px rgba(44,24,16,.08);
-  }
-
-  .waveform-container {
-    height:52px; display:flex;
-    align-items:center; justify-content:center;
-    gap:3px; margin-bottom:16px;
-  }
-  .wave-bar {
-    width:3px; border-radius:2px;
-    background:rgba(180,130,90,0.2);
-    transition:background .3s;
-  }
-  .recording .wave-bar {
-    background:var(--rec-red);
-    animation:waveDance var(--dur,.6s) ease-in-out infinite alternate;
-    animation-delay:var(--delay,0s);
-  }
+  .recorder-zone { background:white; border-radius:24px; padding:28px 24px; border:2px solid var(--border); box-shadow:0 4px 24px rgba(44,24,16,.06); margin-bottom:18px; text-align:center; transition:border-color .3s, box-shadow .3s; }
+  .recorder-zone.recording { border-color:var(--rec-red); box-shadow:0 0 0 4px var(--rec-red-glow), 0 8px 32px rgba(44,24,16,.08); }
+  .waveform-container { height:52px; display:flex; align-items:center; justify-content:center; gap:3px; margin-bottom:16px; }
+  .wave-bar { width:3px; border-radius:2px; background:rgba(180,130,90,0.2); transition:background .3s; }
+  .recording .wave-bar { background:var(--rec-red); animation:waveDance var(--dur,.6s) ease-in-out infinite alternate; animation-delay:var(--delay,0s); }
   @keyframes waveDance { from{height:4px} to{height:var(--max-h,36px)} }
-
-  .rec-timer {
-    font-family:'Noto Serif KR',serif;
-    font-size:40px; font-weight:900;
-    letter-spacing:3px; color:var(--dark);
-    margin-bottom:6px; transition:color .3s;
-  }
+  .rec-timer { font-family:'Noto Serif KR',serif; font-size:40px; font-weight:900; letter-spacing:3px; color:var(--dark); margin-bottom:6px; transition:color .3s; }
   .recording .rec-timer { color:var(--rec-red); }
-  .rec-status-row {
-    display:flex; align-items:center; justify-content:center;
-    gap:7px; margin-bottom:22px; min-height:20px;
-  }
-  .rec-live-dot {
-    width:7px; height:7px; border-radius:50%;
-    background:var(--rec-red);
-    display:none;
-    animation:dotBlink 1s ease-in-out infinite;
-  }
+  .rec-status-row { display:flex; align-items:center; justify-content:center; gap:7px; margin-bottom:22px; min-height:20px; }
+  .rec-live-dot { width:7px; height:7px; border-radius:50%; background:var(--rec-red); display:none; animation:dotBlink 1s ease-in-out infinite; }
   .recording .rec-live-dot { display:block; }
   @keyframes dotBlink{0%,100%{opacity:1}50%{opacity:.2}}
   .rec-status-text { font-size:12px; color:var(--muted); }
-
-  .rec-btn-outer {
-    display:flex; flex-direction:column;
-    align-items:center; gap:12px;
-  }
-  .rec-btn {
-    width:80px; height:80px; border-radius:50%;
-    border:none; cursor:pointer;
-    display:flex; align-items:center; justify-content:center;
-    font-size:34px;
-    transition:all .25s cubic-bezier(.34,1.56,.64,1);
-    background:linear-gradient(135deg,var(--caramel),var(--accent));
-    box-shadow:0 6px 24px rgba(184,98,42,.35);
-  }
+  .rec-btn-outer { display:flex; flex-direction:column; align-items:center; gap:12px; }
+  .rec-btn { width:80px; height:80px; border-radius:50%; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:34px; transition:all .25s cubic-bezier(.34,1.56,.64,1); background:linear-gradient(135deg,var(--caramel),var(--accent)); box-shadow:0 6px 24px rgba(184,98,42,.35); }
   .rec-btn:hover { transform:scale(1.08); }
   .rec-btn:active { transform:scale(0.95); }
-  .rec-btn.recording-active {
-    background:linear-gradient(135deg,var(--rec-red),#FF7A72);
-    box-shadow:0 0 0 8px var(--rec-red-glow), 0 6px 24px rgba(232,69,60,.3);
-    animation:recPulse 1.5s ease-in-out infinite;
-  }
+  .rec-btn.recording-active { background:linear-gradient(135deg,var(--rec-red),#FF7A72); box-shadow:0 0 0 8px var(--rec-red-glow), 0 6px 24px rgba(232,69,60,.3); animation:recPulse 1.5s ease-in-out infinite; }
   @keyframes recPulse{0%,100%{box-shadow:0 0 0 8px rgba(232,69,60,.2),0 6px 24px rgba(232,69,60,.3)}50%{box-shadow:0 0 0 14px rgba(232,69,60,.08),0 6px 24px rgba(232,69,60,.3)}}
   .rec-btn-label { font-size:12px; color:var(--muted); font-weight:500; }
-
-  .rec-processing {
-    display:none;
-    flex-direction:column;
-    align-items:center;
-    gap:10px;
-    padding:20px 0 4px;
-  }
+  .rec-processing { display:none; flex-direction:column; align-items:center; gap:10px; padding:20px 0 4px; }
   .rec-processing.show { display:flex; }
   .proc-spinner { width:32px; height:32px; border:3px solid var(--border); border-top-color:var(--toast); border-radius:50%; animation:spin .8s linear infinite; }
   @keyframes spin{to{transform:rotate(360deg)}}
@@ -185,19 +109,11 @@
   .result-loading-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:70vh; gap:20px; text-align:center; }
   .result-loading-screen p { font-size:14px; color:var(--muted); line-height:1.8; }
   .big-spinner { width:52px; height:52px; border:4px solid var(--border); border-top-color:var(--toast); border-radius:50%; animation:spin .9s linear infinite; }
-
   .loading-steps { margin-top:16px; display:flex; flex-direction:column; gap:8px; text-align:left; }
-  .loading-step-item {
-    display:flex; align-items:center; gap:10px;
-    padding:10px 14px; border-radius:12px;
-    font-size:12px; color:var(--muted);
-    background:white; border:1px solid var(--border);
-    transition:all .3s;
-  }
+  .loading-step-item { display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:12px; font-size:12px; color:var(--muted); background:white; border:1px solid var(--border); transition:all .3s; }
   .loading-step-item.active { color:var(--toast); border-color:rgba(212,149,106,.4); background:#FFF8F0; }
   .loading-step-item.done { color:var(--green); border-color:rgba(90,122,82,.3); }
   .loading-step-icon { font-size:16px; }
-
   .result-badge { display:inline-flex; align-items:center; gap:6px; color:white; font-size:11px; letter-spacing:2px; padding:6px 16px; border-radius:20px; margin-bottom:10px; font-weight:700; }
   .result-badge.warm { background:linear-gradient(135deg,var(--caramel),var(--accent)); }
   .result-badge.cool { background:linear-gradient(135deg,#4a5fa0,#6678cc); }
@@ -298,34 +214,19 @@
 
   /* RESULT ZONES */
   .result-zone { border-radius:24px; padding:24px 20px; margin:0 -4px; }
-  .result-zone-story {
-    background:linear-gradient(160deg,#0f0f1e,#1a1a3a);
-    border:1.5px solid rgba(100,130,220,.2);
-    box-shadow:0 8px 40px rgba(0,0,0,.3);
-    color:white;
-  }
-  .result-zone-quiz {
-    background:linear-gradient(160deg,#FFF9F3,#FFF4E8);
-    border:1.5px solid rgba(212,149,106,.2);
-    box-shadow:0 4px 24px rgba(44,24,16,.08);
-  }
+  .result-zone-story { background:linear-gradient(160deg,#0f0f1e,#1a1a3a); border:1.5px solid rgba(100,130,220,.2); box-shadow:0 8px 40px rgba(0,0,0,.3); color:white; }
+  .result-zone-quiz { background:linear-gradient(160deg,#FFF9F3,#FFF4E8); border:1.5px solid rgba(212,149,106,.2); box-shadow:0 4px 24px rgba(44,24,16,.08); }
   .result-zone-header { text-align:center; margin-bottom:20px; }
-  .result-zone-badge {
-    display:inline-block; padding:5px 16px; border-radius:20px;
-    font-size:11px; font-weight:800; letter-spacing:1.5px; margin-bottom:10px;
-  }
+  .result-zone-badge { display:inline-block; padding:5px 16px; border-radius:20px; font-size:11px; font-weight:800; letter-spacing:1.5px; margin-bottom:10px; }
   .result-zone-badge.story { background:rgba(255,255,255,.1); color:rgba(255,255,255,.8); border:1px solid rgba(255,255,255,.2); }
   .result-zone-badge.quiz { background:rgba(212,149,106,.12); color:var(--caramel); border:1px solid rgba(212,149,106,.3); }
   .result-zone-title { font-family:'Noto Serif KR',serif; font-size:18px; font-weight:900; line-height:1.4; }
   .result-zone-story .result-zone-title { color:white; }
   .result-zone-quiz .result-zone-title { color:var(--dark); }
-
   .zone-transition { text-align:center; padding:16px 0 14px; }
   .zone-transition-label { font-size:11px; font-weight:700; color:var(--muted); letter-spacing:1px; margin-bottom:6px; }
   .zone-transition-arrow { font-size:22px; color:var(--toast); animation:bounce .8s ease infinite alternate; }
   @keyframes bounce { from{transform:translateY(0)} to{transform:translateY(5px)} }
-
-  /* story zone overrides */
   .result-zone-story .character-card-mini { background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.15); }
   .result-zone-story .character-food-name { color:white; }
   .result-zone-story .character-sub-tag { color:rgba(255,255,255,.5); }
@@ -337,17 +238,10 @@
   .result-zone-story .recap-story-label { color:rgba(255,255,255,.5); }
   .result-zone-story .recap-story-content { color:rgba(255,255,255,.85); }
   .result-zone-story .kw-chip { background:rgba(255,255,255,.1); color:rgba(255,255,255,.7); border-color:rgba(255,255,255,.15); }
-
   .fade-in{animation:fadeUp .35s ease both;}
 
   /* CHOICE PAGE */
-  .choice-card {
-    display:flex; align-items:center; gap:16px;
-    background:white; border-radius:20px; padding:20px;
-    border:2px solid var(--border); cursor:pointer;
-    transition:all .2s; margin-bottom:12px;
-    box-shadow:0 4px 16px rgba(44,24,16,.05);
-  }
+  .choice-card { display:flex; align-items:center; gap:16px; background:white; border-radius:20px; padding:20px; border:2px solid var(--border); cursor:pointer; transition:all .2s; margin-bottom:12px; box-shadow:0 4px 16px rgba(44,24,16,.05); }
   .choice-card:hover { border-color:var(--toast); transform:translateY(-2px); box-shadow:0 8px 24px rgba(44,24,16,.1); }
   .choice-card-highlight { background:linear-gradient(135deg,#FFF9F0,#FFF3E0); border-color:rgba(212,149,106,.4); }
   .choice-card-highlight:hover { border-color:var(--caramel); }
@@ -357,27 +251,20 @@
   .choice-desc { font-size:12px; color:var(--muted); line-height:1.6; }
   .choice-arrow { font-size:20px; color:var(--muted); flex-shrink:0; }
   .choice-or { text-align:center; font-size:12px; color:var(--muted); font-weight:600; letter-spacing:2px; margin:4px 0 12px; }
+  .gender-btn { display:flex; align-items:center; gap:16px; width:100%; background:white; border-radius:20px; padding:22px 24px; border:2px solid var(--border); cursor:pointer; transition:all .2s; box-shadow:0 4px 16px rgba(44,24,16,.05); font-family:inherit; }
+  .gender-btn:hover { border-color:var(--toast); transform:translateY(-2px); box-shadow:0 8px 24px rgba(44,24,16,.1); }
+  .gender-btn.selected { border-color:var(--caramel); background:linear-gradient(135deg,#FFF9F0,#FFF3E0); box-shadow:0 8px 24px rgba(212,149,106,.2); }
+  .gender-btn-emoji { font-size:36px; flex-shrink:0; }
+  .gender-btn-label { font-family:'Noto Serif KR',serif; font-size:18px; font-weight:900; color:var(--dark); }
 
   /* STORY ONELINER */
-  .story-oneliner-card {
-    background:linear-gradient(135deg,#1a1a2e,#16213e);
-    border-radius:24px; padding:24px 22px; margin-bottom:14px;
-    box-shadow:0 8px 32px rgba(0,0,0,.2);
-    animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both;
-  }
+  .story-oneliner-card { background:linear-gradient(135deg,#1a1a2e,#16213e); border-radius:24px; padding:24px 22px; margin-bottom:14px; box-shadow:0 8px 32px rgba(0,0,0,.2); animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both; }
   .story-oneliner-label { font-size:11px; font-weight:700; letter-spacing:2px; color:rgba(255,255,255,.5); margin-bottom:14px; }
   .story-oneliner-text { font-family:'Noto Serif KR',serif; font-size:clamp(17px,4.5vw,22px); font-weight:900; color:white; line-height:1.5; margin-bottom:14px; }
   .story-oneliner-to { font-size:13px; color:rgba(255,255,255,.7); line-height:1.8; padding:12px 14px; background:rgba(255,255,255,.07); border-radius:12px; border-left:3px solid rgba(255,255,255,.3); font-style:italic; }
 
   /* CHARACTER CARD MINI */
-  .character-card-mini {
-    display:flex; gap:16px; align-items:flex-start;
-    background:white; border-radius:20px; padding:20px;
-    border:1.5px solid var(--story-border);
-    box-shadow:0 4px 20px rgba(44,24,16,.06);
-    margin-bottom:14px;
-    animation:popIn .5s .05s cubic-bezier(.34,1.56,.64,1) both;
-  }
+  .character-card-mini { display:flex; gap:16px; align-items:flex-start; background:white; border-radius:20px; padding:20px; border:1.5px solid var(--story-border); box-shadow:0 4px 20px rgba(44,24,16,.06); margin-bottom:14px; animation:popIn .5s .05s cubic-bezier(.34,1.56,.64,1) both; }
   .character-card-mini .char-img-wrap { width:100px; height:100px; border-radius:16px; flex-shrink:0; }
   .character-info { flex:1; min-width:0; }
 </style>
@@ -462,7 +349,7 @@
     <div class="page-header">
       <div class="page-tag">🎲 성향 테스트</div>
       <h2>나는 어떤 <em>음식</em>일까?</h2>
-      <p>7가지 질문에 솔직하게 답해주세요!</p>
+      <p>8가지 질문에 솔직하게 답해주세요!</p>
     </div>
     <div class="quiz-card">
       <div class="quiz-progress" id="quiz-progress"></div>
@@ -473,6 +360,29 @@
 </div>
 
 <!-- CHOICE -->
+<div class="page" id="page-gender">
+  <div class="page-wrap">
+    <div class="page-header" style="padding-bottom:8px">
+      <div class="page-tag">✨ 거의 다 왔어요!</div>
+      <h2>어떤 <em>성별</em>로 결과 볼까요?</h2>
+      <p style="font-size:13px;color:var(--muted)">썰 스토리를 맞춤형으로 보여드려요</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px">
+      <button class="gender-btn" onclick="selectGender('M')" id="gbtn-M">
+        <span class="gender-btn-emoji">🙋‍♂️</span>
+        <span class="gender-btn-label">남자</span>
+      </button>
+      <button class="gender-btn" onclick="selectGender('F')" id="gbtn-F">
+        <span class="gender-btn-emoji">🙋‍♀️</span>
+        <span class="gender-btn-label">여자</span>
+      </button>
+    </div>
+    <div id="gender-next-wrap" style="display:none;margin-top:20px">
+      <button class="btn-next" style="width:100%" onclick="goTo('page-choice')">다음 →</button>
+    </div>
+  </div>
+</div>
+
 <div class="page" id="page-choice">
   <div class="page-wrap">
     <div class="page-header" style="padding-bottom:16px">
@@ -484,7 +394,7 @@
       <div class="choice-icon">📊</div>
       <div class="choice-body">
         <div class="choice-title">결과 바로 보기</div>
-        <div class="choice-desc">7가지 질문 분석으로<br>나의 음식 성향 알아보기</div>
+        <div class="choice-desc">8가지 질문 분석으로<br>나의 음식 성향 알아보기</div>
       </div>
       <div class="choice-arrow">→</div>
     </div>
@@ -633,11 +543,11 @@
         </div>
       </div>
 
-      <!-- ZONE B: 7개 질문 성향 분석 -->
+      <!-- ZONE B: 8개 질문 성향 분석 -->
       <div class="result-zone result-zone-quiz">
         <div class="result-zone-header">
           <div class="result-zone-badge quiz">🎲 성향 분석</div>
-          <div class="result-zone-title" id="quiz-zone-title">7개 질문으로 알아보는<br>나의 음식 성향</div>
+          <div class="result-zone-title" id="quiz-zone-title">8개 질문으로 알아보는<br>나의 음식 성향</div>
         </div>
 
         <div class="personality-card">
@@ -648,7 +558,7 @@
         </div>
 
         <div class="quiz-ai-box">
-          <div class="quiz-ai-box-title">🔍 7개 질문이 말해주는 나</div>
+          <div class="quiz-ai-box-title">🔍 8개 질문이 말해주는 나</div>
           <div class="loading-row" id="quiz-ai-loading">
             <div class="ai-dots"><span></span><span></span><span></span></div>
             <span>성향 패턴 분석 중...</span>
@@ -657,7 +567,7 @@
         </div>
 
         <div class="quiz-recap-card">
-          <div class="recap-title">📋 내가 고른 7가지 답변</div>
+          <div class="recap-title">📋 내가 고른 8가지 답변</div>
           <div id="quiz-recap-body"></div>
         </div>
       </div>
@@ -716,11 +626,13 @@
   <input type="hidden" name="Q5_답변"/>
   <input type="hidden" name="Q6_답변"/>
   <input type="hidden" name="Q7_답변"/>
+  <input type="hidden" name="Q8_답변"/>
 </form>
 
 <script>
 // NAV
 function goTo(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+function selectGender(g){userGender=g;document.querySelectorAll('.gender-btn').forEach(b=>b.classList.remove('selected'));document.getElementById('gbtn-'+g).classList.add('selected');document.getElementById('gender-next-wrap').style.display='block';}
 function restartAll(){
   answers=[];answerLabels=[];currentQ=0;selectedIdx=null;
   initQuiz();
@@ -739,100 +651,110 @@ function restartAll(){
   goTo('page-quiz');
 }
 
-// QUIZ DATA
 const questions=[
-  {q:"지금 당장 먹고 싶은 건?",opts:[{e:"🌶️",t:"매콤한 거",score:{A:2}},{e:"🍰",t:"달달한 거",score:{B:2}},{e:"🧂",t:"짭짤한 거",score:{C:2}},{e:"🍲",t:"뜨끈한 국물",score:{D:2}}]},
-  {q:"너는 어떤 \"끼\"야?",opts:[{e:"🕐",t:"세끼 — 규칙적이고 루틴 있는 생활",score:{C:2}},{e:"🕑",t:"두끼 — 바쁘지만 챙길 건 챙김",score:{B:2}},{e:"🕒",t:"한끼 — 정신없이 하루 보냄",score:{A:2}},{e:"💨",t:"떼끼 — 대충 때우는 요즘",score:{D:2}}]},
-  {q:"배고프면 나는?",opts:[{e:"😤",t:"예민해짐",score:{A:2}},{e:"🤐",t:"조용해짐",score:{B:2}},{e:"🗣️",t:"아무 말이나 함",score:{C:2}},{e:"🍴",t:"그냥 아무거나 먹음",score:{D:2}}]},
-  {q:"친구랑 메뉴 고를 때 나는?",opts:[{e:"👆",t:"내가 정함",score:{A:2}},{e:"🙃",t:"\"아무거나\" 해놓고 결국 의견 냄",score:{B:2}},{e:"🫶",t:"상대 의견 존중",score:{C:2}},{e:"💭",t:"속으로 딴 메뉴 생각함",score:{D:2}}]},
-  {q:"연애를 음식에 비유하면?",opts:[{e:"🫕",t:"마라탕 (중독적이고 자극적)",score:{A:3}},{e:"🎂",t:"케이크 (기념일 많고 달달)",score:{B:3}},{e:"🍷",t:"와인 (시간 지나야 깊어짐)",score:{C:3}},{e:"🔺",t:"삼각김밥 (갑자기 시작, 갑자기 끝)",score:{D:3}}]},
-  {q:"스트레스 받을 때 당신은?",opts:[{e:"🔥",t:"매운 거로 풀어버린다",score:{A:2}},{e:"🍫",t:"달달한 디저트 찾는다",score:{B:2}},{e:"⚡",t:"그냥 아무거나 빨리 먹는다",score:{C:2}},{e:"🚫",t:"아예 안 먹는다",score:{D:2}}]},
-  {q:"요즘 내가 많이 푸는 썰은?",opts:[{e:"💘",t:"매운 연애 썰 (연애)",score:{A:3}},{e:"✂️",t:"친구 손절 썰 (인간관계)",score:{D:3}},{e:"😵",t:"스트레스인 회사/학교 썰 (진로 고민)",score:{C:3}},{e:"🛏️",t:"이불킥 흑역사 썰 (기타)",score:{B:3}}]},
+  {q:"지금 당장 먹고 싶은 건?",opts:[
+    {e:"🌶️",t:"매콤한 거",score:{A:3}},
+    {e:"🍰",t:"달달한 거",score:{B:3}},
+    {e:"🧂",t:"짭짤한 거",score:{F:3}},
+    {e:"🍲",t:"뜨끈한 국물",score:{E:3}}
+  ]},
+  {q:"너는 어떤 \"끼\"야?",opts:[
+    {e:"🕐",t:"세끼 — 규칙적이고 루틴 있는 생활",score:{F:3}},
+    {e:"🕑",t:"두끼 — 바쁘지만 챙길 건 챙김",score:{E:3}},
+    {e:"🕒",t:"한끼 — 정신없이 하루 보냄",score:{B:2,A:1,C:1}},
+    {e:"💨",t:"떼끼 — 대충 때우는 요즘",score:{D:3}}
+  ]},
+  {q:"배고프면 나는?",opts:[
+    {e:"😤",t:"예민해짐",score:{A:3}},
+    {e:"🗣️",t:"아무 말이나 함",score:{C:3}},
+    {e:"🍴",t:"그냥 아무거나 먹음",score:{D:2,F:1}},
+    {e:"🤐",t:"조용히 참음",score:{E:3}}
+  ]},
+  {q:"친구랑 메뉴 고를 때 나는?",opts:[
+    {e:"🙃",t:"\"아무거나\" 해놓고 결국 의견 냄",score:{B:3}},
+    {e:"🫶",t:"상대 의견 존중",score:{F:3}},
+    {e:"👆",t:"내가 정함",score:{A:1,C:2}},
+    {e:"💭",t:"속으로 딴 메뉴 생각함",score:{E:2,D:1}}
+  ]},
+  {q:"연애를 음식에 비유하면?",opts:[
+    {e:"🫕",t:"마라탕 (중독적이고 자극적)",score:{A:3}},
+    {e:"🎂",t:"케이크 (기념일 많고 달달)",score:{B:3}},
+    {e:"🍷",t:"와인 (시간 지나야 깊어짐)",score:{C:3}},
+    {e:"🔺",t:"삼각김밥 (갑자기 시작, 갑자기 끝)",score:{D:3}}
+  ]},
+  {q:"제일 떠오르는 당신의 썰푸드는 어떤 상황이었나요?",opts:[
+    {e:"😭",t:"눈물 나게 강렬했던 날 (이별, 싸움, 시험 끝 등)",score:{A:3}},
+    {e:"😄",t:"기분 좋아서 웃고 있던 날 (데이트, 축하, 여행 등)",score:{B:3}},
+    {e:"🌙",t:"혼자 생각 많아지던 날 (퇴근길, 밤, 이사 전 등)",score:{F:3}},
+    {e:"☁️",t:"아무 일 없던 평범한 날 (근데 이상하게 기억남)",score:{E:3}}
+  ]},
+  {q:"스트레스 받을 때 당신은?",opts:[
+    {e:"🔥",t:"매운 거로 풀어버린다",score:{A:3}},
+    {e:"⚡",t:"그냥 아무거나 빨리 먹는다",score:{D:3}},
+    {e:"🧘",t:"먹는 것보다 혼자 있고 싶다",score:{C:3}},
+    {e:"🚫",t:"아예 안 먹는다",score:{F:2,B:1}}
+  ]},
+  {q:"요즘 내가 많이 푸는 썰은?",opts:[
+    {e:"💘",t:"매운 연애 썰 (연애)",score:{E:2,A:1}},
+    {e:"✂️",t:"친구 손절 썰 (인간관계)",score:{D:3}},
+    {e:"😵",t:"스트레스인 회사/학교 썰 (진로 고민)",score:{C:3}},
+    {e:"🛏️",t:"이불킥 흑역사 썰 (기타)",score:{B:3}}
+  ]},
 ];
+
 const scoreResults=[
   {type:"A",e:"🌶️",food:"마라탕",desc:"자극적이고 강렬한 매력의 소유자! 한 번 빠지면 못 헤어나오는 중독적인 존재예요. 다음에 또 찾게 되는 사람.",tag:"#중독주의 #자극남자_자극여자"},
   {type:"B",e:"🎂",food:"딸기 케이크",desc:"달달하고 사랑스러운 에너지를 가진 사람. 특별한 순간마다 생각나는, 소중한 날의 주인공 같은 존재예요.",tag:"#달달함주의 #기념일장인"},
   {type:"C",e:"🍷",food:"와인",desc:"처음엔 낯설지만 알아갈수록 깊어지는 사람. 섣불리 판단하면 손해예요. 시간이 지날수록 진가가 드러납니다.",tag:"#숙성형인간 #천천히알아가자"},
   {type:"D",e:"🍲",food:"해장국",desc:"힘든 날 가장 먼저 생각나는 사람. 말 없어도 곁에 있으면 든든하고, 거창하지 않아도 진심이 느껴지는 존재예요.",tag:"#진국인생 #있어야완성"},
+  {type:"E",e:"🥐",food:"소금빵",desc:"겉은 단단하고 바삭해 보이지만 속은 놀랍도록 부드럽고 따뜻한 사람. 처음엔 쉽게 다가가기 어렵지만 일단 안으로 들어오면 그 포근함에 헤어나오기 힘들어요. 겉바속촉 그 자체.",tag:"#겉바속촉인간 #알수록말랑해짐"},
+  {type:"F",e:"🍣",food:"초밥",desc:"하나하나 정성껏 만들어진 사람. 겉은 깔끔하고 정제되어 있지만 속에는 섬세한 감성이 가득해요. 아무에게나 마음을 열지 않지만, 한 번 열면 그 깊이가 남달라요.",tag:"#섬세한완성도 #고요한카리스마"},
 ];
-let answers=[],answerLabels=[],currentQ=0,selectedIdx=null;
+
+let answers=[],answerLabels=[],currentQ=0,selectedIdx=null,userGender='M';
 let savedResult={type:'',food:'',tag:''},savedStory='',savedFoodName='',savedMood='',savedKeywords=[],savedStoryContext={};
 
 function initQuiz(){answers=[];answerLabels=[];currentQ=0;selectedIdx=null;renderProgress();renderQuestion();}
 function renderProgress(){const p=document.getElementById('quiz-progress');p.innerHTML='';questions.forEach((_,i)=>{const d=document.createElement('div');d.className='quiz-dot'+(i===currentQ?' active':i<currentQ?' done':'');p.appendChild(d);});document.getElementById('quiz-step-label').textContent=`${currentQ+1} / ${questions.length}`;}
 function renderQuestion(){const q=questions[currentQ];const isLast=currentQ===questions.length-1;const isFirst=currentQ===0;const prevBtn=isFirst?'':`<button class="btn-prev" onclick="goPrev()">← 이전</button>`;document.getElementById('quiz-body').innerHTML=`<div class="quiz-question fade-in">${q.q}</div><div class="quiz-options fade-in">${q.opts.map((o,i)=>`<button class="quiz-option${answers[currentQ]&&answerLabels[currentQ]&&answerLabels[currentQ].chosen===i?' selected':''}" onclick="selectOption(${i},this)"><span class="opt-emoji">${o.e}</span>${o.t}</button>`).join('')}</div><div id="next-wrap" style="display:${isFirst?'none':selectedIdx!==null||answers[currentQ]!==undefined?'block':'none'}"><div class="quiz-nav-row">${prevBtn}<button class="btn-next" onclick="goNext()">${isLast?'결과 보기 ✨':'다음 질문 →'}</button></div></div>${isFirst&&selectedIdx===null&&answers[currentQ]===undefined?'':`<div id="prev-only-wrap" style="display:${!isFirst&&selectedIdx===null&&answers[currentQ]===undefined?'block':'none'}">${prevBtn}</div>`}`;if(!isFirst){const prevOnlyWrap=document.getElementById('prev-only-wrap');if(prevOnlyWrap)prevOnlyWrap.style.display=(selectedIdx===null&&!answerLabels[currentQ])?'block':'none';}const chosen=answerLabels[currentQ]?.chosen;if(chosen!==undefined){selectedIdx=chosen;document.querySelectorAll('.quiz-option').forEach((b,i)=>{if(i===chosen)b.classList.add('selected');});document.getElementById('next-wrap').style.display='block';}}
 function selectOption(idx,btn){document.querySelectorAll('.quiz-option').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');selectedIdx=idx;document.getElementById('next-wrap').style.display='block';const pOw=document.getElementById('prev-only-wrap');if(pOw)pOw.style.display='none';}
-function goNext(){if(selectedIdx===null)return;const q=questions[currentQ];const sc=q.opts[selectedIdx].score;const lb={q:q.q,opts:q.opts,chosen:selectedIdx};if(currentQ<answers.length){answers[currentQ]=sc;answerLabels[currentQ]=lb;}else{answers.push(sc);answerLabels.push(lb);}selectedIdx=null;currentQ++;if(currentQ>=questions.length)goTo('page-choice');else{renderProgress();renderQuestion();}}
+function goNext(){if(selectedIdx===null)return;const q=questions[currentQ];const sc=q.opts[selectedIdx].score;const lb={q:q.q,opts:q.opts,chosen:selectedIdx};if(currentQ<answers.length){answers[currentQ]=sc;answerLabels[currentQ]=lb;}else{answers.push(sc);answerLabels.push(lb);}selectedIdx=null;currentQ++;if(currentQ>=questions.length)goTo('page-gender');else{renderProgress();renderQuestion();}}
 function goPrev(){if(currentQ===0)return;currentQ--;selectedIdx=null;renderProgress();renderQuestion();}
 
 function toggleChip(btn){btn.classList.toggle('active');}
 
 // WAVEFORM
 function buildWaveform(){
-  const c=document.getElementById('waveform');
-  c.innerHTML='';
-  for(let i=0;i<28;i++){
-    const b=document.createElement('div');
-    b.className='wave-bar';
-    const h=6+Math.random()*30;
-    b.style.setProperty('--max-h',h+'px');
-    b.style.setProperty('--dur',(0.4+Math.random()*0.5).toFixed(2)+'s');
-    b.style.setProperty('--delay',(i*0.035).toFixed(2)+'s');
-    b.style.height='4px';
-    c.appendChild(b);
-  }
+  const c=document.getElementById('waveform');c.innerHTML='';
+  for(let i=0;i<28;i++){const b=document.createElement('div');b.className='wave-bar';const h=6+Math.random()*30;b.style.setProperty('--max-h',h+'px');b.style.setProperty('--dur',(0.4+Math.random()*0.5).toFixed(2)+'s');b.style.setProperty('--delay',(i*0.035).toFixed(2)+'s');b.style.height='4px';c.appendChild(b);}
 }
 buildWaveform();
 
 // RECORDER
-let mediaRecorder=null, audioChunks=[], recordingInterval=null, recordingSeconds=0, isRecording=false;
+let mediaRecorder=null,audioChunks=[],recordingInterval=null,recordingSeconds=0,isRecording=false;
 let currentBlob=null;
-
-function getSupportedMimeType(){
-  const types=['audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus','audio/mp4'];
-  return types.find(t=>MediaRecorder.isTypeSupported(t))||'';
-}
-async function toggleRecording(){if(!isRecording) await startRecording();else stopRecording();}
+function getSupportedMimeType(){const types=['audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus','audio/mp4'];return types.find(t=>MediaRecorder.isTypeSupported(t))||'';}
+async function toggleRecording(){if(!isRecording)await startRecording();else stopRecording();}
 async function startRecording(){
   try{
     const stream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
-    audioChunks=[];
-    const mime=getSupportedMimeType();
+    audioChunks=[];const mime=getSupportedMimeType();
     mediaRecorder=new MediaRecorder(stream,mime?{mimeType:mime}:{});
     mediaRecorder.ondataavailable=e=>{if(e.data.size>0)audioChunks.push(e.data);};
-    mediaRecorder.onstop=handleRecordingStop;
-    mediaRecorder.start(100);
-    isRecording=true; recordingSeconds=0;
-    const zone=document.getElementById('recorder-zone');
-    const btn=document.getElementById('rec-btn');
-    zone.classList.add('recording');
-    btn.classList.add('recording-active');
-    btn.textContent='⏹️';
+    mediaRecorder.onstop=handleRecordingStop;mediaRecorder.start(100);
+    isRecording=true;recordingSeconds=0;
+    const zone=document.getElementById('recorder-zone');const btn=document.getElementById('rec-btn');
+    zone.classList.add('recording');btn.classList.add('recording-active');btn.textContent='⏹️';
     document.getElementById('rec-btn-label').textContent='탭하면 녹음 종료';
     document.getElementById('rec-status-text').textContent='녹음 중...';
-    recordingInterval=setInterval(()=>{
-      recordingSeconds++;
-      const m=String(Math.floor(recordingSeconds/60)).padStart(2,'0');
-      const s=String(recordingSeconds%60).padStart(2,'0');
-      document.getElementById('rec-timer').textContent=`${m}:${s}`;
-    },1000);
-  }catch(err){
-    alert('마이크 권한이 필요해요!\n브라우저 설정에서 마이크를 허용하거나,\nlocalhost 또는 HTTPS 환경에서 접속해주세요.');
-    console.error(err);
-  }
+    recordingInterval=setInterval(()=>{recordingSeconds++;const m=String(Math.floor(recordingSeconds/60)).padStart(2,'0');const s=String(recordingSeconds%60).padStart(2,'0');document.getElementById('rec-timer').textContent=`${m}:${s}`;},1000);
+  }catch(err){alert('마이크 권한이 필요해요!\n브라우저 설정에서 마이크를 허용하거나,\nlocalhost 또는 HTTPS 환경에서 접속해주세요.');console.error(err);}
 }
 function stopRecording(){
   if(!mediaRecorder||!isRecording)return;
-  isRecording=false;
-  clearInterval(recordingInterval);
-  mediaRecorder.stop();
-  mediaRecorder.stream.getTracks().forEach(t=>t.stop());
-  const zone=document.getElementById('recorder-zone');
-  const btn=document.getElementById('rec-btn');
-  zone.classList.remove('recording');
-  btn.classList.remove('recording-active');
-  btn.textContent='⏳';
-  btn.disabled=true;
+  isRecording=false;clearInterval(recordingInterval);mediaRecorder.stop();mediaRecorder.stream.getTracks().forEach(t=>t.stop());
+  const zone=document.getElementById('recorder-zone');const btn=document.getElementById('rec-btn');
+  zone.classList.remove('recording');btn.classList.remove('recording-active');btn.textContent='⏳';btn.disabled=true;
   document.getElementById('rec-btn-label').textContent='분석 중...';
   document.getElementById('rec-status-text').textContent='AI가 썰을 분석하고 있어요';
   document.getElementById('rec-processing').classList.add('show');
@@ -842,23 +764,21 @@ async function handleRecordingStop(){
   if(!foodName){alert('썰의 주인공 음식을 입력해주세요! 🍽️');resetRecorder();return;}
   const mime=getSupportedMimeType()||'audio/webm';
   currentBlob=new Blob(audioChunks,{type:mime});
-  goTo('page-result');
-  await buildResult(foodName);
+  goTo('page-result');await buildResult(foodName);
 }
 function resetRecorder(){
-  const btn=document.getElementById('rec-btn');
-  btn.textContent='🎙️'; btn.disabled=false;
+  const btn=document.getElementById('rec-btn');btn.textContent='🎙️';btn.disabled=false;
   document.getElementById('rec-btn-label').textContent='녹음 시작';
   document.getElementById('rec-status-text').textContent='버튼을 눌러 녹음 시작';
   document.getElementById('rec-timer').textContent='00:00';
-  document.getElementById('rec-processing').classList.remove('show');
-  buildWaveform();
+  document.getElementById('rec-processing').classList.remove('show');buildWaveform();
 }
 
 // API
 const API_BASE='/api';
 const FOOD_HINTS={
   '떡볶이':'glossy red gochujang-coated cylindrical rice cakes, bright red sauce',
+  '소금빵':'golden-brown crispy salt bread roll with flaky crust, soft fluffy interior, coarse salt crystals on top, butter pooling at the base',
   '라면':'wavy yellow instant noodles, red soup base, floating green onion',
   '치킨':'golden-brown crispy fried chicken, crunchy breading',
   '삼겹살':'thick grilled pork belly slices with fat layers, charred grill marks',
@@ -909,124 +829,48 @@ function detectMoodLocal(story){
 }
 
 async function callGemini(prompt,maxTokens=600){
-  try{
-    const r=await fetch(`${API_BASE}/gemini`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,maxTokens,temperature:0.92})});
-    if(!r.ok)throw new Error(`${r.status}`);
-    const d=await r.json();return d.text||null;
-  }catch(e){console.warn('[text]',e);return null;}
+  try{const r=await fetch(`${API_BASE}/gemini`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,maxTokens,temperature:0.92})});if(!r.ok)throw new Error(`${r.status}`);const d=await r.json();return d.text||null;}catch(e){console.warn('[text]',e);return null;}
 }
 
 async function transcribeAudio(blob,mimeType){
   try{
-    const base64=await blobToBase64(blob);
-    const cleanMime=mimeType.split(';')[0]||'audio/webm';
-    const r=await fetch(`${API_BASE}/gemini-audio`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        audioData:base64,
-        mimeType:cleanMime,
-        prompt:`아래 오디오를 한국어로 받아쓰기하고, 내용을 깊이 분석하여 아래 JSON 형식으로만 응답하세요.
-
-{
-  "transcript": "전체 받아쓰기 내용 (최대한 원문 그대로)",
-  "keywords": ["핵심 키워드1", "키워드2", "키워드3", "키워드4", "키워드5"],
-  "mood": "happy|excited|sad|angry|lonely|nostalgic|nervous|neutral 중 감정이 가장 강하게 드러난 하나",
-  "mood_intensity": "low|medium|high (감정의 강도)",
-  "emotion_detail": "이 썰에서 느껴지는 감정을 2~3문장으로 섬세하게 묘사.",
-  "story_context": {
-    "situation": "어떤 상황인지 한 줄",
-    "relation": "등장하는 관계",
-    "turning_point": "썰의 반전 또는 핵심 사건 한 줄",
-    "tone": "유머러스|감동적|공감형|황당함|억울함|뭉클함|씁쓸함|설렘 중 하나"
-  }
-}
-
-JSON 외 다른 텍스트 없이.`
-      })
-    });
-    if(!r.ok)throw new Error(`${r.status}`);
-    const d=await r.json();
-    return d.result||null;
+    const base64=await blobToBase64(blob);const cleanMime=mimeType.split(';')[0]||'audio/webm';
+    const r=await fetch(`${API_BASE}/gemini-audio`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({audioData:base64,mimeType:cleanMime,prompt:`아래 오디오를 한국어로 받아쓰기하고, 내용을 깊이 분석하여 아래 JSON 형식으로만 응답하세요.\n\n{\n  "transcript": "전체 받아쓰기 내용 (최대한 원문 그대로)",\n  "keywords": ["핵심 키워드1", "키워드2", "키워드3", "키워드4", "키워드5"],\n  "mood": "happy|excited|sad|angry|lonely|nostalgic|nervous|neutral 중 감정이 가장 강하게 드러난 하나",\n  "mood_intensity": "low|medium|high (감정의 강도)",\n  "emotion_detail": "이 썰에서 느껴지는 감정을 2~3문장으로 섬세하게 묘사.",\n  "story_context": {\n    "situation": "어떤 상황인지 한 줄",\n    "relation": "등장하는 관계",\n    "turning_point": "썰의 반전 또는 핵심 사건 한 줄",\n    "tone": "유머러스|감동적|공감형|황당함|억울함|뭉클함|씁쓸함|설렘 중 하나"\n  }\n}\n\nJSON 외 다른 텍스트 없이.`})});
+    if(!r.ok)throw new Error(`${r.status}`);const d=await r.json();return d.result||null;
   }catch(e){console.warn('[STT]',e);return null;}
 }
 
-function blobToBase64(blob){
-  return new Promise((res,rej)=>{
-    const reader=new FileReader();
-    reader.onload=()=>res(reader.result.split(',')[1]);
-    reader.onerror=rej;
-    reader.readAsDataURL(blob);
-  });
-}
+function blobToBase64(blob){return new Promise((res,rej)=>{const reader=new FileReader();reader.onload=()=>res(reader.result.split(',')[1]);reader.onerror=rej;reader.readAsDataURL(blob);});}
 
 async function generateCharImage(foodName,mood,moodIntensity='medium',emotionDetail='',storyContext={}){
   const face=MOOD_FACE[mood]||MOOD_FACE.neutral;
-  const intensityNote={
-    low:'Subtle, understated expression.',
-    medium:'Clear and readable expression.',
-    high:'VERY EXAGGERATED expression — maximum kawaii expressiveness!'
-  }[moodIntensity]||'Clear and readable expression.';
-  const toneMap={
-    '유머러스':'Add a tiny mischievous smirk or one raised eyebrow for comic effect.',
-    '감동적':'Eyes slightly glistening, warm gentle smile, soft glow around character.',
-    '공감형':'Knowing nod-like expression, warm open eyes, understanding smile.',
-    '황당함':'One eyebrow raised dramatically, mouth slightly open in disbelief, sweat drop.',
-    '억울함':'Furrowed brow, watery frustrated eyes, mouth tight with suppressed feelings.',
-    '뭉클함':'Soft eyes with a single glimmering tear, gentle trembling smile.',
-    '씁쓸함':'Wry half-smile, slightly downcast eyes, nostalgic distant gaze.',
-    '설렘':'Cheeks flushed bright pink, sparkles in eyes, small involuntary smile.',
-  };
+  const intensityNote={low:'Subtle, understated expression.',medium:'Clear and readable expression.',high:'VERY EXAGGERATED expression — maximum kawaii expressiveness!'}[moodIntensity]||'Clear and readable expression.';
+  const toneMap={'유머러스':'Add a tiny mischievous smirk or one raised eyebrow for comic effect.','감동적':'Eyes slightly glistening, warm gentle smile, soft glow around character.','공감형':'Knowing nod-like expression, warm open eyes, understanding smile.','황당함':'One eyebrow raised dramatically, mouth slightly open in disbelief, sweat drop.','억울함':'Furrowed brow, watery frustrated eyes, mouth tight with suppressed feelings.','뭉클함':'Soft eyes with a single glimmering tear, gentle trembling smile.','씁쓸함':'Wry half-smile, slightly downcast eyes, nostalgic distant gaze.','설렘':'Cheeks flushed bright pink, sparkles in eyes, small involuntary smile.'};
   const toneHint=storyContext.tone?toneMap[storyContext.tone]||'':'';
   const situationHint=storyContext.situation?`STORY CONTEXT: "${storyContext.situation}". Let that show in the posture and expression.`:'';
-  const prompt=`Create a cute kawaii chibi food character illustration.
-CHARACTER IDENTITY: The entire body IS a "${foodName}". Visual reference: ${getFoodHint(foodName)}. The food must be INSTANTLY RECOGNIZABLE.
-FACIAL EXPRESSION: Base emotion: ${face}. Intensity: ${intensityNote}${toneHint?` Tone: ${toneHint}`:''}${emotionDetail?` Emotional layer: "${emotionDetail}"`:''}${situationHint?` ${situationHint}`:''}
-BODY LANGUAGE: Thin stick arms and legs. Arm position reflects mood. Small rosy blush circles on cheeks.
-STYLE RULES: Clean flat kawaii illustration, LINE Friends / Kakao Friends aesthetic. Bold black outlines. Pure white (#FFFFFF) background. No text, no shadows, perfectly centered.`;
-  try{
-    const r=await fetch(`${API_BASE}/gemini-image`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
-    if(!r.ok)throw new Error(`${r.status}`);
-    const d=await r.json();
-    if(d.imageData)return`data:${d.mimeType};base64,${d.imageData}`;
-  }catch(e){console.warn('[image]',e);}
+  const prompt=`Create a cute kawaii chibi food character illustration.\nCHARACTER IDENTITY: The entire body IS a "${foodName}". Visual reference: ${getFoodHint(foodName)}. The food must be INSTANTLY RECOGNIZABLE.\nFACIAL EXPRESSION: Base emotion: ${face}. Intensity: ${intensityNote}${toneHint?` Tone: ${toneHint}`:''}${emotionDetail?` Emotional layer: "${emotionDetail}"`:''}${situationHint?` ${situationHint}`:''}\nBODY LANGUAGE: Thin stick arms and legs. Arm position reflects mood. Small rosy blush circles on cheeks.\nSTYLE RULES: Clean flat kawaii illustration, LINE Friends / Kakao Friends aesthetic. Bold black outlines. Pure white (#FFFFFF) background. No text, no shadows, perfectly centered.`;
+  try{const r=await fetch(`${API_BASE}/gemini-image`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});if(!r.ok)throw new Error(`${r.status}`);const d=await r.json();if(d.imageData)return`data:${d.mimeType};base64,${d.imageData}`;}catch(e){console.warn('[image]',e);}
   throw new Error('이미지 생성 실패');
 }
 
-// ★ 수정 1: getField 정규식 강화 — 공백/줄바꿈 유연하게 처리
-function getField(text, key) {
-  if (!text) return '';
-  const m = text.match(
-    new RegExp(key + '\\s*:\\s*([\\s\\S]+?)(?=\\n\\s*[가-힣A-Za-z]+\\s*:|$)')
-  );
-  return m ? m[1].trim() : '';
-}
+function getField(text,key){if(!text)return'';const m=text.match(new RegExp(key+'\\s*:\\s*([\\s\\S]+?)(?=\\n\\s*[가-힣A-Za-z]+\\s*:|$)'));return m?m[1].trim():'';}
 
-// LOADING STEPS
 function setLoadingStep(id){
-  ['lstep-stt','lstep-mood','lstep-img','lstep-analysis'].forEach(sid=>{
-    const el=document.getElementById(sid);
-    el.classList.remove('active','done');
-    if(sid===id)el.classList.add('active');
-  });
-  const order=['lstep-stt','lstep-mood','lstep-img','lstep-analysis'];
-  const idx=order.indexOf(id);
-  order.slice(0,idx).forEach(sid=>document.getElementById(sid).classList.add('done'));
+  ['lstep-stt','lstep-mood','lstep-img','lstep-analysis'].forEach(sid=>{const el=document.getElementById(sid);el.classList.remove('active','done');if(sid===id)el.classList.add('active');});
+  const order=['lstep-stt','lstep-mood','lstep-img','lstep-analysis'];const idx=order.indexOf(id);order.slice(0,idx).forEach(sid=>document.getElementById(sid).classList.add('done'));
 }
 function doneLoadingStep(id){document.getElementById(id)?.classList.replace('active','done');}
 
-// MAIN BUILD RESULT
 async function buildResult(foodName){
   const hasStory=!!foodName;
   document.getElementById('result-loading-screen').style.display='flex';
   document.getElementById('result-content').style.display='none';
   ['lstep-stt','lstep-mood','lstep-img','lstep-analysis'].forEach(id=>{
-    const el=document.getElementById(id);
-    el.classList.remove('active','done');
+    const el=document.getElementById(id);el.classList.remove('active','done');
     el.style.display=(id==='lstep-stt'||id==='lstep-img')&&!hasStory?'none':'';
   });
 
-  const totals={A:0,B:0,C:0,D:0};
+  const totals={A:0,B:0,C:0,D:0,E:0,F:0};
   answers.forEach(sc=>Object.entries(sc).forEach(([k,v])=>totals[k]+=v));
   const topType=Object.entries(totals).sort((a,b)=>b[1]-a[1])[0][0];
   const res=scoreResults.find(r=>r.type===topType);
@@ -1039,50 +883,38 @@ async function buildResult(foodName){
     loadingMsg.innerHTML='음성을 텍스트로 변환 중...<br><span style="font-size:12px;opacity:.6">Gemini가 받아쓰고 있어요 📝</span>';
     const mime=getSupportedMimeType()||'audio/webm';
     const sttResult=currentBlob?await transcribeAudio(currentBlob,mime):null;
-    story=sttResult?.transcript||''; savedStory=story;
-    keywords=sttResult?.keywords||[];
-    emotionDetail=sttResult?.emotion_detail||'';
-    storyContext=sttResult?.story_context||{};
-    moodIntensity=sttResult?.mood_intensity||'medium';
-    const sttMood=sttResult?.mood;
-    doneLoadingStep('lstep-stt');
+    story=sttResult?.transcript||'';savedStory=story;
+    keywords=sttResult?.keywords||[];emotionDetail=sttResult?.emotion_detail||'';
+    storyContext=sttResult?.story_context||{};moodIntensity=sttResult?.mood_intensity||'medium';
+    const sttMood=sttResult?.mood;doneLoadingStep('lstep-stt');
 
     setLoadingStep('lstep-mood');
     loadingMsg.innerHTML='썰의 감정을 읽는 중...<br><span style="font-size:12px;opacity:.6">분위기 파악 → 캐릭터 표정 결정 중 🎭</span>';
     if(sttMood&&MOOD_MAP[sttMood])mood=sttMood;
-    else{
-      const moodFromApi=await callGemini(`아래 썰의 핵심 감정을 딱 하나만 골라주세요.\n선택지: happy / excited / sad / angry / lonely / nostalgic / nervous / neutral\n[썰] "${story.slice(0,200)}"\n반드시 위 선택지 중 영어 하나만 답하세요. 설명 없이.`,10);
-      const parsedMood=moodFromApi?.trim().toLowerCase().split(/\W/)[0];
-      mood=MOOD_MAP[parsedMood]?parsedMood:detectMoodLocal(story);
-    }
+    else{const moodFromApi=await callGemini(`아래 썰의 핵심 감정을 딱 하나만 골라주세요.\n선택지: happy / excited / sad / angry / lonely / nostalgic / nervous / neutral\n[썰] "${story.slice(0,200)}"\n반드시 위 선택지 중 영어 하나만 답하세요. 설명 없이.`,10);const parsedMood=moodFromApi?.trim().toLowerCase().split(/\W/)[0];mood=MOOD_MAP[parsedMood]?parsedMood:detectMoodLocal(story);}
     doneLoadingStep('lstep-mood');
   } else {
     loadingMsg.innerHTML='성향 분석 중...<br><span style="font-size:12px;opacity:.6">나의 음식 유형을 파악하는 중 🍽️</span>';
-    setLoadingStep('lstep-analysis');
-    await new Promise(r=>setTimeout(r,400));
+    setLoadingStep('lstep-analysis');await new Promise(r=>setTimeout(r,400));
   }
 
   const moodData=MOOD_MAP[mood]||MOOD_MAP.neutral;
-
   document.getElementById('result-loading-screen').style.display='none';
   document.getElementById('result-content').style.display='block';
 
-  // 성향 카드 SVG
+  // ─── SVG 아이콘 (A~D: 캐릭터, E·F: 순수 음식 일러스트) ───
   const charSVGs={
     A:`<svg viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg">
   <defs><radialGradient id="broth" cx="50%" cy="40%"><stop offset="0%" stop-color="#ff8c40"/><stop offset="100%" stop-color="#c0390a"/></radialGradient><radialGradient id="pot" cx="40%" cy="30%"><stop offset="0%" stop-color="#e84040"/><stop offset="100%" stop-color="#9a1010"/></radialGradient></defs>
   <ellipse cx="60" cy="118" rx="38" ry="7" fill="#600" opacity=".18"/>
   <path d="M18 72 Q16 108 60 110 Q104 108 102 72 Z" fill="url(#pot)"/>
-  <path d="M22 72 Q20 102 60 106 Q100 102 98 72" fill="none" stroke="#ff6060" stroke-width="1.5" opacity=".4"/>
   <path d="M18 74 Q6 74 5 82 Q4 90 14 90" stroke="#b01010" stroke-width="7" fill="none" stroke-linecap="round"/>
   <path d="M102 74 Q114 74 115 82 Q116 90 106 90" stroke="#b01010" stroke-width="7" fill="none" stroke-linecap="round"/>
   <ellipse cx="60" cy="72" rx="42" ry="13" fill="url(#broth)"/>
-  <ellipse cx="48" cy="68" rx="10" ry="4" fill="#ffb060" opacity=".45" transform="rotate(-15 48 68)"/>
   <circle cx="38" cy="70" r="4" fill="#e02020" opacity=".85"/>
   <circle cx="55" cy="64" r="3" fill="#c01010" opacity=".8"/>
   <circle cx="76" cy="68" r="5" fill="#e02020" opacity=".9"/>
   <rect x="28" y="60" width="16" height="10" rx="2" fill="#fff8e8" opacity=".9"/>
-  <path d="M82 65 Q86 56 94 62 Q92 68 82 65Z" fill="#c8a070"/>
   <rect x="42" y="58" width="8" height="20" rx="4" fill="#fff0d8"/>
   <path d="M34 60 Q31 50 34 40 Q37 32 34 22" stroke="#ddd" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".5"/>
   <path d="M60 58 Q57 48 60 38 Q63 28 60 18" stroke="#ddd" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".45"/>
@@ -1108,14 +940,10 @@ async function buildResult(foodName){
   <ellipse cx="60" cy="124" rx="28" ry="5" fill="#9040b0" opacity=".18"/>
   <ellipse cx="60" cy="120" rx="26" ry="6" fill="#d0a0e8"/>
   <rect x="56" y="88" width="8" height="32" rx="4" fill="#d8b0ec"/>
+  <path d="M28 50 Q24 76 40 86 Q48 92 60 92 Q72 92 80 86 Q96 76 92 50 Q80 30 60 26 Q40 30 28 50Z" fill="url(#glassBody)"/>
   <path d="M28 50 Q26 75 40 85 Q48 90 60 90 Q72 90 80 85 Q94 75 92 50 Z" fill="url(#wineColor)"/>
   <ellipse cx="60" cy="50" rx="32" ry="10" fill="#c040e0"/>
-  <path d="M28 50 Q24 76 40 86 Q48 92 60 92 Q72 92 80 86 Q96 76 92 50 Q80 30 60 26 Q40 30 28 50Z" fill="url(#glassBody)"/>
-  <path d="M32 48 Q28 65 34 80" stroke="white" stroke-width="4" fill="none" stroke-linecap="round" opacity=".35"/>
   <ellipse cx="60" cy="26" rx="32" ry="8" fill="none" stroke="#d0b0e8" stroke-width="2.5"/>
-  <circle cx="50" cy="70" r="2.5" fill="none" stroke="#e080ff" stroke-width="1.2" opacity=".7"/>
-  <circle cx="65" cy="60" r="2" fill="none" stroke="#e080ff" stroke-width="1" opacity=".6"/>
-  <circle cx="72" cy="72" r="3" fill="none" stroke="#e080ff" stroke-width="1.2" opacity=".6"/>
 </svg>`,
     D:`<svg viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg">
   <defs><radialGradient id="haejang" cx="50%" cy="40%"><stop offset="0%" stop-color="#ff9050"/><stop offset="100%" stop-color="#c04010"/></radialGradient><radialGradient id="dduk" cx="40%" cy="30%"><stop offset="0%" stop-color="#5c3015"/><stop offset="100%" stop-color="#3a1a08"/></radialGradient></defs>
@@ -1125,18 +953,111 @@ async function buildResult(foodName){
   <path d="M104 70 Q116 72 117 82 Q118 92 106 92" stroke="#4a2008" stroke-width="8" fill="none" stroke-linecap="round"/>
   <ellipse cx="60" cy="68" rx="44" ry="13" fill="url(#haejang)"/>
   <ellipse cx="60" cy="68" rx="44" ry="13" fill="none" stroke="#8a4820" stroke-width="3"/>
-  <path d="M28 64 Q34 58 40 64" stroke="#4a9040" stroke-width="3" fill="none" stroke-linecap="round"/>
-  <path d="M74 62 Q80 56 86 62" stroke="#4a9040" stroke-width="3" fill="none" stroke-linecap="round"/>
-  <path d="M48 60 Q58 54 68 60 Q70 68 60 70 Q50 68 48 60Z" fill="#c06840"/>
-  <ellipse cx="48" cy="74" rx="10" ry="7" fill="#fff8e0"/>
-  <ellipse cx="48" cy="74" rx="5" ry="4" fill="#f5c040"/>
   <path d="M36 56 Q33 46 36 36 Q39 26 36 16" stroke="#ccc" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".5"/>
   <path d="M60 54 Q57 44 60 34 Q63 24 60 14" stroke="#ccc" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".45"/>
+</svg>`,
+
+    // ── E 타입: 소금빵 (순수 음식 일러스트) ──
+    E:`<svg viewBox="0 0 220 130" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="sbG1" cx="38%" cy="28%" r="68%">
+      <stop offset="0%" stop-color="#F7CE5A"/><stop offset="28%" stop-color="#E89A20"/>
+      <stop offset="62%" stop-color="#C46C0C"/><stop offset="100%" stop-color="#964808"/>
+    </radialGradient>
+    <radialGradient id="sbG2" cx="55%" cy="78%" r="58%">
+      <stop offset="0%" stop-color="#F5E2A0"/><stop offset="65%" stop-color="#D49010"/>
+      <stop offset="100%" stop-color="#9C5208"/>
+    </radialGradient>
+    <filter id="bsh"><feDropShadow dx="1" dy="4" stdDeviation="4" flood-color="#7a3808" flood-opacity=".32"/></filter>
+  </defs>
+  <ellipse cx="112" cy="122" rx="78" ry="7" fill="#7a3808" opacity=".14"/>
+  <g filter="url(#bsh)">
+    <path d="M26 104 Q28 118 112 120 Q196 118 198 104 Q186 116 112 118 Q38 116 26 104Z" fill="#F2E29A" opacity=".82"/>
+    <path d="M26 104 Q20 88 24 70 Q28 52 46 40 Q62 30 88 28 Q118 24 148 32 Q174 40 190 56 Q202 70 200 90 Q198 108 192 116 Q176 122 112 120 Q48 120 26 104Z" fill="url(#sbG2)"/>
+    <path d="M46 40 Q54 28 70 24 Q84 20 100 22 Q108 18 120 20 Q136 16 150 24 Q164 30 178 44 Q190 56 194 74 Q196 88 190 100 Q178 114 112 118 Q46 116 30 98 Q20 84 22 66 Q24 50 34 42 Q38 36 46 40Z" fill="url(#sbG1)"/>
+    <path d="M46 40 Q42 26 58 20 Q68 16 76 24 Q66 22 58 30 Q52 36 46 40Z" fill="#EAA020" opacity=".6"/>
+    <path d="M88 24 Q86 14 98 12 Q110 10 114 20 Q104 16 96 20 Q90 22 88 24Z" fill="#EAA020" opacity=".55"/>
+    <path d="M130 18 Q132 8 144 10 Q156 12 158 22 Q148 16 138 18 Q134 18 130 18Z" fill="#D89018" opacity=".5"/>
+    <path d="M168 34 Q172 22 184 28 Q192 34 188 44 Q184 34 178 32 Q172 30 168 34Z" fill="#D08010" opacity=".45"/>
+    <path d="M76 24 Q82 18 88 24" stroke="#9A4C0A" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".5"/>
+    <path d="M114 20 Q122 14 130 18" stroke="#9A4C0A" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".48"/>
+    <path d="M158 22 Q163 18 168 24" stroke="#9A4C0A" stroke-width="2" fill="none" stroke-linecap="round" opacity=".42"/>
+  </g>
+  <path d="M72 26 Q68 50 66 78 Q65 96 68 112" stroke="#8C4808" stroke-width="1.8" fill="none" stroke-linecap="round" opacity=".58"/>
+  <path d="M96 20 Q93 46 92 76 Q91 96 94 112" stroke="#8C4808" stroke-width="1.8" fill="none" stroke-linecap="round" opacity=".54"/>
+  <path d="M122 18 Q120 44 119 74 Q119 94 121 112" stroke="#8C4808" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".48"/>
+  <path d="M150 22 Q148 48 148 76 Q148 96 150 112" stroke="#8C4808" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".42"/>
+  <path d="M174 36 Q174 60 174 84 Q174 100 176 112" stroke="#8C4808" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".34"/>
+  <path d="M26 104 Q18 92 20 76 Q22 60 30 52 Q33 62 34 76 Q34 92 30 106 Z" fill="#A85610" opacity=".6"/>
+  <path d="M22 82 Q26 68 32 60 Q30 70 28 84 Q28 96 30 104 Q24 96 22 82Z" fill="#7a3808" opacity=".38"/>
+  <path d="M52 36 Q88 22 130 20 Q162 18 188 36" stroke="#FFF0A0" stroke-width="8" fill="none" stroke-linecap="round" opacity=".2"/>
+  <rect x="96" y="22" width="7" height="7" rx="1.6" fill="white" opacity=".92" transform="rotate(16 96 22)"/>
+  <rect x="112" y="18" width="5" height="5" rx="1.2" fill="white" opacity=".85" transform="rotate(-9 112 18)"/>
+  <rect x="128" y="20" width="6" height="6" rx="1.4" fill="white" opacity=".9" transform="rotate(26 128 20)"/>
+  <rect x="106" y="28" width="4" height="4" rx="1" fill="white" opacity=".77" transform="rotate(4 106 28)"/>
+  <rect x="140" y="22" width="5" height="5" rx="1.2" fill="white" opacity=".82" transform="rotate(-14 140 22)"/>
+  <path d="M38 116 Q112 122 188 116" stroke="#EEDc80" stroke-width="1.8" fill="none" stroke-linecap="round" opacity=".55"/>
+</svg>`,
+
+    // ── F 타입: 초밥 (순수 음식 일러스트) ──
+    F:`<svg viewBox="0 0 220 160" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="tG" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FF7878"/><stop offset="40%" stop-color="#E83050"/>
+      <stop offset="100%" stop-color="#B01830"/>
+    </linearGradient>
+    <radialGradient id="tSh" cx="32%" cy="22%" r="55%">
+      <stop offset="0%" stop-color="#FFAAAA" stop-opacity=".75"/>
+      <stop offset="100%" stop-color="#E03050" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="rG" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FEFEF8"/><stop offset="100%" stop-color="#EAE4C8"/>
+    </linearGradient>
+    <filter id="ss"><feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#600" flood-opacity=".22"/></filter>
+  </defs>
+  <ellipse cx="110" cy="152" rx="72" ry="8" fill="#400" opacity=".13"/>
+  <g filter="url(#ss)">
+    <ellipse cx="110" cy="124" rx="68" ry="34" fill="url(#rG)"/>
+    <ellipse cx="110" cy="124" rx="68" ry="34" fill="none" stroke="#D8D0A8" stroke-width="1.4"/>
+    <path d="M50 112 Q80 106 110 108 Q140 106 170 112" stroke="#DDD8B8" stroke-width="1.1" fill="none" opacity=".8"/>
+    <path d="M46 120 Q78 115 110 116 Q142 115 174 120" stroke="#DDD8B8" stroke-width="1" fill="none" opacity=".7"/>
+    <path d="M46 128 Q78 123 110 124 Q142 123 174 128" stroke="#DDD8B8" stroke-width="1" fill="none" opacity=".6"/>
+    <path d="M50 136 Q80 132 110 133 Q140 132 170 136" stroke="#DDD8B8" stroke-width=".9" fill="none" opacity=".45"/>
+    <rect x="66" y="112" width="8" height="3.5" rx="1.7" fill="#E8E0C0" opacity=".72"/>
+    <rect x="80" y="109" width="8" height="3.5" rx="1.7" fill="#E8E0C0" opacity=".68"/>
+    <rect x="95" y="108" width="8" height="3.5" rx="1.7" fill="#E8E0C0" opacity=".72"/>
+    <rect x="110" y="108" width="8" height="3.5" rx="1.7" fill="#E8E0C0" opacity=".68"/>
+    <rect x="125" y="109" width="8" height="3.5" rx="1.7" fill="#E8E0C0" opacity=".72"/>
+    <rect x="140" y="112" width="8" height="3.5" rx="1.7" fill="#E8E0C0" opacity=".68"/>
+    <rect x="73" y="119" width="7" height="3" rx="1.5" fill="#E8E0C0" opacity=".62"/>
+    <rect x="88" y="117" width="7" height="3" rx="1.5" fill="#E8E0C0" opacity=".58"/>
+    <rect x="103" y="116" width="7" height="3" rx="1.5" fill="#E8E0C0" opacity=".62"/>
+    <rect x="118" y="116" width="7" height="3" rx="1.5" fill="#E8E0C0" opacity=".58"/>
+    <rect x="133" y="117" width="7" height="3" rx="1.5" fill="#E8E0C0" opacity=".62"/>
+    <rect x="70" y="126" width="7" height="3" rx="1.5" fill="#E8E0C0" opacity=".52"/>
+    <rect x="84" y="125" width="7" height="3" rx="1.5" fill="#E8E0C0" opacity=".48"/>
+    <rect x="99" y="124" width="7" height="3" rx="1.5" fill="#E8E0C0" opacity=".52"/>
+    <rect x="114" y="124" width="7" height="3" rx="1.5" fill="#E8E0C0" opacity=".48"/>
+    <rect x="129" y="125" width="7" height="3" rx="1.5" fill="#E8E0C0" opacity=".52"/>
+    <rect x="144" y="126" width="7" height="3" rx="1.5" fill="#E8E0C0" opacity=".48"/>
+    <path d="M38 108 Q42 88 58 76 Q76 64 110 62 Q144 60 164 74 Q180 84 184 104 Q186 120 178 130 Q164 140 110 142 Q56 140 42 128 Q36 120 38 108Z" fill="url(#tG)"/>
+    <path d="M58 78 Q82 66 110 64 Q138 62 162 76" fill="none" stroke="url(#tSh)" stroke-width="14" stroke-linecap="round" opacity=".65"/>
+    <path d="M50 100 Q76 86 110 84 Q144 83 170 98" stroke="#FF9898" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".55"/>
+    <path d="M46 110 Q74 96 110 94 Q146 93 174 108" stroke="#FF9898" stroke-width="1.4" fill="none" stroke-linecap="round" opacity=".48"/>
+    <path d="M44 120 Q72 106 110 104 Q148 103 176 118" stroke="#EE7888" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".4"/>
+    <path d="M56 90 Q80 78 110 76 Q140 75 164 88" stroke="#FFA8A8" stroke-width="1.2" fill="none" stroke-linecap="round" opacity=".48"/>
+    <path d="M66 80 Q88 70 110 68 Q132 68 152 78" stroke="rgba(255,225,215,.72)" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M60 92 Q84 80 110 78 Q136 78 158 90" stroke="rgba(255,215,210,.58)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <path d="M56 104 Q82 92 110 90 Q138 90 162 102" stroke="rgba(255,205,205,.45)" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M64 78 Q88 68 114 66 Q136 66 156 76" stroke="white" stroke-width="6" fill="none" stroke-linecap="round" opacity=".18"/>
+    <path d="M38 108 Q36 118 40 130 Q44 138 54 140 Q46 136 42 126 Q38 116 38 108Z" fill="#A81830" opacity=".75"/>
+    <path d="M184 104 Q186 114 182 128 Q178 138 168 140 Q176 136 180 126 Q184 116 184 104Z" fill="#A81830" opacity=".75"/>
+  </g>
 </svg>`
   };
 
   document.getElementById('personality-emoji').innerHTML=charSVGs[res.type]||res.e;
-  savedResult=res; savedFoodName=foodName||''; savedMood=mood;
+  savedResult=res;savedFoodName=foodName||'';savedMood=mood;
   document.getElementById('personality-food-type').textContent=`${res.food} 타입`;
   document.getElementById('personality-type-tag').textContent=res.tag;
   document.getElementById('personality-desc').textContent=res.desc;
@@ -1147,7 +1068,7 @@ async function buildResult(foodName){
 
   if(hasStory){
     document.getElementById('story-oneliner-block').style.display='block';
-    document.getElementById('quiz-zone-title').textContent='7개 질문이 말하는 나';
+    document.getElementById('quiz-zone-title').textContent='8개 질문이 말하는 나';
     const intensityLabel={'low':'잔잔하게 ','medium':'','high':'강렬하게 '}[moodIntensity]||'';
     document.getElementById('char-food-name').textContent=`${foodName} 캐릭터`;
     document.getElementById('mood-badge-wrap').innerHTML=`<div class="mood-badge" style="background:${moodData.badgeBg};border-color:${moodData.border};color:${moodData.badgeColor}">${moodData.emoji} ${intensityLabel}${moodData.label}</div>`;
@@ -1158,59 +1079,35 @@ async function buildResult(foodName){
       document.getElementById('story-recap-content').textContent=story;
       document.getElementById('story-recap-card').style.display='block';
       if(storyContext.situation||storyContext.tone){
-        const ctxEl=document.createElement('div');
-        ctxEl.style.cssText='display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;';
+        const ctxEl=document.createElement('div');ctxEl.style.cssText='display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;';
         const ctxItems=[storyContext.situation?`📍 ${storyContext.situation}`:'',storyContext.relation?`👥 ${storyContext.relation}`:'',storyContext.tone?`🎭 ${storyContext.tone}`:''].filter(Boolean);
         ctxEl.innerHTML=ctxItems.map(c=>`<span style="padding:4px 10px;background:rgba(212,149,106,.1);border:1px solid rgba(212,149,106,.25);border-radius:20px;font-size:11px;color:var(--caramel);font-weight:600">${c}</span>`).join('');
         document.getElementById('story-recap-card').querySelector('.recap-story').before(ctxEl);
       }
-      if(keywords.length){
-        document.getElementById('keywords-row').innerHTML=keywords.map(k=>`<span class="kw-chip"># ${k}</span>`).join('');
-        document.getElementById('keywords-wrap').style.display='block';
-      }
+      if(keywords.length){document.getElementById('keywords-row').innerHTML=keywords.map(k=>`<span class="kw-chip"># ${k}</span>`).join('');document.getElementById('keywords-wrap').style.display='block';}
     }
 
     setLoadingStep('lstep-img');
     generateCharImage(foodName,mood,moodIntensity,emotionDetail,storyContext).then(url=>{
-      doneLoadingStep('lstep-img');
-      document.getElementById('char-img').src=url;
-      document.getElementById('char-img').style.display='block';
-      document.getElementById('char-loading-inner').style.display='none';
-    }).catch(()=>{
-      doneLoadingStep('lstep-img');
-      document.getElementById('char-loading-inner').innerHTML=`<span style="font-size:36px">${moodData.emoji}</span>`;
-    });
+      doneLoadingStep('lstep-img');document.getElementById('char-img').src=url;document.getElementById('char-img').style.display='block';document.getElementById('char-loading-inner').style.display='none';
+    }).catch(()=>{doneLoadingStep('lstep-img');document.getElementById('char-loading-inner').innerHTML=`<span style="font-size:36px">${moodData.emoji}</span>`;});
 
     doStoryOneliner(res,story,foodName,mood,emotionDetail,storyContext,moodIntensity).then(text=>{
       document.getElementById('oneliner-loading').style.display='none';
-      const olText=document.getElementById('story-oneliner-text');
-      const olTo=document.getElementById('story-oneliner-to');
-      const olTags=document.getElementById('story-oneliner-tags');
-
+      const olText=document.getElementById('story-oneliner-text');const olTo=document.getElementById('story-oneliner-to');const olTags=document.getElementById('story-oneliner-tags');
       if(text){
-        const summary=getField(text,'썰한줄');
-        const toYou=getField(text,'이사람에게');
-        const tags=(getField(text,'태그').match(/#[^\s#]+/g)||[]).slice(0,5);
-        const charQuote=getField(text,'캐릭터한마디');
-        const charStory=getField(text,'캐릭터스토리');
-
+        const summary=getField(text,'썰한줄');const toYou=getField(text,'이사람에게');const tags=(getField(text,'태그').match(/#[^\s#]+/g)||[]).slice(0,5);const charQuote=getField(text,'캐릭터한마디');const charStory=getField(text,'캐릭터스토리');
         if(summary){olText.textContent=summary;olText.style.display='block';}
         if(toYou){olTo.textContent=`"${toYou}"`;olTo.style.display='block';}
         if(tags.length){olTags.innerHTML=tags.map(t=>`<span class="ai-tag" style="background:rgba(255,255,255,.12);color:rgba(255,255,255,.8);border:none">${t}</span>`).join('');olTags.style.display='block';}
         if(charQuote){document.getElementById('char-quote-text').textContent=charQuote;document.getElementById('char-quote-wrap').style.display='block';}
-
         document.getElementById('story-ai-loading').style.display='none';
         const el=document.getElementById('story-ai-content');
-        if(charStory){
-          el.innerHTML=`<p style="color:rgba(255,255,255,.55);font-size:10px;font-weight:700;letter-spacing:1.5px;margin-bottom:10px">✦ AI가 지어낸 이 캐릭터의 이야기</p><p style="color:rgba(255,255,255,.88);line-height:2;font-size:13px;font-style:italic">${charStory}</p>`;
-        } else {
-          el.innerHTML=`<p style="color:rgba(255,255,255,.6);line-height:1.9;font-size:13px">스토리를 불러오지 못했어요 😅</p>`;
-        }
+        if(charStory){el.innerHTML=`<p style="color:rgba(255,255,255,.55);font-size:10px;font-weight:700;letter-spacing:1.5px;margin-bottom:10px">✦ AI가 지어낸 이 캐릭터의 이야기</p><p style="color:rgba(255,255,255,.88);line-height:2;font-size:13px;font-style:italic">${charStory}</p>`;}
+        else{el.innerHTML=`<p style="color:rgba(255,255,255,.6);line-height:1.9;font-size:13px">스토리를 불러오지 못했어요 😅</p>`;}
         el.style.display='block';
-
       } else {
         olText.textContent='내 썰, AI도 어이없었나봐요 😅';olText.style.display='block';
-        // ★ 수정 2 동일: text 자체가 null이어도 로딩 숨김
         document.getElementById('story-ai-loading').style.display='none';
         document.getElementById('story-ai-content').innerHTML=`<p style="color:#4a5fa0;line-height:1.8">녹음이 없거나 인식되지 않았어요.<br>더 크게 말씀해보세요 🎙️</p>`;
         document.getElementById('story-ai-content').style.display='block';
@@ -1230,7 +1127,6 @@ async function buildResult(foodName){
   resetRecorder();
 }
 
-// STORY ONELINER
 async function doStoryOneliner(res,story,foodName,mood,emotionDetail='',storyContext={},moodIntensity='medium'){
   if(!story)return null;
   const moodData=MOOD_MAP[mood]||MOOD_MAP.neutral;
@@ -1256,7 +1152,7 @@ async function doStoryOneliner(res,story,foodName,mood,emotionDetail='',storyCon
 
 이사람에게: [이 썰 당사자에게만 해주는 현실 공감 한 마디. 1-2문장]
 
-캐릭터스토리: [${foodName} 캐릭터가 이 썰과 똑같은 상황을 겪는 짧은 이야기를 지어내줘. 3인칭으로, 마치 동화나 웹툰 한 장면처럼. 썰 내용을 기반으로 하되 캐릭터가 ${foodName}이라는 걸 녹여서. 읽으면 "맞아 이거야 ㅋㅋ" 또는 "아 찡해" 반응이 나오게. 4~5문장]
+캐릭터스토리: [${foodName} 캐릭터가 이 썰과 똑같은 상황을 겪는 짧은 이야기를 지어내줘. 3인칭으로, 마치 동화나 웹툰 한 장면처럼. 4~5문장]
 
 캐릭터한마디: [${foodName} 캐릭터가 이 상황에서 할 법한 말 한 마디. 귀엽거나 웃기거나 공감되게. 따옴표 없이]
 
@@ -1266,63 +1162,78 @@ async function doStoryOneliner(res,story,foodName,mood,emotionDetail='',storyCon
   return await callGemini(prompt,900);
 }
 
-// DEEP LOCAL ANALYSIS
 function deepLocalAnalysis(answerLabels, res) {
   const c = answerLabels.map(a => a.chosen);
+
   const hlMap = {
     A:[['🌶️🔥 배고프면 폭발하는데 맛있으면 다 용서되는 마라탕형 인간','🌶️😶 배고파도 말 없이 속으로만 끓는 마라탕형 인간','🌶️🗣️ 배고프면 일단 아무 말이나 하고 보는 마라탕형 인간','🌶️⚡ 배고파도 그냥 아무거나 먹고 해결하는 마라탕형 인간'],['👆🌶️ 메뉴는 내가 정하고 맵기도 내가 정하는 마라탕형 인간','🙃🌶️ 아무거나 해놓고 결국 마라탕 끌고 오는 마라탕형 인간','🫶🌶️ 상대 의견 존중하지만 속으론 마라탕 외치는 마라탕형 인간','💭🌶️ 속으로 마라탕 생각하면서 겉으론 아무거나인 척하는 인간']],
     B:[['🎂😤 배고프면 예민해지지만 달달한 거 먹으면 세상이 좋아지는 케이크형 인간','🎂🤐 혼자 조용히 배고픔 참다가 편의점 디저트로 해결하는 케이크형 인간','🎂🗣️ 배고프면 아무 말이나 하다가도 케이크 보는 순간 눈빛 달라지는 인간','🎂🍴 대충 때우다가도 디저트만큼은 진지하게 고르는 케이크형 인간'],['👆🎂 메뉴 내가 정하는데 디저트만큼은 오래 고민하는 케이크형 인간','🙃🎂 아무거나 해놓고 결국 카페 데려가는 케이크형 인간','🫶🎂 상대 의견 존중하지만 생일 때만큼은 케이크 절대 양보 안 하는 인간','💭🎂 속으론 카페 가고 싶은데 말 못 하고 있는 케이크형 인간']],
-    C:[['🍷😤 배고프면 예민해지는데 절대 티 안 내려고 하는 와인형 인간','🍷🤐 배고파도 조용히 참는데 알고 보면 속이 꽉 찬 와인형 인간','🍷🗣️ 배고프면 말이 많아지는데 나중엔 다 논리적 대화였던 와인형 인간','🍷⚡ 배고프면 빠르게 해결하는 효율주의 와인형 인간'],['👆🍷 메뉴 내가 정하지만 이유가 다 있는 와인형 인간','🙃🍷 아무거나 해놓고 결국 제일 합리적인 선택 끌고 오는 와인형 인간','🫶🍷 상대 배려하면서도 와인처럼 은근히 취향 관철시키는 인간','💭🍷 속으로 이미 다 정해놓고 상대가 먼저 말하길 기다리는 와인형 인간']],
-    D:[['🍲😤 배고프면 예민해지는 척 하지만 사실 그냥 배고픈 해장국형 인간','🍲🤐 배고파도 말 없이 그냥 참는 해장국형 인간','🍲🗣️ 배고프면 아무 말이나 하는데 나중엔 기억 못 하는 해장국형 인간','🍲⚡ 배고프면 그냥 제일 빠른 거 먹는 해장국형 인간'],['👆🍲 일단 내가 정하고 맛없으면 내 책임지는 해장국형 인간','🙃🍲 아무거나 해놓고 결국 아무거나 먹는 진짜 아무거나형 인간 ㅋㅋ','🫶🍲 상대가 좋으면 메뉴도 다 좋은 해장국형 인간','💭🍲 속으로 딴 거 생각하면서 결국 그냥 아무거나 먹는 해장국형 인간']],
+    C:[['🍷😤 배고프면 예민해지는데 절대 티 안 내려고 하는 와인형 인간','🍷🤐 배고파도 말 없이 참는데 알고 보면 속이 꽉 찬 와인형 인간','🍷🗣️ 배고프면 말이 많아지는데 나중엔 다 논리적 대화였던 와인형 인간','🍷⚡ 배고프면 빠르게 해결하는 효율주의 와인형 인간'],['👆🍷 메뉴 내가 정하지만 이유가 다 있는 와인형 인간','🙃🍷 아무거나 해놓고 결국 제일 합리적인 선택 끌고 오는 와인형 인간','🫶🍷 상대 배려하면서도 와인처럼 은근히 취향 관철시키는 인간','💭🍷 속으로 이미 다 정해놓고 상대가 먼저 말하길 기다리는 와인형 인간']],
+    D:[['🍲😤 배고프면 예민해지는 척 하지만 사실 그냥 배고픈 해장국형 인간','🍲🤐 배고파도 말 없이 그냥 참는 해장국형 인간','🍲🗣️ 배고프면 아무 말이나 하는데 나중엔 기억 못 하는 해장국형 인간','🍲🍴 배고프면 그냥 제일 빠른 거 먹는 해장국형 인간'],['👆🍲 일단 내가 정하고 맛없으면 내 책임지는 해장국형 인간','🙃🍲 아무거나 해놓고 결국 아무거나 먹는 진짜 아무거나형 인간 ㅋㅋ','🫶🍲 상대가 좋으면 메뉴도 다 좋은 해장국형 인간','💭🍲 속으로 딴 거 생각하면서 결국 그냥 아무거나 먹는 해장국형 인간']],
+    E:[['🥐😤 배고프면 예민해지는데 그 티를 절대 안 내려는 겉바속촉형 인간','🥐🤐 배고파도 조용히 참다가 어느 순간 슬며시 빵집으로 사라지는 소금빵형 인간','🥐🗣️ 배고프면 말이 많아지는데 알고 보면 그게 다 배고프다는 신호인 소금빵형 인간','🥐⚡ 배고프면 빠르게 해결하는데 퀄리티는 포기 안 하는 소금빵형 인간'],['👆🥐 겉으론 단호하게 정하는 척하지만 속으론 모두가 만족하길 바라는 소금빵형 인간','🙃🥐 아무거나 해놓고 결국 제일 따뜻한 곳으로 데려가는 소금빵형 인간','🫶🥐 상대 의견 존중하는데 막상 결정되면 은근히 더 좋은 방향 제안하는 소금빵형 인간','💭🥐 속으론 이미 완벽한 곳 정해놨는데 말 안 하고 있는 소금빵형 인간']],
+    F:[['🍣😤 배고프면 예민해지는데 그 감정을 절대 티 안 내는 초밥형 인간','🍣🤐 배고파도 조용히 참으면서 혼자 완벽한 식당 검색하는 초밥형 인간','🍣🗣️ 배고프면 말이 많아지는데 알고 보면 음식 얘기만 하는 초밥형 인간','🍣⚡ 배고프면 빠르게 먹되 퀄리티는 절대 안 포기하는 초밥형 인간'],['👆🍣 메뉴 내가 정하는데 퀄리티 보장하는 초밥형 인간','🙃🍣 아무거나 해놓고 결국 제일 좋은 데로 데려가는 초밥형 인간','🫶🍣 상대 의견 다 들어주지만 맛없는 데는 절대 안 가는 초밥형 인간','💭🍣 속으론 이미 완벽한 곳 다 알고 있는데 말 안 하는 초밥형 인간']],
   };
   const typeHl=hlMap[res.type]||hlMap.A;
   const finalHl=typeHl[0][Math.min(c[2]||0,3)]||typeHl[0][0];
 
-  const foodPsyData={
-    A:{meal:['한 끼도 빼먹지 않는 규칙적인 식사가 에너지와 기분을 결정해요. 세끼 다 챙기는 건 루틴이 아니라 자기 통제의 일부예요. 밥을 제때 못 먹으면 다른 것도 다 틀어지는 기분이 드는 타입이에요.','하루 두 끼로도 충분히 살지만, 챙길 때는 제대로 챙기는 스타일이에요. 바쁘다는 핑계로 대충 때우는 것처럼 보여도, 정작 먹는 순간만큼은 진지해요. 밥에 투자하는 시간이 곧 자기에게 투자하는 시간이에요.','하루 한 끼라도 제대로 된 걸 먹어야 직성이 풀리는 타입이에요. 정신없이 살면서도 그 한 끼만큼은 타협 안 하는 고집이 있어요. 식사에 대한 기준이 높은 사람이 삶의 기준도 높아요.','떼끼 때우는 요즘이지만, 그게 자책거리가 아니에요. 지금 몸이 원하는 게 뭔지 알면서 그냥 때우는 거니까요. 대충 때우는 것처럼 보여도 진짜 배고플 때 뭘 먹어야 하는지는 정확하게 알고 있어요.'],stress:['매운 음식으로 스트레스를 푸는 사람은 감정을 억누르지 않아요. 속에서 뭔가 끓어오를 때 그 열기를 음식으로 발산하는 방식이에요. 마라탕집에서 제일 매운 단계 고르면서 오늘 있었던 일 혼자 복기하는 타입이에요.','달달한 디저트로 감정을 달래는 사람은 자기 자신에게 친절한 사람이에요. 힘든 하루 끝에 편의점 케이크 하나 사는 것도 자기 돌봄이에요. 단 거 먹으면서 기분 풀리는 걸 창피해하지 않아도 돼요.','스트레스 받으면 뭐든 빨리 먹고 해결하는 타입이에요. 음식을 즐기기보다 연료로 쓰는 경향이 있는데, 사실 그게 더 효율적일 때도 있어요. 밥 빨리 먹고 문제 해결하러 가는 행동력이 진짜 매력이에요.','아예 안 먹는 타입은 배고픔보다 스트레스가 더 강한 사람이에요. 속이 뒤집히면 음식이 안 넘어가는 건 예민하다는 게 아니라 감각이 솔직하다는 뜻이에요. 스트레스 해소되면 갑자기 폭식하는 패턴 있을 수도 있어요.']},
-    B:{meal:['세끼 꼬박꼬박 챙기는 사람은 규칙과 루틴 안에서 안정감을 찾아요. 식사 시간이 하루의 중심축이고, 그 리듬이 무너지면 하루 전체가 흔들리는 느낌이 드는 타입이에요. 밥상을 차리는 게 곧 자기 자신을 돌보는 의식이에요.','두 끼 먹는 사람은 효율적이면서도 챙길 건 챙기는 균형파예요. 아침을 거르더라도 점심은 제대로, 저녁도 적당히 챙기는 리듬이 있어요. 바쁜 와중에도 밥 먹을 시간을 일부러 만드는 사람이에요.','한 끼로 버티는 날이 많지만, 그 한 끼에 온 에너지를 집중하는 스타일이에요. 하루 중 그 식사 시간만큼은 진심으로 즐기려 하는 사람이에요. 많이 먹는 것보다 제대로 먹는 것에 의미를 두는 타입이에요.','대충 때우는 요즘이지만, 뭔가 허전한 느낌이 드는 건 알고 있어요. 편의점 삼각김밥으로 때우면서도 "나중에 제대로 먹어야지"라는 생각을 달고 사는 타입이에요. 지금은 지쳐 있는 거고, 곧 다시 자기를 챙기게 될 거예요.'],stress:['달달한 걸 좋아하는 사람이 매운 걸 찾는다는 건 감정이 그만큼 강하게 요동치고 있다는 뜻이에요. 평소와 다른 음식을 찾는 건 내가 지금 평소와 다른 상태라는 몸의 신호예요.','감정이 힘들 때 단 걸 당기는 건 뇌가 보상을 원하는 거예요. 편의점 초코과자 하나로 오늘 하루를 버티는 방법을 아는 사람이에요. 그 작은 위로가 사실 꽤 큰 힘이 돼요.','스트레스를 음식으로 해결하되 오래 붙잡지 않는 스타일이에요. 감정을 처리하는 속도가 빠른 편이고, 음식이 그 전환점 역할을 해요. 먹고 나서 기분이 리셋되는 경험이 많을 거예요.','스트레스가 식욕까지 잡아먹는 강도라는 뜻이에요. 밥을 거를 때 자기 자신도 같이 방치되고 있는 건 아닌지 한 번쯤 돌아봐야 해요. 작은 것 하나라도 먹는 게 자기한테 보내는 신호가 될 수 있어요.']},
-    C:{meal:['세끼 루틴이 삶의 기준이에요. 식사 스케줄이 곧 하루 스케줄이고, 그 안에서 다른 모든 것을 조율해요. 약속 잡을 때 밥 시간 먼저 고려하는 사람이에요.','두 끼로 하루를 돌리지만 그 두 끼 안에서 최대한 영양과 맛을 챙기는 타입이에요. 먹는 게 일인 것처럼 진지하게 메뉴를 고르는 편이에요. 대충 먹으면 뭔가 찜찜한 사람이에요.','한 끼밖에 못 먹는 날이 많지만 그 한 끼를 제대로 먹으려고 하는 완벽주의적 면이 있어요. 완벽한 식사가 아니면 굳이 먹고 싶지 않은 마음도 있어요.','대충 때우는 요즘이지만 사실 이 상태가 좀 불편한 사람이에요. 루틴이 무너진 것 같은 찜찜함이 있는데, 다시 식사 규칙을 만드는 게 제일 빠른 방법이에요.'],stress:['평소엔 이성적인 사람이 매운 걸 찾는다는 건 지금 감정이 논리를 넘어서고 있다는 뜻이에요. 마라탕 한 그릇으로 오늘의 억울함을 씻어내는 의식을 치르는 거예요.','효율주의자가 디저트를 찾는다는 건 지금 자신에게 보상이 필요하다는 걸 인정하는 순간이에요. 그 솔직함이 사실 귀여운 면이에요.','스트레스를 해결해야 하는 문제로 보는 사람이에요. 밥도 빨리 먹고, 감정도 빨리 정리하고, 다음 스텝으로 가려는 거예요.','감정이 신체 반응까지 이어지는 타입이에요. 배가 고픈지 안 고픈지보다 마음이 괜찮은지가 더 중요한 순간이에요.']},
-    D:{meal:['세끼 챙기는 루틴 안에서 하루를 살아가지만, 그 루틴이 무너져도 크게 동요하지 않는 사람이에요. 밥 자리가 사람을 만나는 이유가 되는 타입이에요.','두 끼면 충분해요. 많이 먹는 것보다 필요할 때 제대로 먹는 게 더 중요한 사람이에요. 식사에 의미를 두되 집착하지 않는 균형이 있어요.','한 끼면 버티는 날이 많지만 그게 힘든 건 아니에요. 배고픔보다 하고 싶은 게 더 강한 사람이에요.','대충 때우는 요즘인데, 사실 그게 편하기도 해요. 지금 뭔가에 더 집중하고 있는 시기일 거예요.'],stress:['자극적인 걸 찾는다는 건 지금 감각이 무뎌진 느낌이라는 뜻이에요. 뭔가 강렬한 걸로 다시 살아있는 느낌을 찾고 싶은 거예요.','해장국 같은 사람이 단 걸 찾는다는 건 지금 자신에게 부드러운 위로가 필요하다는 신호예요.','스트레스도 밥도 효율적으로 처리하는 타입이에요. 감정에 오래 머물지 않고 다음으로 넘어가는 힘이 있어요.','속이 편해야 밥이 넘어가는 사람이에요. 몸보다 마음이 먼저인 타입이에요.']}
-  };
   const mealIdx=Math.min(c[1]!==undefined?c[1]:0,3);
-  const stressIdx=Math.min(c[5]!==undefined?c[5]:0,3);
+  const stressIdx=Math.min(c[6]!==undefined?c[6]:0,3);
+
+  const foodPsyData={
+    A:{meal:['한 끼도 빼먹지 않는 규칙적인 식사가 에너지와 기분을 결정해요.','하루 두 끼로도 충분히 살지만, 챙길 때는 제대로 챙기는 스타일이에요.','하루 한 끼라도 제대로 된 걸 먹어야 직성이 풀리는 타입이에요.','떼끼 때우는 요즘이지만, 지금 몸이 원하는 게 뭔지 알면서 그냥 때우는 거니까요.'],stress:['매운 음식으로 스트레스를 푸는 사람은 감정을 억누르지 않아요.','달달한 디저트로 감정을 달래는 사람은 자기 자신에게 친절한 사람이에요.','스트레스 받으면 뭐든 빨리 먹고 해결하는 타입이에요.','아예 안 먹는 타입은 배고픔보다 스트레스가 더 강한 사람이에요.']},
+    B:{meal:['세끼 꼬박꼬박 챙기는 사람은 규칙과 루틴 안에서 안정감을 찾아요.','두 끼 먹는 사람은 효율적이면서도 챙길 건 챙기는 균형파예요.','한 끼로 버티는 날이 많지만, 그 한 끼에 온 에너지를 집중하는 스타일이에요.','대충 때우는 요즘이지만, 뭔가 허전한 느낌이 드는 건 알고 있어요.'],stress:['달달한 걸 좋아하는 사람이 매운 걸 찾는다는 건 감정이 그만큼 강하게 요동치고 있다는 뜻이에요.','감정이 힘들 때 단 걸 당기는 건 뇌가 보상을 원하는 거예요.','스트레스를 음식으로 해결하되 오래 붙잡지 않는 스타일이에요.','스트레스가 식욕까지 잡아먹는 강도라는 뜻이에요.']},
+    C:{meal:['세끼 루틴이 삶의 기준이에요.','두 끼로 하루를 돌리지만 그 두 끼 안에서 최대한 영양과 맛을 챙기는 타입이에요.','한 끼밖에 못 먹는 날이 많지만 그 한 끼를 제대로 먹으려고 하는 완벽주의적 면이 있어요.','대충 때우는 요즘이지만 사실 이 상태가 좀 불편한 사람이에요.'],stress:['평소엔 이성적인 사람이 매운 걸 찾는다는 건 지금 감정이 논리를 넘어서고 있다는 뜻이에요.','효율주의자가 디저트를 찾는다는 건 지금 자신에게 보상이 필요하다는 걸 인정하는 순간이에요.','스트레스를 해결해야 하는 문제로 보는 사람이에요.','감정이 신체 반응까지 이어지는 타입이에요.']},
+    D:{meal:['세끼 챙기는 루틴 안에서 하루를 살아가지만, 그 루틴이 무너져도 크게 동요하지 않는 사람이에요.','두 끼면 충분해요. 많이 먹는 것보다 필요할 때 제대로 먹는 게 더 중요한 사람이에요.','한 끼면 버티는 날이 많지만 그게 힘든 건 아니에요.','대충 때우는 요즘인데, 사실 그게 편하기도 해요.'],stress:['자극적인 걸 찾는다는 건 지금 감각이 무뎌진 느낌이라는 뜻이에요.','해장국 같은 사람이 단 걸 찾는다는 건 지금 자신에게 부드러운 위로가 필요하다는 신호예요.','스트레스도 밥도 효율적으로 처리하는 타입이에요.','속이 편해야 밥이 넘어가는 사람이에요.']},
+    E:{meal:['세끼를 다 챙기는 건 겉바속촉 소금빵처럼 일상을 완성도 있게 살아내는 방식이에요.','두 끼지만 그 두 끼만큼은 소금빵처럼 정성껏 챙기는 타입이에요.','한 끼라도 따뜻하고 좋은 걸 먹어야 하루가 완성되는 타입이에요.','대충 때우는 요즘이지만 속으론 따뜻한 걸 원하고 있어요.'],stress:['매운 걸 찾는다는 건 평소에 꾹 눌러두던 감정이 겉면을 뚫고 나오려는 신호예요.','달달한 걸 찾는다는 건 지금 속이 채워지길 원하는 상태예요.','빠르게 먹고 해결하는 건 겉바속촉형에겐 꽤 드문 일이에요. 그만큼 지금 많이 지쳐있다는 신호예요.','안 먹는 건 지금 안팎이 다 꽉 막혀있는 상태예요.']},
+    F:{meal:['세끼를 정성껏 챙기는 사람이에요. 먹는 것 하나에도 의미를 두는 타입이에요.','두 끼지만 그 두 끼만큼은 초밥처럼 완성도 있게 챙기는 사람이에요.','한 끼를 먹어도 아무거나는 절대 못 먹는 타입이에요. 퀄리티에 기준이 있는 사람이에요.','대충 때우고 있지만 사실 그게 제일 불편한 사람이에요.'],stress:['매운 걸 찾는 건 평소에 절제하던 감정이 터져나오려는 신호예요.','단 걸 찾는다는 건 지금 자신에게 상을 줘야 할 만큼 열심히 살았다는 뜻이에요.','빠르게 먹고 해결하는 건 초밥형에겐 드문 일이에요.','안 먹는 것도 하나의 의식이에요. 정리되기 전까지는 아무것도 받아들이지 않겠다는 내면의 결정이에요.']},
+  };
   const foodPsy=(foodPsyData[res.type]?.meal[mealIdx]||foodPsyData.A.meal[0])+' '+(foodPsyData[res.type]?.stress[stressIdx]||foodPsyData.A.stress[0]);
 
-  const relData={
-    A:{menu:['메뉴를 직접 정하는 사람은 관계에서도 먼저 움직이는 타입이에요. 주도권을 갖는 게 불편하지 않고 오히려 책임감으로 느끼는 사람이에요.','"아무거나"라고 했지만 결국 의견 내는 타입 — 겉으로는 유연해 보이지만 속으론 분명한 기준이 있어요.','상대 의견 존중하는 타입 — 맞춰주다 보면 정작 자기가 지쳐있는 줄 모를 수 있어요.','속으로 딴 메뉴 생각하는 타입 — 가까운 사람이 먼저 물어봐줄 때 비로소 진짜 생각을 얘기하는 타입이에요.'],love:['마라탕 연애 — 자극이 없으면 금방 지루해지는 타입이에요. 그 강도가 높다 보니 소진되기도 빠른 편이에요.','케이크 연애 — 작은 이벤트 하나에도 큰 의미를 두고, 상대가 기억해주는 것에 감동받는 사람이에요.','와인 연애 — 처음엔 어색하고 느리지만 시간이 지날수록 깊어지는 연애를 해요.','삼각김밥 연애 — 빠르게 시작하고 끝나는 패턴을 경험해봤을 거예요. 반복 속에서 자기 자신을 더 잘 알게 된 타입이에요.']},
-    B:{menu:['달달하고 부드러운 사람 같지만 막상 결정할 때는 확실한 면이 있어요. 관계에서도 필요할 때는 먼저 나서는 사람이에요.','상대방이 불편하지 않게 배려하면서도 결국 원하는 방향으로 가는 부드러운 리더십이 있어요.','상대가 좋아하는 게 뭔지 먼저 살피는 사람이에요. 밥 먹을 때 상대 그릇이 비었나 먼저 확인하는 타입이에요.','겉으로는 조용하게 맞춰주는 것 같지만 속에는 자기만의 세계가 단단하게 있어요.'],love:['달달한 사람이 마라탕 연애를 꿈꾼다는 건 자극과 설렘에 대한 갈망이 숨어있다는 거예요.','기념일을 챙기고 소중한 순간에 이름을 붙이는 연애를 원해요. 로맨티스트예요.','급하게 가지 않고 천천히 서로를 알아가는 연애를 원해요.','예상 못 한 연애가 갑자기 시작되고 갑자기 끝나는 경험을 해봤을 거예요. 지금은 좀 더 안정적인 연애를 원하는 마음이 있어요.']},
-    C:{menu:['관계에서도 주도적이에요. 계획 세우는 걸 당연하게 여기고 그 역할에서 오히려 안정감을 느껴요.','처음부터 의견 내기 싫어서 기다리는 거지, 진짜 아무 생각이 없는 게 아니에요.','배려에 익숙한 사람도 받아야 할 때가 있어요. 상대가 먼저 챙겨줄 때 어색해하지 않아도 돼요.','처음 본 사람은 이 사람 속을 잘 못 읽는데, 가까워지면 완전히 다른 면이 나오는 타입이에요.'],love:['논리적인 사람이 자극적인 연애를 원한다는 건 감정적으로 살아있고 싶다는 뜻이에요.','달력에 기념일 표시해두는 거 절대 빠뜨리지 않는 사람이에요.','이 사람이 제일 잘하는 연애 스타일이에요. 천천히 알아가면서 깊어지는 연애가 본인 성향에 딱 맞아요.','갑작스럽게 시작되고 끝나는 연애 경험이 있을 거예요. 그 경험이 지금 사람을 보는 눈을 더 날카롭게 만들었어요.']},
-    D:{menu:['관계에서도 군말 없이 먼저 움직이는 편이에요. 복잡하게 생각하지 않고 일단 가는 스타일이에요.','관계에서도 대부분 상대에게 맞춰주는 편이에요. 크게 고집이 없어서 사람들이 편하게 느끼는 타입이에요.','관계에서 제일 먼저 상대 기분을 살피는 사람이에요. 없으면 진짜 허전한 존재예요.','말은 안 해도 속에 생각이 많은 사람이에요. 가까운 사람은 알지만, 처음 보는 사람은 잘 모르는 층위가 있어요.'],love:['잔잔한 사람이 자극적인 연애를 원한다는 건 지금 일상이 조금 단조롭게 느껴진다는 뜻일 수도 있어요.','절대 티 안 내지만 상대 생일 절대 잊지 않는 사람이에요.','처음부터 모든 걸 보여주지 않아도 되는 연애를 원해요.','짧게 뜨겁게 타오르는 연애를 경험해봤을 거예요. 그 경험이 지금 이 사람을 더 단단하게 만들었어요.']}
-  };
   const menuIdx=Math.min(c[3]!==undefined?c[3]:0,3);
   const loveIdx=Math.min(c[4]!==undefined?c[4]:0,3);
+
+  const relData={
+    A:{menu:['메뉴를 직접 정하는 사람은 관계에서도 먼저 움직이는 타입이에요.','"아무거나"라고 했지만 결국 의견 내는 타입이에요.','상대 의견 존중하는 타입 — 맞춰주다 보면 정작 자기가 지쳐있는 줄 모를 수 있어요.','속으로 딴 메뉴 생각하는 타입 — 가까운 사람이 먼저 물어봐줄 때 비로소 진짜 생각을 얘기해요.'],love:['마라탕 연애 — 자극이 없으면 금방 지루해지는 타입이에요.','케이크 연애 — 작은 이벤트 하나에도 큰 의미를 두는 사람이에요.','와인 연애 — 처음엔 어색하고 느리지만 시간이 지날수록 깊어지는 연애를 해요.','삼각김밥 연애 — 빠르게 시작하고 끝나는 패턴을 경험해봤을 거예요.']},
+    B:{menu:['달달하고 부드러운 사람 같지만 막상 결정할 때는 확실한 면이 있어요.','상대방이 불편하지 않게 배려하면서도 결국 원하는 방향으로 가는 부드러운 리더십이 있어요.','상대가 좋아하는 게 뭔지 먼저 살피는 사람이에요.','겉으로는 조용하게 맞춰주는 것 같지만 속에는 자기만의 세계가 단단하게 있어요.'],love:['달달한 사람인데 마라탕 연애를 꿈꾼다는 건 자극과 설렘에 대한 갈망이 숨어있다는 거예요.','기념일을 챙기고 소중한 순간에 이름을 붙이는 연애를 원해요.','급하게 가지 않고 천천히 서로를 알아가는 연애를 원해요.','예상 못 한 연애가 갑자기 시작되고 갑자기 끝나는 경험을 해봤을 거예요.']},
+    C:{menu:['관계에서도 주도적이에요. 계획 세우는 걸 당연하게 여기는 사람이에요.','처음부터 의견 내기 싫어서 기다리는 거지, 진짜 아무 생각이 없는 게 아니에요.','배려에 익숙한 사람도 받아야 할 때가 있어요.','처음 본 사람은 이 사람 속을 잘 못 읽는데, 가까워지면 완전히 다른 면이 나오는 타입이에요.'],love:['논리적인 사람이 연애에서는 꽤 감정적인 면이 드러나는 타입이에요.','달력에 기념일 표시해두는 거 절대 빠뜨리지 않는 사람이에요.','천천히 알아가면서 깊어지는 연애가 본인 성향에 딱 맞아요.','갑작스럽게 시작되고 끝나는 연애 경험이 있을 거예요.']},
+    D:{menu:['관계에서도 군말 없이 먼저 움직이는 편이에요.','관계에서도 대부분 상대에게 맞춰주는 편이에요.','관계에서 제일 먼저 상대 기분을 살피는 사람이에요.','말은 안 해도 속에 생각이 많은 사람이에요.'],love:['잔잔한 사람이 자극적인 연애를 원한다는 건 지금 일상이 조금 단조롭게 느껴진다는 뜻일 수도 있어요.','절대 티 안 내지만 상대 생일 절대 잊지 않는 사람이에요.','처음부터 모든 걸 보여주지 않아도 되는 연애를 원해요.','짧게 뜨겁게 타오르는 연애를 경험해봤을 거예요.']},
+    E:{menu:['겉으론 단호하게 내가 정하는 것 같지만 사실 모두가 만족할지 제일 많이 신경 쓰는 사람이에요.','아무거나 해놓고 결국 제일 따뜻하고 좋은 데로 데려가는 타입이에요.','상대 의견 존중하는 척하지만 사실 결론은 이미 좋은 방향으로 이끌어가고 있는 사람이에요.','속으론 이미 다 정해놨는데 말 안 하는 타입이에요.'],love:['마라탕 연애를 원하는 것 같지만 사실 겉바속촉 연애가 더 맞아요.','일상 속에서 소금빵처럼 따뜻하게 옆에 있어주는 연애를 해요.','처음엔 차갑게 느껴질 수 있어요. 하지만 시간이 지나면 더 깊고 따뜻한 관계가 돼요.','천천히 겉면이 녹아들면서 깊어지는 연애가 본인 스타일이에요.']},
+    F:{menu:['초밥처럼 아무에게나 먼저 다가가지 않아요. 하지만 한 번 마음을 열면 그 진심의 밀도가 남달라요.','아무거나 해놓고 결국 제일 좋은 곳으로 이끄는 사람이에요.','상대가 원하는 게 뭔지 조용히 파악하고, 더 좋은 걸 제안하는 타입이에요.','이미 속으로 다 계획되어 있어요. 말이 없을수록 생각이 많은 타입이에요.'],love:['자극적인 연애를 꿈꾸지만 실제론 차분하고 깊은 연애가 더 잘 맞는 사람이에요.','기념일보다 일상 속 작은 디테일을 기억해주는 연애를 원해요.','처음엔 냉정하게 보이지만 알아갈수록 더 깊은 감성이 숨어있는 타입이에요.','한 번 마음 준 사람한테는 오래오래 가는 타입이에요.']},
+  };
   const relPsy=(relData[res.type]?.menu[menuIdx]||relData.A.menu[0])+' '+(relData[res.type]?.love[loveIdx]||relData.A.love[0]);
 
-  const charmData={
-    A:{crave:['매콤한 게 당긴다는 건 지금 자극이 필요하다는 뜻이에요. 그 에너지가 주변 사람들을 깨어있게 만드는 힘이기도 해요.','달달한 게 당긴다는 건 자기 감정에 솔직한 사람이에요.','짭짤한 게 당긴다는 건 화려하진 않지만 진짜 맛을 아는 사람이에요.','뜨끈한 국물이 당긴다는 건 겉으로는 강해 보여도 속은 따뜻한 걸 원하는 사람이에요.'],story:['연애 썰을 많이 풀고 있다는 건 썰이 많다는 건 그만큼 많이 살아봤다는 증거예요.','손절 썰을 많이 푼다는 건 냉정한 게 아니라 자기 자신을 지키는 거예요.','회사/학교 썰이 많다는 건 그 치열함이 언젠가 경험과 통찰로 바뀌는 게 보여요.','흑역사 썰이 많다는 건 이불킥할 기억이 많다는 건 살아있다는 증거예요.']},
-    B:{crave:['달달한 사람인데 매운 게 당길 때는 지금 새로운 자극을 원하는 상태예요.','자기 자신에게 가장 잘 맞는 걸 고르는 사람이에요. 내가 먹고 싶은 걸 먹는 솔직함이 있어요.','달달한 게 아닌 짭조름한 걸 원할 때는 현실적인 무언가가 필요한 시점이에요.','지금 감정적으로 좀 비어있는 상태일 수 있어요.'],story:['마음을 많이 써봤다는 뜻이에요. 그 경험이 이 사람을 더 감성 깊게 만들어줬어요.','상처를 받았지만 그 뒤로 일어서는 사람이에요. 손절을 결정하는 용기가 사실 대단한 거예요.','지금 많이 지쳐있다는 신호예요. 버티고 있는 자신을 한 번쯤 인정해줘야 해요.','웃으면서 털어낼 줄 아는 사람이에요. 부끄러운 기억을 썰로 만드는 사람은 회복력이 강한 거예요.']},
-    C:{crave:['이성적인 사람이 자극을 원할 때는 진짜로 힘든 거예요.','효율적인 사람이 달달한 걸 원할 때는 자신에게 보상을 줘야 할 때예요.','제일 현실적인 선택을 하는 사람이에요. 맛에서도 실용성을 찾는 타입이에요.','겉으로는 단단해 보여도 따뜻함을 원하는 사람이에요.'],story:['이성적인 사람이 연애에서는 꽤 감정적인 면이 드러나는 타입이에요. 그 반전이 매력이에요.','기준이 명확한 사람이에요. 맞지 않으면 선 긋는 게 빠른 타입이에요.','치열하게 사는 사람이에요. 그 에너지가 이 사람을 성장시키는 원동력이 되고 있어요.','완벽주의자처럼 보이지만 실수도 많이 해봤다는 거예요. 그 인간적인 면이 사람들이 좋아하는 포인트예요.']},
-    D:{crave:['자극이 필요한 시점이에요. 뭔가 새로운 걸 시작하고 싶은 마음이 있어요.','지금 자신에게 위로가 필요한 상태예요. 그 솔직한 자기인식이 이 사람의 진짜 장점이에요.','군더더기 없고 실속 있는 것을 좋아하는 성향이 음식 취향에서도 드러나요.','본능적으로 따뜻함을 찾는 사람이에요. 그 따뜻함이 주변 사람들을 끌어당기는 이유이기도 해요.'],story:['잔잔해 보이지만 연애에서는 꽤 깊은 감정을 쓰는 사람이에요.','군말 없이 정리하는 사람이에요. 이미 다 생각하고 결정한 거예요.','지금 많이 쌓여있는 상태예요. 그 감정들 어딘가에는 털어낼 출구가 필요해요.','부끄러운 기억도 웃으면서 얘기할 수 있는 사람이에요. 그게 진짜 여유 있는 거예요.']}
-  };
   const craveIdx=Math.min(c[0]!==undefined?c[0]:0,3);
-  const storyTypeIdx=Math.min(c[6]!==undefined?c[6]:0,3);
+  const storyTypeIdx=Math.min(c[7]!==undefined?c[7]:0,3);
+
+  const charmData={
+    A:{crave:['매콤한 게 당긴다는 건 지금 자극이 필요하다는 뜻이에요.','달달한 게 당긴다는 건 자기 감정에 솔직한 사람이에요.','짭짤한 게 당긴다는 건 화려하진 않지만 진짜 맛을 아는 사람이에요.','뜨끈한 국물이 당긴다는 건 겉으로는 강해 보여도 속은 따뜻한 걸 원하는 사람이에요.'],story:['연애 썰을 많이 풀고 있다는 건 그만큼 많이 살아봤다는 증거예요.','손절 썰을 많이 푼다는 건 자기 자신을 지키는 거예요.','회사/학교 썰이 많다는 건 그 치열함이 언젠가 경험과 통찰로 바뀌는 게 보여요.','흑역사 썰이 많다는 건 살아있다는 증거예요.']},
+    B:{crave:['달달한 사람인데 매운 게 당길 때는 지금 새로운 자극을 원하는 상태예요.','자기 자신에게 가장 잘 맞는 걸 고르는 사람이에요.','달달한 게 아닌 짭조름한 걸 원할 때는 현실적인 무언가가 필요한 시점이에요.','지금 감정적으로 좀 비어있는 상태일 수 있어요.'],story:['마음을 많이 써봤다는 뜻이에요.','상처를 받았지만 그 뒤로 일어서는 사람이에요.','지금 많이 지쳐있다는 신호예요.','웃으면서 털어낼 줄 아는 사람이에요.']},
+    C:{crave:['이성적인 사람이 자극을 원할 때는 진짜로 힘든 거예요.','효율적인 사람이 달달한 걸 원할 때는 자신에게 보상을 줘야 할 때예요.','제일 현실적인 선택을 하는 사람이에요.','겉으로는 단단해 보여도 따뜻함을 원하는 사람이에요.'],story:['이성적인 사람이 연애에서는 꽤 감정적인 면이 드러나는 타입이에요.','기준이 명확한 사람이에요.','치열하게 사는 사람이에요.','완벽주의자처럼 보이지만 실수도 많이 해봤다는 거예요.']},
+    D:{crave:['자극이 필요한 시점이에요.','지금 자신에게 위로가 필요한 상태예요.','군더더기 없고 실속 있는 것을 좋아하는 성향이에요.','본능적으로 따뜻함을 찾는 사람이에요.'],story:['잔잔해 보이지만 연애에서는 꽤 깊은 감정을 쓰는 사람이에요.','군말 없이 정리하는 사람이에요.','지금 많이 쌓여있는 상태예요.','부끄러운 기억도 웃으면서 얘기할 수 있는 사람이에요.']},
+    E:{crave:['매콤한 게 당긴다는 건 평소엔 꽉 누르고 있던 감정이 겉면을 뚫고 터져나오려는 신호예요.','달달한 게 당긴다는 건 지금 속을 채워줄 따뜻한 무언가가 필요하다는 뜻이에요.','짭짤한 게 당긴다는 건 소금빵처럼, 딱 맞는 균형감을 본능적으로 찾고 있는 상태예요.','뜨끈한 게 당긴다는 건 갓 구워진 빵처럼 내면에서 따뜻한 걸 갈망하고 있는 거예요.'],story:['연애 썰이 많다는 건 겉은 바삭해 보여도 속으론 늘 진심으로 사람에게 다가갔다는 뜻이에요.','손절 썰이 많다는 건 크러스트처럼 단단한 기준이 있는 사람이라는 증거예요.','직장/학교 썰이 많다는 건 어떤 환경에서도 자기만의 따뜻함을 잃지 않는 사람이에요.','흑역사 썰이 많다는 건 완벽해 보이는 겉면 아래 말랑한 실수투성이 시절이 있었다는 거예요.']},
+    F:{crave:['매콤한 게 당긴다는 건 평소에 절제하던 감각이 깨어나고 있다는 뜻이에요.','달달한 게 당긴다는 건 지금 자신의 섬세한 내면이 위로를 원한다는 신호예요.','짭짤한 게 당긴다는 건 초밥의 간장처럼, 적당한 현실감각으로 균형을 찾으려는 것이에요.','뜨끈한 게 당긴다는 건 차가워 보이는 이 사람 안에 따뜻한 사람이 되고 싶은 마음이 있다는 뜻이에요.'],story:['연애 썰이 많다는 건 초밥처럼 겉은 정갈하지만 속에는 깊은 감정의 층이 있다는 뜻이에요.','손절 썰이 많다는 건 한 번 결정하면 돌아보지 않는 사람이에요.','직장/학교 썰이 많다는 건 완성도에 대한 집착이 인간관계에도 그대로 드러나는 타입이에요.','흑역사 썰이 많다는 건 완벽해 보이는 이 사람에게도 웃긴 시절이 있었다는 거예요.']},
+  };
   const hiddenCharm=(charmData[res.type]?.crave[craveIdx]||charmData.A.crave[0])+' '+(charmData[res.type]?.story[storyTypeIdx]||charmData.A.story[0]);
 
   const weakMap={
-    A:[['에너지가 넘쳐서 가끔 주변 사람들이 지칠 수 있어요. 페이스 조절이 필요한 순간을 놓치는 게 아킬레스건이에요.','배고플 때 예민해지는 게 자신도 알지만, 그 순간 감정 조절이 잘 안 되는 게 아킬레스건이에요.'],['한 끼를 거르는 게 몸뿐 아니라 감정에도 영향을 주는 타입인데, 그걸 스스로 잘 못 인지해요.','두 끼 생활이 지속되면 에너지가 들쑥날쑥해질 수 있어요.'],['한 끼로 버티다 보면 집중력이 떨어지는 걸 느끼는데, 그게 생산성에 영향을 줘요.','아무거나 먹는 습관이 장기적으로는 에너지를 무너뜨릴 수 있어요.']],
-    B:[['감정을 음식으로 달래는 패턴이 있어서, 힘든 감정을 직접 다루기보다 회피할 때가 있어요.','속으로 쌓다가 한 번에 터트리는 패턴이 관계에서 오해를 만들 수 있어요.'],['두 끼 생활 중 식사 시간을 스트레스 해소 시간으로 쓰다 보면 과식으로 이어질 수 있어요.','기분이 나빠도 티 안 내다가 나중에 한꺼번에 말하는 패턴이 상대방을 당황하게 해요.'],['한 끼 먹을 때 감정적인 영향을 많이 받아요. 기분 안 좋으면 밥도 맛없는 타입이에요.','달달한 걸로 감정을 달래다 보면 정작 감정 원인을 해결하지 못하는 경우가 생겨요.']],
+    A:[['에너지가 넘쳐서 가끔 주변 사람들이 지칠 수 있어요.','배고플 때 예민해지는 순간 감정 조절이 잘 안 되는 게 아킬레스건이에요.'],['한 끼를 거르는 게 몸뿐 아니라 감정에도 영향을 주는 타입이에요.','두 끼 생활이 지속되면 에너지가 들쑥날쑥해질 수 있어요.'],['한 끼로 버티다 보면 집중력이 떨어지는 걸 느끼는데, 그게 생산성에 영향을 줘요.','아무거나 먹는 습관이 장기적으로는 에너지를 무너뜨릴 수 있어요.']],
+    B:[['감정을 음식으로 달래는 패턴이 있어서, 힘든 감정을 직접 다루기보다 회피할 때가 있어요.','속으로 쌓다가 한 번에 터트리는 패턴이 관계에서 오해를 만들 수 있어요.'],['두 끼 생활 중 식사 시간을 스트레스 해소 시간으로 쓰다 보면 과식으로 이어질 수 있어요.','기분이 나빠도 티 안 내다가 나중에 한꺼번에 말하는 패턴이 상대방을 당황하게 해요.'],['한 끼 먹을 때 감정적인 영향을 많이 받아요.','달달한 걸로 감정을 달래다 보면 정작 감정 원인을 해결하지 못하는 경우가 생겨요.']],
     C:[['완벽주의가 식습관에까지 뻗어있어서, 루틴이 무너지면 전체적으로 흔들리는 느낌이 들어요.','배고프다는 신호도 이성적으로 판단하려다가 적절한 타이밍을 놓칠 수 있어요.'],['효율적으로 먹는 게 좋지만 그게 지속되면 식사 자체의 즐거움을 잃어버릴 수 있어요.','스트레스를 빨리 처리하려다가 감정이 제대로 소화되지 않는 경우가 있어요.'],['한 끼를 완벽하게 먹으려는 욕구 때문에 오히려 굶는 선택을 하는 패턴이 있을 수 있어요.','감정을 너무 빠르게 정리하려다 보면 나중에 다시 올라오는 경우가 있어요.']],
-    D:[['대충 때우는 게 습관이 되면 자기 자신을 방치하는 느낌이 드는 시기가 올 수 있어요.','감정 표현이 적어서 가끔 주변 사람들이 이 사람 속을 알 수 없다고 느껴요.'],['무뎌진 것처럼 보일 수 있는데, 사실 속에서는 꽤 많이 쌓이고 있는 상태일 수 있어요.','아무거나 먹는 습관이 장기적으로 에너지를 무너뜨릴 수 있어요.'],['한 끼로 버티는 게 지속되면 몸과 마음 모두 서서히 지쳐가요.','말 없이 혼자 삭히다 보면 가까운 사람도 뭘 도와줘야 할지 모르는 상황이 생겨요.']]
+    D:[['대충 때우는 게 습관이 되면 자기 자신을 방치하는 느낌이 드는 시기가 올 수 있어요.','감정 표현이 적어서 가끔 주변 사람들이 이 사람 속을 알 수 없다고 느껴요.'],['무뎌진 것처럼 보일 수 있는데, 사실 속에서는 꽤 많이 쌓이고 있는 상태일 수 있어요.','아무거나 먹는 습관이 장기적으로 에너지를 무너뜨릴 수 있어요.'],['한 끼로 버티는 게 지속되면 몸과 마음 모두 서서히 지쳐가요.','말 없이 혼자 삭히다 보면 가까운 사람도 뭘 도와줘야 할지 모르는 상황이 생겨요.']],
+    E:[['겉은 단단해 보여서 사람들이 도움을 요청하기 어려워해요. 속이 말랑한 걸 먼저 보여주는 연습이 필요해요.','배고픔(감정)을 티 안 내다가 어느 순간 바삭 부서지는 패턴이 있어요.'],['겉바속촉의 균형을 유지하는 게 생각보다 에너지가 많이 들어요. 가끔은 무너져도 괜찮아요.','단단한 겉면을 유지하려다 보면 속이 식어버리는 경우가 생겨요.'],['완벽한 겉면을 만들다가 정작 속을 채울 시간이 없어지는 패턴이 있어요.','혼자 꾹 참는 시간이 길어지면 어느 순간 바삭하게 부서질 수 있어요.']],
+    F:[['기준이 높아서 아무 사람이나 못 받아들이는 게 외로움으로 이어질 수 있어요.','감정을 절제하다 보면 정작 도움이 필요할 때 표현하지 못하는 경우가 생겨요.'],['완성도를 추구하다 보면 효율보다 완벽을 선택하는 경향이 관계에서도 나타나요.','조용히 참는 시간이 길어지면 어느 순간 한꺼번에 터져나오는 경우가 있어요.'],['한 끼를 완벽하게 먹으려는 성향이 식사 이외의 것에서도 완벽을 추구하게 만들어요.','감정 표현이 적으면 가까운 사람도 이 사람을 어려워할 수 있어요.']],
   };
   const wMeal=Math.min(mealIdx,2);
   const wHungry=Math.min(Math.floor((c[2]||0)/2),1);
   const weakness=(weakMap[res.type]?.[wMeal]?.[wHungry])||weakMap.A[0][0];
 
   const reasonMap={
-    A:{'00':'마라탕처럼 자극적이고 중독적인 사람인데, 그 강도를 감당할 수 있는 사람이 있어요. 찾으면 돼요.','01':'뜨겁게 살았던 흔적이 지금의 당신을 만들었어요. 그 썰들이 쌓여 이야기가 되고, 당신이 돼요.','02':'치열하게 살고 있는 거 맞아요. 근데 그 열기가 마라탕처럼 사람들을 끌어당기는 이유가 되고 있어요.','03':'흑역사도 연애도 다 이 사람 이야기예요. 부끄럽지 않아도 돼요, 그게 당신을 살아있게 만드니까요.','10':'손절할 수 있는 사람이 진짜 자기를 지킬 줄 아는 사람이에요. 그 결단력이 당신의 진짜 힘이에요.','11':'뭐든 직접 정하고 실행하는 사람이에요. 그 추진력이 당신을 여기까지 오게 한 거예요.','20':'회사에서 지쳐도 여전히 열심히 하고 있죠? 그 에너지가 마라탕처럼 뜨거운 거예요.','21':'이불킥 할 기억도, 끓어오르는 감정도, 다 당신이라는 사람의 일부예요.','30':'삼각김밥처럼 빠르게 시작하고 빠르게 끝내도, 그 안에서 배우는 게 있었을 거예요.','31':'강렬하게 살아온 흔적들이 있어요. 그게 지금 이 사람을 만든 거예요. 부끄럽지 않아요.'},
-    B:{'00':'달달한 사람이라고 만만하게 보면 안 돼요. 케이크처럼 겹겹이 쌓인 깊이가 있어요.','01':'연애에서 상처받았어도 여전히 사람에게 온기를 주는 사람이에요. 그게 진짜 강한 거예요.','02':'일도 열심히, 감정도 풍부하게. 그 양면을 다 가진 게 당신의 진짜 매력이에요.','03':'흑역사를 웃으며 얘기할 수 있는 사람이에요. 그 회복력이 당신의 가장 큰 무기예요.','10':'손절하면서도 상대를 탓하지 않는 사람이에요. 그 성숙함이 케이크처럼 달고 깊어요.','11':'기념일 잊지 않고, 작은 거 챙기는 사람이에요. 그게 당연한 게 아닌데 당신은 자연스럽게 해요.','20':'힘든 상황에서도 달달한 순간을 찾아내는 능력이 있어요. 그게 생존 본능이자 매력이에요.','21':'흑역사도 케이크처럼 레이어로 쌓아서 지금의 당신을 만들었어요.','30':'갑자기 시작됐어도 진심이었어요. 그 진심이 당신을 더 깊은 사람으로 만들었어요.','31':'이불킥 할 기억이 있는 건 그만큼 감정적으로 살았다는 거예요. 그게 당신의 온기예요.'},
-    C:{'00':'와인처럼 처음엔 어렵지만, 알아갈수록 "이 사람 진짜다" 싶은 순간이 오게 돼 있어요.','01':'연애에서 뭘 원하는지 이제 알게 됐을 거예요. 그 명확함이 다음 연애를 더 잘 만들어줘요.','02':'치열하게 살면서도 자기 기준을 잃지 않는 사람이에요. 그 기준이 와인처럼 숙성되고 있어요.','03':'실수도 했고 흑역사도 있지만, 그게 완벽주의자처럼 보이는 당신의 인간적인 면이에요.','10':'선 긋는 게 차갑게 보일 수 있지만, 자기 자신을 지키는 거예요. 그 판단력이 장점이에요.','11':'모든 게 이유가 있는 사람이에요. 메뉴 고르는 것도, 사람 사귀는 것도 다 생각이 있어요.','20':'회사에서 치이면서도 원칙을 지키려는 사람이에요. 그 원칙이 나중에 당신을 증명해줄 거예요.','21':'이불킥 기억도 와인처럼 숙성시키면 나중엔 무기가 돼요. 진짜로요.','30':'빠르게 끝났어도 그 경험이 당신의 사람 보는 눈을 날카롭게 만들었어요.','31':'완벽하지 않았던 순간들이 와인의 산도처럼 당신을 복잡하고 깊은 사람으로 만들었어요.'},
-    D:{'00':'해장국처럼 있어야 완성되는 존재예요. 그 든든함이 주변 사람들이 당신을 찾는 이유예요.','01':'연애에서 상처받았어도 여전히 곁에 있어주는 사람이에요. 그 진국 같은 진심이 당신이에요.','02':'힘든 상황에서도 자리 지키는 사람이에요. 그 묵직함이 당신의 진짜 가치예요.','03':'흑역사도 해장국처럼 다음날 새벽에 생각나는 이야기가 돼요. 그게 당신 매력이에요.','10':'손절할 때도 조용히 하는 사람이에요. 말 없이 사라지는 게 더 무서운 법이에요.','11':'결정하면 바꾸지 않는 사람이에요. 그 묵직한 신뢰감이 사람들이 당신 곁에 있는 이유예요.','20':'지쳐도 티 안 내면서 버티고 있죠? 당신이 있어서 주변이 안정되는 거 알아요.','21':'흑역사를 웃으면서 얘기할 수 있는 여유가 당신의 가장 큰 무기예요.','30':'빠르게 끝났어도 그 사람 생각은 오래 하는 타입이에요. 그 깊이가 당신이에요.','31':'대충 사는 것 같아도 사실 제일 단단하게 살고 있는 사람이에요.'}
+    A:{'00':'마라탕처럼 자극적이고 중독적인 사람인데, 그 강도를 감당할 수 있는 사람이 있어요.','01':'뜨겁게 살았던 흔적이 지금의 당신을 만들었어요.','02':'치열하게 살고 있는 거 맞아요.','03':'흑역사도 연애도 다 이 사람 이야기예요.','10':'손절할 수 있는 사람이 진짜 자기를 지킬 줄 아는 사람이에요.','11':'뭐든 직접 정하고 실행하는 사람이에요.','20':'회사에서 지쳐도 여전히 열심히 하고 있죠?','21':'이불킥 할 기억도, 끓어오르는 감정도, 다 당신이라는 사람의 일부예요.','30':'삼각김밥처럼 빠르게 시작하고 빠르게 끝내도, 그 안에서 배우는 게 있었을 거예요.','31':'강렬하게 살아온 흔적들이 있어요.'},
+    B:{'00':'달달한 사람이라고 만만하게 보면 안 돼요.','01':'연애에서 상처받았어도 여전히 사람에게 온기를 주는 사람이에요.','02':'일도 열심히, 감정도 풍부하게.','03':'흑역사를 웃으며 얘기할 수 있는 사람이에요.','10':'손절하면서도 상대를 탓하지 않는 사람이에요.','11':'기념일 잊지 않고, 작은 거 챙기는 사람이에요.','20':'힘든 상황에서도 달달한 순간을 찾아내는 능력이 있어요.','21':'흑역사도 케이크처럼 레이어로 쌓아서 지금의 당신을 만들었어요.','30':'갑자기 시작됐어도 진심이었어요.','31':'이불킥 할 기억이 있는 건 그만큼 감정적으로 살았다는 거예요.'},
+    C:{'00':'와인처럼 처음엔 어렵지만, 알아갈수록 "이 사람 진짜다" 싶은 순간이 오게 돼 있어요.','01':'연애에서 뭘 원하는지 이제 알게 됐을 거예요.','02':'치열하게 살면서도 자기 기준을 잃지 않는 사람이에요.','03':'실수도 했고 흑역사도 있지만, 그게 당신의 인간적인 면이에요.','10':'선 긋는 게 차갑게 보일 수 있지만, 자기 자신을 지키는 거예요.','11':'모든 게 이유가 있는 사람이에요.','20':'회사에서 치이면서도 원칙을 지키려는 사람이에요.','21':'이불킥 기억도 와인처럼 숙성시키면 나중엔 무기가 돼요.','30':'빠르게 끝났어도 그 경험이 당신의 사람 보는 눈을 날카롭게 만들었어요.','31':'완벽하지 않았던 순간들이 와인의 산도처럼 당신을 복잡하고 깊은 사람으로 만들었어요.'},
+    D:{'00':'해장국처럼 있어야 완성되는 존재예요.','01':'연애에서 상처받았어도 여전히 곁에 있어주는 사람이에요.','02':'힘든 상황에서도 자리 지키는 사람이에요.','03':'흑역사도 해장국처럼 다음날 새벽에 생각나는 이야기가 돼요.','10':'손절할 때도 조용히 하는 사람이에요.','11':'결정하면 바꾸지 않는 사람이에요.','20':'지쳐도 티 안 내면서 버티고 있죠?','21':'흑역사를 웃으면서 얘기할 수 있는 여유가 당신의 가장 큰 무기예요.','30':'빠르게 끝났어도 그 사람 생각은 오래 하는 타입이에요.','31':'대충 사는 것 같아도 사실 제일 단단하게 살고 있는 사람이에요.'},
+    E:{'00':'소금빵처럼 겉은 바삭하게 보여도, 속에 얼마나 따뜻하고 말랑한 게 가득한지 아는 사람은 알아요.','01':'연애에서도 겉바속촉이에요. 처음엔 어렵지만 한 번 들어온 사람은 절대 안 나가고 싶어지는 따뜻함이 있어요.','02':'치열한 하루에도 갓 구워진 소금빵처럼 따뜻함을 잃지 않는 사람이에요.','03':'흑역사도 있고 바삭 부서진 순간도 있었지만, 그게 지금 당신을 더 겉바속촉으로 만든 과정이에요.','10':'단호하게 결정하는 것 같지만 사실 모두가 따뜻하길 바라는 사람이에요.','11':'겉으로 드러내지 않아도 늘 더 좋은 방향을 생각하는 사람이에요.','20':'치열한 환경에서도 자기만의 따뜻한 속을 지키는 사람이에요.','21':'완벽해 보이지만 이불킥 기억도 있는 사람이에요. 그 말랑한 내면이 오히려 당신을 더 입체적으로 만들어요.','30':'빠르게 끝난 것 같아도 그 안에서 진심을 다했어요.','31':'대충 사는 것 같아도 속으론 누구보다 따뜻하게 살고 있는 사람이에요.'},
+    F:{'00':'초밥처럼 하나하나 정성 들여 만들어진 사람이에요. 그 완성도가 당신을 돋보이게 해요.','01':'연애에서 상처받았어도 그 경험이 지금 당신의 감성을 더 깊고 섬세하게 만들었어요.','02':'완성도를 포기하지 않는 사람이에요. 그 고집이 당신의 진짜 무기예요.','03':'완벽해 보이지만 이불킥 기억도 있는 사람이에요. 그 인간적인 면이 오히려 당신을 더 입체적으로 만들어요.','10':'선명한 기준이 있는 사람이에요. 손절이 아니라 자기 자신을 지키는 선택이에요.','11':'모든 선택에 정성이 담겨있는 사람이에요. 초밥 한 피스처럼, 당신의 모든 행동에 의미가 있어요.','20':'치열한 일상에서도 자기다움을 잃지 않는 사람이에요. 그 고요한 카리스마가 진짜 당신이에요.','21':'이불킥 기억도 초밥처럼 정갈하게 정리되어 지금의 당신을 완성하는 재료가 됐어요.','30':'짧게 끝났어도 그 관계 안에서 진심을 다했어요. 그 진심의 밀도가 당신을 특별하게 만들어요.','31':'대충 사는 것처럼 보여도, 사실 가장 정성스럽게 살고 있는 사람이에요.'},
   };
   const comboKey=String(loveIdx)+String(storyTypeIdx);
   const reason=reasonMap[res.type]?.[comboKey]||reasonMap[res.type]?.['00']||'지금 이 선택들이 모여 당신이라는 사람을 만들고 있어요.';
@@ -1331,7 +1242,9 @@ function deepLocalAnalysis(answerLabels, res) {
     A:['#마라탕인간','#자극주의','#감정직진','#중독매력','#배고프면피해'],
     B:['#케이크인간','#달달함주의','#기념일장인','#감성충만','#이불킥장인'],
     C:['#와인인간','#숙성형인간','#천천히알아가자','#반전매력','#논리와감성사이'],
-    D:['#해장국인간','#진국인생','#있어야완성','#새벽세시에생각남','#조용한강자']
+    D:['#해장국인간','#진국인생','#있어야완성','#새벽세시에생각남','#조용한강자'],
+    E:['#소금빵인간','#겉바속촉인간','#알수록말랑해짐','#겉면에속지마','#속은따뜻함주의'],
+    F:['#초밥인간','#섬세한완성도','#고요한카리스마','#아무에게나안열려','#깊어질수록진가'],
   };
   const extraTags={love:[['#마라탕연애','#중독연애'],['#달달한연애','#기념일연애'],['#와인연애','#숙성형연애'],['#삼각김밥연애','#빠른이별']],story:[['#연애고수','#연애썰부자'],['#손절장인','#기준있는인간'],['#회사인간','#치열한삶'],['#흑역사부자','#이불킥마스터']]};
   const allTags=[...new Set([...(tagPool[res.type]||tagPool.A).slice(0,3),...(extraTags.love[loveIdx]||[]).slice(0,1),...(extraTags.story[storyTypeIdx]||[]).slice(0,1)])].slice(0,5);
@@ -1341,11 +1254,112 @@ function deepLocalAnalysis(answerLabels, res) {
     {icon:'🤝',title:'관계 맺는 방식',content:relPsy},
     {icon:'✨',title:'나도 몰랐던 내 매력',content:hiddenCharm},
   ];
+
+  const matchMap={
+    A:{best:[{type:'B',food:'케이크',emoji:'🎂',reason:'마라탕의 자극을 달달함으로 부드럽게 감싸줘요. 에너지 넘치는 당신을 따뜻하게 받아줄 수 있어요.'},{type:'D',food:'해장국',emoji:'🍲',reason:'당신의 강렬한 온도를 조용히 감당해주는 사람이에요. 말 없이 곁에 있어주는 안정감이 있어요.'}],worst:{type:'C',food:'와인',emoji:'🍷',reason:'둘 다 강한 기준이 있어서 충돌이 잦을 수 있어요. 서로의 속도를 맞추는 데 에너지가 많이 들어요.'}},
+    B:{best:[{type:'A',food:'마라탕',emoji:'🌶️',reason:'달달한 당신의 온기가 마라탕의 강렬함을 중화시켜요. 서로의 에너지가 시너지를 만들어요.'},{type:'F',food:'초밥',emoji:'🍣',reason:'섬세한 초밥 타입은 당신의 감성을 깊이 이해해줘요. 감정의 결이 비슷해서 통하는 게 많아요.'}],worst:{type:'D',food:'해장국',emoji:'🍲',reason:'감정 표현 방식이 너무 달라요. 당신은 적극적으로 나누고 싶은데 해장국 타입은 조용히 삭히는 편이에요.'}},
+    C:{best:[{type:'F',food:'초밥',emoji:'🍣',reason:'둘 다 완성도를 중시하고 기준이 높아요. 서로를 진심으로 존중할 수 있는 관계예요.'},{type:'D',food:'해장국',emoji:'🍲',reason:'해장국의 묵직한 안정감이 와인 타입의 날선 긴장을 풀어줘요.'}],worst:{type:'A',food:'마라탕',emoji:'🌶️',reason:'마라탕의 즉흥적인 에너지가 계획적인 당신을 피곤하게 할 수 있어요. 스타일이 많이 달라요.'}},
+    D:{best:[{type:'A',food:'마라탕',emoji:'🌶️',reason:'마라탕의 열정이 조용한 당신에게 활력을 불어넣어요. 당신의 안정감도 상대에게 큰 힘이 돼요.'},{type:'C',food:'와인',emoji:'🍷',reason:'말하지 않아도 서로 통하는 게 많아요. 비슷한 깊이로 세상을 바라보는 사람이에요.'}],worst:{type:'B',food:'케이크',emoji:'🎂',reason:'케이크 타입의 활발한 감정 표현이 조용한 당신에게는 벅차게 느껴질 수 있어요.'}},
+    E:{best:[{type:'B',food:'케이크',emoji:'🎂',reason:'달달한 케이크 타입이 당신의 바삭한 겉면을 사르르 녹여줘요. 속 말랑함을 가장 잘 알아봐요.'},{type:'D',food:'해장국',emoji:'🍲',reason:'조용하지만 깊은 해장국 타입은 당신의 속 온도를 느낄 줄 알아요. 말 없이 통하는 게 있어요.'}],worst:{type:'C',food:'와인',emoji:'🍷',reason:'둘 다 겉을 쉽게 안 여는 타입이라 친해지는 데 시간이 너무 오래 걸릴 수 있어요.'}},
+    F:{best:[{type:'C',food:'와인',emoji:'🍷',reason:'섬세함과 완성도를 서로 이해해줘요. 같은 결로 세상을 바라보는 사람이에요.'},{type:'E',food:'소금빵',emoji:'🥐',reason:'소금빵의 겉바속촉이 초밥의 정갈함을 편안하게 만들어줘요. 서로의 깊이를 알아봐요.'}],worst:{type:'A',food:'마라탕',emoji:'🌶️',reason:'마라탕의 즉흥적이고 강렬한 에너지가 섬세한 당신의 페이스를 흔들 수 있어요.'}},
+  };
+  const myMatch=matchMap[res.type]||matchMap.A;
+  const matchHtml=`<div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+    ${myMatch.best.map(m=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:11px 13px;background:rgba(212,149,106,.07);border-radius:12px;border-left:3px solid #c8956a">
+      <div style="font-size:24px;line-height:1">${m.emoji}</div>
+      <div><p style="font-size:12px;font-weight:700;color:var(--toast);margin-bottom:3px">${m.food} 타입과 잘 맞아요</p><p style="font-size:12px;color:var(--dark);line-height:1.75">${m.reason}</p></div>
+    </div>`).join('')}
+    <div style="display:flex;align-items:flex-start;gap:10px;padding:11px 13px;background:rgba(44,24,16,.04);border-radius:12px;border-left:3px solid #c0a090">
+      <div style="font-size:24px;line-height:1">${myMatch.worst.emoji}</div>
+      <div><p style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:3px">${myMatch.worst.food} 타입과는 에너지 조율이 필요해요</p><p style="font-size:12px;color:var(--muted);line-height:1.75">${myMatch.worst.reason}</p></div>
+    </div>
+  </div>`;
+
+  const ssulMapM={
+    A:[
+      {title:"마라탕 먹다가 고백해버린 썰",story:"6개월 넘게 그냥 친구였는데 어느 날 마라탕 먹으러 갔다가 일이 터졌음. 마라탕이 매워서 눈물 날 것 같았는데 그걸 참으면서 국물 휘젓고 있었거든. 그때 얘가 맞은편에서 '야, 요즘 왜 그래. 무슨 일 있어?' 라고 하는데 그 타이밍에 그냥 나도 모르게 입이 열림. '아 아니 그냥... 너 좋아하는 것 같아서.' 그 말 뱉고 나서 나도 놀라서 그냥 숟가락 내려놓고 국물만 쳐다봤음. 상대방도 한 5초 정도 아무 말 없이 있다가 '...진짜?' 라고 하는데 그때부터 마라탕이 더 매운지 덜 매운지 모르겠더라. 그날 마라탕 반도 못 먹고 나왔음. 근데 걷다가 손 잡혔음. 마라탕집 사장님이 고맙다."},
+      {title:"친구 단톡방에서 혼자 욕먹은 줄 알았던 썰",story:"군대 전역하고 복학하니까 친구들이 생긴 게 좀 다른 것 같아서 내가 예민한 건지 싶었음. 어느 날 단톡방 캡처가 돌아오는데 거기 내 이름이 있었음. 순간 피 거꾸로 솟는 줄 알고 다 읽었는데 욕이 아니라 '걘 진짜 힘들었을 텐데 티도 안 내고 버티는 거 대단하지 않냐' 라고 내 칭찬을 하고 있었음. 그거 보고 화장실 가서 혼자 벽 보면서 5분 있다 왔음. 아무한테도 말 안 했음."},
+      {title:"배달비 0원 만들려다 혼자 3인분 시킨 썰",story:"자취방에서 혼자 저녁 시키는데 최소 주문 금액 17000원에 배달비 3000원 붙으면 너무 아깝잖아. 그래서 19000원 이상 무료 조건 채우려고 메뉴 더 추가하다 보니까 어느새 28000원어치가 됨. '뭐 남으면 내일 먹지' 했는데 그날 밤 다 먹음. 배달비 아끼려다 더 씀. 근데 다음날 또 같은 앱 켰음. 지금도 그럼."}
+    ],
+    B:[
+      {title:"100일 이벤트 역대급 망한 썰",story:"100일 기념으로 자취방에 풍선 달고 직접 케이크도 만들었음. 유튜브 보면서 연습까지 했는데. 근데 초 꽂고 불 붙이려는데 라이터가 안 켜지고, 라이터 찾아 뒤지다 풍선이 떨어지고, 결국 얘가 초인종 누르는 소리 들릴 때 나는 크림 범벅에 풍선 잔해 사이에서 라이터 들고 서 있었음. 문 열어줬더니 얘가 현관에서 그 꼴 보고 3초 정도 있다가 '...케이크 맛있어?' 라고 함. 그냥 둘 다 바닥에 앉아서 망한 케이크 먹었음. 지금도 그날 이야기 제일 많이 함."},
+      {title:"전 생일에 선물 결제 눌러버린 썰",story:"헤어진 지 꽤 됐는데 그 날짜가 무의식에 박혀 있는 건지 폰 들고 있다 보니까 카카오 선물하기 들어가 있었음. 근데 그것도 모자라서 이미 장바구니에 뭔가 담겨 있었음. 예전에 갖고 싶다고 했던 거. 주문하기 버튼에 손가락이 올라가 있는 걸 발견하고 나서야 정신 차리고 앱 닫았음. 그 다음 날 그냥 카톡 없이 넘어갔는데 그게 더 신기하게 이상했음. 잘 지내겠지."},
+      {title:"카페에서 혼자 울 뻔한 썰",story:"과제 마감이 이틀 남았는데 진도가 너무 안 나가서 카페 와서 집중하려고 에어팟 꽂고 플레이리스트 틀었음. 근데 하필 거기서 예전에 같이 자주 듣던 노래가 나오는 거임. 과제 화면 보면서 눈이 촉촉해지는 걸 느꼈는데 옆 테이블 누나가 '괜찮으세요?' 라고 하는 거임. '어 네, 그냥 노래가 좋아서요 하하' 하고 에어팟 뽑았음. 그날 과제는 두 줄 썼음. 아이스 아메리카노 두 잔 마심."}
+    ],
+    C:[
+      {title:"소개팅 나가서 TMI 혼자 다 털어버린 썰",story:"소개팅 나가면 좀 말수 줄여야지 매번 다짐하는데 긴장하면 반대로 말이 많아지는 체질임. 그날도 첫 10분은 잘 버텼는데 상대방이 '요즘 어때요?' 라고 물어보는 순간 입이 열려버렸음. 군대 흑역사, 대학교 때 동아리 흑역사, 고등학교 짝사랑 실패담까지 거의 50분 동안 혼자 다 털었음. 상대방은 중간중간 '아 진짜요' '하하' 만 하고 있었는데 헤어지고 나서 카톡이 옴. '오늘 진짜 재밌었어요. 저도 사실 군대에서...' 그 다음부터가 더 길었음. 지금 사귀고 있음."},
+      {title:"좋아하는 사람 행동 분석하다 새벽 3시 된 썰",story:"오늘 같이 밥 먹다가 걔가 나한테 반찬 먼저 줬음. 이게 의미 있는 건지 아닌지 모르겠어서 집에 와서 친구한테 카톡함. '야 이거 어떻게 생각해?' '그냥 가까이 있어서 아닌가?' '근데 나한테만 했거든' '...다른 사람한테도 했을 수도 있잖아' '아 근데 헤어질 때 나한테만 잘 들어가라고 했음' '걍 자.' 이러고 새벽 3시까지 분석하다 잠들었음. 다음날 걔가 '어제 잘 들어갔어?' 라고 카톡 오자마자 다시 친구한테 캡처 보냄."},
+      {title:"여행 스프레드시트 만들었다가 당일 취소된 썰",story:"친구들이랑 2박 3일 여행 계획 3달 전부터 잡았음. 구글 스프레드시트에 이동 동선, 식당 예약 시간, 각 장소 평점, 플랜 A/B/C까지 다 만들어놨음. 그리고 D-1에 친구 한 명이 '나 갑자기 일 생겼어 미안' 연락 옴. 도미노처럼 두 명 더 빠짐. 여행 당일 아침에 나 혼자 그 스프레드시트 보면서 집에서 배달 시킴. 근데 그 파일 아직도 저장돼 있음. 가끔 열어봄. 언젠가 쓸 것 같아서."}
+    ],
+    D:[
+      {title:"다 알고 있었는데 말 안 했던 썰",story:"자취하면서 룸메이트가 내 냉장고 음식 가끔 먹는 거 3주째 알고 있었음. 근데 딱히 크게 뭐라 하기도 그렇고 그냥 뒀음. 어느 날 룸메이트가 표정이 좀 이상하더니 '야... 나 사실 네 요구르트 몇 번 먹었어. 미안.' 라고 함. '어, 알아.' '언제부터?' '처음부터.' 정적이 흘렀음. 그 이후로 룸메이트가 냉장고에 내 것보다 두 배 많이 채워 놓음. 아무 말 안 한 게 제일 효과 좋았음."},
+      {title:"새벽에 혼자 해장국 먹으러 간 썰",story:"뭔가 많이 쌓인 날이 있었는데 딱히 뭐가 힘들다고 말하기도 애매하고 그냥 혼자 24시 해장국집 갔음. 새벽 2시. 다른 손님은 아저씨 두 명. 그냥 혼자 국물 마시고 있었는데 사장님이 '많이 힘들었어요?' 라고 물어봄. '아니요' 했음. 근데 한 그릇 더 시켰음. 사장님이 아무 말 없이 서비스로 계란 하나 줬음. 그게 왜 그렇게 고맙던지. 요즘도 힘들면 거기 감."},
+      {title:"단톡방 조용히 나갔다 복귀한 썰",story:"친구들이 단톡방에서 내 욕을 한 건 아닌데 나 얘기를 내가 불편할 수 있는 방식으로 하는 걸 우연히 알게 됐음. 아무 말 없이 단톡방 나왔음. 메시지도 안 보냈음. 다음날 친구들한테 사과 카톡이 쏟아졌음. 긴 사과문들. 다 읽고 이틀 있다가 다시 들어갔음. '어 왔어?' '어.' 이후로 그 친구들이 엄청 잘해줌. 말 없이 행동하는 게 제일 강한 것 같음."}
+    ],
+    E:[
+      {title:"겉으론 괜찮은 척하다 혼자 무너진 썰",story:"시험 기간 3주 동안 친구들한테 힘들다고 한마디도 못 했음. 물어볼 때마다 '어 그냥 좀 바빴어 ㅋㅋ' 라고 했음. 마지막 시험 끝나고 집 가는 버스에서 편의점 소금빵 하나 사서 먹었는데 갑자기 눈물이 날 것 같았음. 딱히 이유는 없었음. 그냥 따뜻하고 오늘도 버텼다 싶었던 것 같음. 집에 들어가서 씻고 나서 제일 친한 친구한테 '야 나 사실 요즘 좀 힘들었어' 보냄. 답장이 '어 알았어. 오늘 마라탕 먹을래?' 였는데 그게 제일 고마웠음."},
+      {title:"좋아하면서 7일 동안 먼저 연락 안 한 썰",story:"확실히 좋아하는데 먼저 연락하면 지는 것 같아서 기다리기로 했음. 하루 이틀이 지나도 연락 없길래 '바쁜가 보다' 했음. 3일째부터는 폰을 들었다 놨다 반복했음. 친구한테 '야 그 사람 왜 연락 안 하냐' 했더니 '니가 먼저 하면 되잖아' 라고 함. '싫어.' '왜?' '지는 것 같아서.' '그럼 계속 기다려.' '그것도 싫어.' 결국 7일째 밤에 '뭐해' 보냄. 2분도 안 돼서 답장 옴. '나도 연락하려고 했는데 니가 먼저 안 해서 기다렸어.' 둘 다 바보였음."},
+      {title:"아무 이유 없이 뭉클했던 버스 썰",story:"별일 없는 평범한 화요일이었는데 집 가는 버스에서 창밖 보다가 갑자기 감정이 올라왔음. 슬픈 것도 아니고 기쁜 것도 아니고 그냥... 오늘도 버텼다, 뭐 그런 느낌? 이어폰으로 아무 음악이나 틀고 있었는데 그 노래가 딱 거기서 끝나는 타이밍에 하늘이 주황색이었음. 사진 찍으려다 안 찍었음. 그냥 눈에 담았음. 이상하게 그 장면이 아직도 기억남. 아무한테도 말 안 함."}
+    ],
+    F:[
+      {title:"완벽한 플레이팅 하다 밥 다 식힌 썰",story:"자취하면서 혼자 해 먹을 때도 그릇은 예쁘게 놓아야 직성이 풀리는 편임. 오늘은 파스타를 했는데 면이 잘 됐고 소스도 괜찮게 나왔음. 근데 그릇 놓고 보니까 각도가 마음에 안 들어서 다시 세팅. 또 마음에 안 들어서 다시. 조명 때문인가 싶어서 창가로 이동. 거기서도 두 번 더 찍었음. 총 열두 번. 그때 파스타가 완전히 식어 있었음. 그냥 먹었음. 인스타엔 안 올렸음. 내 기준에 한 장도 안 찼음."},
+      {title:"소개팅 전날 상대 SNS 2019년까지 판 썰",story:"소개팅 잡혔다는 연락 받자마자 인스타 프로필 찾음. 피드 다 봤음. 스토리 하이라이트 다 봤음. 태그된 사진까지 봤음. 거기서 나온 카페 이름으로 검색해서 취향 파악. 팔로우하는 계정 보고 음악 취향 유추. 2019년 게시물까지 내려갔음. 실제로 만났더니 인스타 감성이랑 좀 달라서 잠깐 당황했음. 근데 오히려 그게 더 흥미로웠음. 예상을 벗어나는 사람이 더 궁금해지더라. 두 번째 만남 약속 잡았음."},
+      {title:"말을 아꼈다가 오히려 오해 생긴 썰",story:"친한 친구가 머리를 새로 잘랐는데 솔직히 별로였음. 어울리지 않는 스타일이었는데 뭐라고 해야 할지 모르겠어서 그냥 '어, 잘랐네' 만 했음. 친구가 '어때?' 라고 물어봐서 '응 잘랐네' 라고 또 했음. 그 이후로 친구 표정이 좀 어두워졌고 며칠 뒤에 '그때 왜 아무 말 안 했어' 라고 함. '말하기 애매했어' 했더니 '그게 더 상처야. 솔직하게 말해줬으면 더 나았을 것 같아' 라고 했음. 지금도 그 순간 가끔 생각남. 말 아끼는 게 다 배려는 아닌 것 같음."}
+    ],
+  };
+
+  const ssulMapF={
+    A:[
+      {title:"마라탕 먹다가 진짜 울어버린 썰",story:"오랫동안 좋아하던 친구랑 마라탕 먹으러 갔는데 그날따라 진짜 매웠음. 눈물이 나오려는 걸 꾹 참으면서 국물 홀짝이고 있었는데 갑자기 그 친구가 '야, 요즘 뭔가 달라진 것 같아. 나한테 무슨 말 있지?' 라고 하는 거임. 그 말 듣는 순간 참던 게 다 터져서 '나 너 좋아해' 가 그냥 나와버렸음. 근데 우는 것도 아니고 안 우는 것도 아닌 애매한 상태였음. 상대방이 잠깐 멈추더니 냅킨 건네주면서 '나도' 라고 함. 그날 마라탕 반도 못 먹고 나왔는데 지금까지 그 집 마라탕이 제일 맛있었음."},
+      {title:"카톡 읽씹 당하다 폭발한 썰",story:"친한 친구인데 나한테만 유독 답장이 늦었음. 처음엔 바쁜가 보다 했는데 어느 날 공동 단톡방에서 다른 사람한테는 2초 만에 답장 치는 거 목격함. 그날 밤에 못 참고 '야 나한테 왜 이렇게 답장 늦게 해' 라고 보냈음. 이번엔 3초 만에 옴. '어? 미안, 너한테만 그랬던 것 같네.' '왜?' '음... 나 사실 너 보면 좀 긴장해.' 예상치 못한 전개였음. 그날 새벽까지 카톡함."},
+      {title:"배달음식 혼자 3인분 시킨 썰",story:"자취방 혼자 저녁 시키는데 최소 주문금액 채우다 보니 어느새 세 가지 메뉴가 담겨 있었음. '남으면 내일 먹지' 라고 결제했는데 그날 밤 12시에 다 먹음. 심지어 맛도 없었음. 배달비 아끼려다 더 써놓고 만족도도 낮은 최악의 결과. 근데 그 다음 날도 똑같은 앱 켰음. 지금도 그럼."}
+    ],
+    B:[
+      {title:"기념일 이벤트 완전히 망한 썰",story:"사귀는 사람 100일 기념으로 방 꾸미고 케이크도 직접 만들었음. 전날 밤새 준비했거든. 근데 당일 아침에 풍선 묶어두다가 하나가 터지고, 케이크 냉장고에서 꺼내다가 떨어뜨리고, 문 벨 소리 들렸을 때 나는 크림 묻고 풍선 잔해 속에 있었음. 문 열어줬더니 상대방이 그 꼴 보고 3초 멈추더니 '...케이크 맛있어?' 함. 그냥 바닥에 앉아서 같이 망한 케이크 먹었음. 지금도 그게 제일 좋은 기념일이었다고 함."},
+      {title:"헤어진 상대 생일 챙겨버린 썰",story:"헤어진 지 꽤 됐는데 그 날짜가 머릿속에 새겨진 건지 폰 보다가 카카오 선물하기 들어가 있었음. 예전에 갖고 싶다고 했던 거 장바구니에 담겨 있기까지 했음. 결제 버튼 바로 앞에서 정신 차리고 껐음. 근데 결국 그냥 짧게 '생일 축하해' 카톡 보냄. 답장 옴. '어 고마워. 잘 지내지?' '응.' 거기서 끝났음. 근데 그게 이상하게 마음이 편해졌음."},
+      {title:"카페에서 갑자기 눈물 날 뻔한 썰",story:"마감 이틀 전에 카페에서 과제 하다가 플레이리스트 틀었는데 하필 옛날 자주 듣던 노래가 나옴. 화면 보면서 눈이 촉촉해지는 게 느껴졌는데 옆 테이블 언니가 '괜찮으세요?' 라고 하는 거임. '네 그냥 노래가 좋아서요 ㅎㅎ' 했음. 에어팟 뽑고 창 밖 잠깐 보다 다시 과제 열었음. 그날 두 줄 씀. 아이스 아메리카노 두 잔 마심. 마감은 다음날 새벽에 겨우 제출했음."}
+    ],
+    C:[
+      {title:"소개팅에서 TMI 폭탄 떨궈버린 썰",story:"긴장하면 말이 많아지는 걸 알면서도 소개팅마다 반복됨. 첫 10분은 차분하게 잘 넘겼는데 상대방이 '평소에 어떻게 시간 보내요?' 라고 묻는 순간 입이 열려버렸음. 전 남자친구 이야기, 친구 사이 힘들었던 에피소드, 고딩 때 짝사랑 실패담, 대학교 때 동아리 흑역사까지 혼자 1시간을 떠들었음. 상대방은 '아 진짜요' '하하' 만 하고 있었는데 헤어지고 나서 카톡이 옴. '오늘 진짜 재밌었어요. 저도 사실 할 말 많은 편인데.' 그 다음부터 그 사람이 더 많이 말함. 지금 잘 만나고 있음."},
+      {title:"좋아하는 사람 카톡 분석하다 새벽 된 썰",story:"오늘 걔한테서 카톡이 왔는데 평소보다 이모티콘이 하나 더 있었음. 이게 의미 있는 건지 아닌지 모르겠어서 친구한테 캡처 보냄. '야 이거 어떤 것 같아?' '그냥 기분 좋아서 아님?' '근데 나한테만 이렇게 보낸 거거든' '어떻게 알아?' '걔 카톡 스타일 다 알아.' '....' 이러고 새벽 2시 됨. 다음날 걔한테서 또 카톡 왔는데 이번엔 이모티콘이 두 개였음. 바로 친구한테 캡처 보냄."},
+      {title:"여행 완벽하게 짰다가 당일 다 취소된 썰",story:"친구들이랑 부산 1박 2일 3달 전부터 준비함. 식당은 네이버 플레이스 별점 순으로 정리하고 이동 동선은 지도 저장, 숙소는 3개 비교해서 선택. 구글 스프레드시트에 시간대별 플랜까지 다 짜놨음. 근데 D-2에 친구 한 명 몸이 안 좋다고 연락 오고, 다음날 한 명 더 개인 사정 생겼다고 함. 여행 당일 아침 그 스프레드시트 열어보면서 배달 시켰음. 그 파일 아직도 저장돼 있음. 가끔 열어봄. 언젠가 꼭 가야지."}
+    ],
+    D:[
+      {title:"다 알고 있으면서 아무 말 안 한 썰",story:"기숙사 룸메이트가 내 냉장고 음식 가끔 먹는 걸 꽤 됐을 때부터 알고 있었음. 근데 그게 크게 뭐라 할 정도는 아닌 것 같아서 그냥 뒀음. 어느 날 룸메이트 표정이 좀 이상하더니 '나 사실 네 요구르트 몇 번 먹었어. 진짜 미안해.' 라고 함. '어, 알아.' '...언제부터?' '처음부터.' 룸메이트가 그날 저녁에 마트 다녀와서 냉장고에 뭔가를 가득 채워놨음. 내 거보다 훨씬 많이. 아무 말 안 한 게 제일 효과 좋았음."},
+      {title:"새벽에 혼자 해장국 먹으러 간 썰",story:"딱히 뭐가 힘들다고 말하기도 애매한 날이 있었음. 친구한테 연락하기도 그렇고 그냥 혼자 집 근처 24시 해장국집 갔음. 새벽 1시 반. 아주머니 한 분 계셨는데 주문하고 국물 홀짝이고 있었음. 아무 생각 없이 그냥 앉아 있었는데 아주머니가 '힘든 일 있었어요?' 라고 물음. '아니요' 했음. 근데 한 그릇 더 시켰음. 아주머니가 아무 말 없이 김치 리필해주셨음. 그날 이후로 힘든 날엔 거기 감."},
+      {title:"단톡방 조용히 나갔다가 복귀한 썰",story:"친구들 단톡방에서 내 얘기가 나왔는데 그게 내가 보기에 좀 불편한 방향이었음. 욕은 아닌데 내가 없는 데서 그러면 기분이 좋지 않잖아. 아무 말 없이 나왔음. 나온다는 메시지도 없었음. 그날 이후로 친구들한테 사과 카톡이 줄줄이 왔음. 전부 긴 내용이었음. 다 읽고 이틀 뒤에 다시 들어갔음. '어, 왔어?' '어.' 그 이후로 그 친구들이 엄청 조심하고 잘해줌. 말 없이 행동하는 게 제일 강했음."}
+    ],
+    E:[
+      {title:"겉으론 괜찮은 척하다 혼자 터진 썰",story:"시험 기간 3주 내내 친구들한테 힘들다고 한마디도 못 했음. 물어볼 때마다 '어 뭐 그냥 좀 바빠 ㅋㅋ' 라고 했음. 마지막 시험 끝나고 집에 가다가 편의점에서 소금빵 하나 샀는데 버스에서 그걸 먹다가 갑자기 눈물이 나왔음. 딱히 이유는 없었음. 그냥 따뜻하고 오늘도 버텼다 싶었던 것 같음. 집 들어와서 씻고 나서 제일 친한 친구한테 '야 나 사실 좀 힘들었어' 라고 보냈음. 답장이 '어 알았어. 주말에 뭐 먹을래?' 였는데 그게 제일 고마웠음."},
+      {title:"좋아하면서 7일 동안 먼저 연락 안 한 썰",story:"확실히 좋아하는 사람이 생겼는데 먼저 연락하면 지는 것 같아서 기다리기로 했음. 하루 이틀은 괜찮았는데 3일째부터 폰 들었다 놨다 반복했음. 친구한테 '야 걔 왜 연락 안 하냐' 했더니 '니가 하면 되잖아' 라고 함. '싫어.' '왜?' '내가 먼저 하면 지는 것 같잖아.' '그 사람은 지금 뭘 기다리고 있을 것 같아?' 그 말에 5분 멍 때리다가 7일째 밤에 '뭐해' 보냄. 1분도 안 돼서 답장 옴. '나도 연락 하려고 했는데 네가 안 해서 기다렸어.' 둘 다 바보였음."},
+      {title:"아무 이유 없이 뭉클했던 버스 썰",story:"별일 없는 평범한 목요일이었음. 집에 가는 버스에서 창밖 멍하니 보고 있었는데 갑자기 감정이 올라왔음. 슬픈 것도 기쁜 것도 아닌 그냥 뭔가 가득 차 있는 느낌. 오늘도 버텼다, 뭐 그런 거. 이어폰에서 아무 노래나 나오고 있었는데 그 노래가 딱 끝나는 타이밍에 창밖이 주황색이었음. 사진 찍으려다 안 찍었음. 그냥 눈에 담았음. 아무한테도 말 안 했는데 이상하게 그 장면 아직도 생각남."}
+    ],
+    F:[
+      {title:"플레이팅 하다 밥 다 식힌 썰",story:"혼자 집에서 해 먹을 때도 그릇 세팅은 대충 못 하는 편임. 오늘은 리조또를 했는데 생각보다 잘 됐음. 그릇에 담고 허브 올리고 사진 찍었는데 각도가 마음에 안 들었음. 다시 세팅. 또 마음에 안 들어서 다시. 조명 때문인가 싶어서 창가로 이동. 거기서 또 세 번. 총 열한 번 찍었음. 그 사이에 리조또가 굳어 있었음. 전자레인지에 돌려서 먹었음. 인스타엔 안 올렸음. 열한 장 다 마음에 안 찼음."},
+      {title:"소개팅 전날 상대 SNS 2018년까지 판 썰",story:"소개팅 잡혔다는 연락 받자마자 인스타 프로필 찾음. 게시물 다 봄. 팔로우 계정 보고 취향 파악. 하이라이트 전부 봄. 거기 나온 카페 이름으로 별도 검색해서 자주 가는 동네 파악. 태그된 사진 보고 대략적인 성격 유추까지 했음. 2018년 게시물까지 내려갔음. 실제로 만났더니 인스타 감성이랑 많이 달랐음. 잠깐 당황했는데 오히려 더 흥미로웠음. 예상을 벗어나는 사람이 더 궁금해지더라. 두 번째 약속 잡았음."},
+      {title:"말 아꼈다가 오히려 오해 만든 썰",story:"친한 친구가 새 머리스타일 했는데 솔직히 어울리지 않았음. 근데 뭐라고 해야 할지 애매해서 그냥 '어, 잘랐네' 만 했음. 친구가 '어때?' 라고 물어봐서 또 '응 잘랐네' 했음. 친구 표정이 좀 어두워지더니 며칠 뒤에 '그때 왜 아무 말 안 했어' 라고 함. '말하기 애매했어' 했더니 '솔직하게 말해줬으면 더 나았을 것 같아. 그게 더 상처야' 라고 했음. 지금도 그 상황 생각남. 말을 아끼는 게 항상 배려인 건 아닌 것 같음."}
+    ],
+  };
+
+  const ssulMap = userGender === 'F' ? ssulMapF : ssulMapM;
+  // pick a ssul based on quiz answers for variety
+  const ssulIdx = (answers.reduce((s,sc)=>s+Object.values(sc).reduce((a,b)=>a+b,0),0)) % 3;
+  const mySsul = ssulMap[res.type]?.[ssulIdx] || ssulMap.A[0];
+  const ssulHtml=`<div style="position:relative;padding:20px 18px 18px;background:linear-gradient(135deg,rgba(212,149,106,.1),rgba(232,160,80,.06));border-radius:16px;border:1.5px solid rgba(212,149,106,.25)">
+    <div style="font-size:13px;font-weight:800;letter-spacing:1.2px;color:var(--toast);margin-bottom:12px;display:flex;align-items:center;gap:7px">
+      <span style="font-size:20px">🎬</span> 이런 썰이 있을 법해요!
+    </div>
+    <div style="font-size:17px;font-weight:700;color:var(--dark);margin-bottom:12px;line-height:1.55">${mySsul.title}</div>
+    <div style="font-size:15px;color:var(--muted);line-height:2.05;padding:14px 16px;background:rgba(255,255,255,.6);border-radius:10px">${mySsul.story}</div>
+  </div>`;
+
   return `<div class="q-ai-section"><div class="q-ai-section-title">✦ 한줄 요약</div><p style="font-weight:700;font-size:15px;color:var(--dark);line-height:1.6">${finalHl}</p></div>
 <div class="q-ai-section"><div class="q-ai-section-title">✦ 심층 분석</div>${sections.map(s=>`<div style="margin-bottom:12px;padding:12px 14px;background:rgba(212,149,106,.06);border-radius:12px;border-left:3px solid var(--toast)"><p style="font-size:12px;font-weight:700;color:var(--toast);margin-bottom:6px">${s.icon} ${s.title}</p><p style="font-size:13px;color:var(--dark);line-height:1.85">${s.content}</p></div>`).join('')}</div>
+<div class="q-ai-section"><div class="q-ai-section-title">💘 나와 잘 맞는 타입</div>${matchHtml}</div>
 ${weakness?`<div class="q-ai-section"><div class="q-ai-section-title">⚡ 아킬레스건</div><p style="font-size:13px;color:var(--muted);line-height:1.75;padding:12px 14px;background:rgba(44,24,16,.04);border-radius:12px;font-style:italic">${weakness}</p></div>`:''}
 <div class="q-ai-section"><div class="q-ai-section-title">✦ 결정적 한마디</div><p style="font-size:14px;font-weight:600;color:var(--dark);border-left:3px solid var(--toast);padding:14px 16px;background:rgba(212,149,106,.07);border-radius:0 12px 12px 0;line-height:1.9">"${reason}"</p></div>
-<div style="margin-top:4px">${allTags.map(t=>`<span class="q-ai-tag">${t}</span>`).join('')}</div>`;
+<div style="margin-top:4px">${allTags.map(t=>`<span class="q-ai-tag">${t}</span>`).join('')}</div>
+<div class="q-ai-section" style="margin-top:14px">${ssulHtml}</div>`;
 }
 
 // PHONE
