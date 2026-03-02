@@ -229,7 +229,7 @@
   @keyframes bounce { from{transform:translateY(0)} to{transform:translateY(5px)} }
   .result-zone-story .character-card-mini { background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.15); }
   .result-zone-story .character-food-name { color:white; }
-  .result-zone-story .character-sub-tag { color:rgba(255,255,255,.5); }
+  .result-zone-story .character-sub-tag { color:rgba(255,255,255,.85); background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.2); }
   .result-zone-story .story-ai-box { background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.12); }
   .result-zone-story .story-ai-box-title { color:rgba(255,255,255,.85); }
   .result-zone-story .story-ai-content { color:rgba(255,255,255,.8); }
@@ -238,6 +238,9 @@
   .result-zone-story .recap-story-label { color:rgba(255,255,255,.5); }
   .result-zone-story .recap-story-content { color:rgba(255,255,255,.85); }
   .result-zone-story .kw-chip { background:rgba(255,255,255,.1); color:rgba(255,255,255,.7); border-color:rgba(255,255,255,.15); }
+  .result-zone-story #char-quote-wrap { background:rgba(255,255,255,.1) !important; border-left-color:rgba(255,255,255,.4) !important; }
+  .result-zone-story #char-quote-wrap > div:first-child { color:rgba(255,255,255,.6) !important; }
+  .result-zone-story #char-quote-text { color:rgba(255,255,255,.9) !important; }
   .fade-in{animation:fadeUp .35s ease both;}
 
   /* CHOICE PAGE */
@@ -828,8 +831,8 @@ function detectMoodLocal(story){
   return'neutral';
 }
 
-async function callGemini(prompt,maxTokens=600){
-  try{const r=await fetch(`${API_BASE}/gemini`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,maxTokens,temperature:0.92})});if(!r.ok)throw new Error(`${r.status}`);const d=await r.json();return d.text||null;}catch(e){console.warn('[text]',e);return null;}
+async function callGemini(prompt,maxTokens=1200){
+  try{const r=await fetch(`${API_BASE}/gemini`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,maxTokens,temperature:0.92})});if(!r.ok)throw new Error(`${r.status}`);const d=await r.json();console.log('[callGemini] finishReason=',d.finishReason,'textLen=',d.text?.length);return d.text||null;}catch(e){console.warn('[text]',e);return null;}
 }
 
 async function transcribeAudio(blob,mimeType){
@@ -853,7 +856,7 @@ async function generateCharImage(foodName,mood,moodIntensity='medium',emotionDet
   throw new Error('이미지 생성 실패');
 }
 
-function getField(text,key){if(!text)return'';const m=text.match(new RegExp(key+'\\s*:\\s*([\\s\\S]+?)(?=\\n\\s*[가-힣A-Za-z]+\\s*:|$)'));return m?m[1].trim():'';}
+function getField(text,key){if(!text)return'';const t=text.replace(/\*\*/g,'');const pat=new RegExp('^'+key+':\\s*(.+?)(?=\n[A-Z]+:|$)','ms');const m=t.match(pat);if(!m)return'';return m[1].trim();}
 
 function setLoadingStep(id){
   ['lstep-stt','lstep-mood','lstep-img','lstep-analysis'].forEach(sid=>{const el=document.getElementById(sid);el.classList.remove('active','done');if(sid===id)el.classList.add('active');});
@@ -1096,14 +1099,14 @@ async function buildResult(foodName){
       document.getElementById('oneliner-loading').style.display='none';
       const olText=document.getElementById('story-oneliner-text');const olTo=document.getElementById('story-oneliner-to');const olTags=document.getElementById('story-oneliner-tags');
       if(text){
-        const summary=getField(text,'썰한줄');const toYou=getField(text,'이사람에게');const tags=(getField(text,'태그').match(/#[^\s#]+/g)||[]).slice(0,5);const charQuote=getField(text,'캐릭터한마디');const charStory=getField(text,'캐릭터스토리');
+        console.log('[doStoryOneliner raw]',text);const summary=getField(text,'ONELINER');const toYou=getField(text,'TOYOU');const tags=(getField(text,'TAGS').match(/#[^\s#]+/g)||[]).slice(0,5);const charQuote=getField(text,'QUOTE');const charStory=getField(text,'STORY');console.log('[parsed] 스토리:',charStory,'한마디:',charQuote);
         if(summary){olText.textContent=summary;olText.style.display='block';}
         if(toYou){olTo.textContent=`"${toYou}"`;olTo.style.display='block';}
         if(tags.length){olTags.innerHTML=tags.map(t=>`<span class="ai-tag" style="background:rgba(255,255,255,.12);color:rgba(255,255,255,.8);border:none">${t}</span>`).join('');olTags.style.display='block';}
         if(charQuote){document.getElementById('char-quote-text').textContent=charQuote;document.getElementById('char-quote-wrap').style.display='block';}
         document.getElementById('story-ai-loading').style.display='none';
         const el=document.getElementById('story-ai-content');
-        if(charStory){el.innerHTML=`<p style="color:rgba(255,255,255,.55);font-size:10px;font-weight:700;letter-spacing:1.5px;margin-bottom:10px">✦ AI가 지어낸 이 캐릭터의 이야기</p><p style="color:rgba(255,255,255,.88);line-height:2;font-size:13px;font-style:italic">${charStory}</p>`;}
+        if(charStory){el.innerHTML=`<p style="color:rgba(255,255,255,.55);font-size:10px;font-weight:700;letter-spacing:1.5px;margin-bottom:10px">✦ AI가 지어낸 이 캐릭터의 이야기</p><p style="color:rgba(255,255,255,.88);line-height:2;font-size:13px;font-style:italic">${charStory}</p>`;el.style.display='block';}
         else{el.innerHTML=`<p style="color:rgba(255,255,255,.6);line-height:1.9;font-size:13px">스토리를 불러오지 못했어요 😅</p>`;}
         el.style.display='block';
       } else {
@@ -1130,36 +1133,19 @@ async function buildResult(foodName){
 async function doStoryOneliner(res,story,foodName,mood,emotionDetail='',storyContext={},moodIntensity='medium'){
   if(!story)return null;
   const moodData=MOOD_MAP[mood]||MOOD_MAP.neutral;
-  const intensityDesc=moodIntensity==='high'?'감정이 터질 듯 강렬하게':moodIntensity==='low'?'감정이 잔잔하게':'감정이 적당히';
-  const prompt=`당신은 썰 전문 콘텐츠 크리에이터예요.
-이 사람 썰을 읽고 나서 "ㅋㅋㅋㅋ 이거 완전 나잖아" 또는 "헉 진짜?" 반응을 이끌어내는 게 목표예요.
-유머, 밈, 현실 공감, 약간의 드립이 핵심이에요.
+  const intensityDesc=moodIntensity==='high'?'강렬하게':moodIntensity==='low'?'잔잔하게':'적당히';
+  const storyShort=story.slice(0,300);
+  const prompt=`썰 콘텐츠 크리에이터로서 아래 썰을 분석해 5개 항목을 작성해. 반드시 5개 전부 작성.
 
-━━ 썰 정보 ━━
-[전체 내용] "${story}"
-[주인공 음식] ${foodName}
-[감정] ${moodData.label} ${moodData.emoji} — ${intensityDesc} 드러남
-[감정 뉘앙스] ${emotionDetail||moodData.label}
-[상황] ${storyContext.situation||'미파악'}
-[등장 관계] ${storyContext.relation||'미파악'}
-[핵심 사건] ${storyContext.turning_point||'미파악'}
-[썰의 톤] ${storyContext.tone||'미파악'}
-[작성자 성향] ${res.food} 타입
+[썰] "${storyShort}"
+[음식] ${foodName} / [감정] ${moodData.label}${intensityDesc} / [상황] ${storyContext.situation||''} / [톤] ${storyContext.tone||''} / [성향] ${res.food}타입
 
-━━ 출력 형식 (라벨 정확히 지킬 것, 각 항목은 반드시 새 줄로 시작) ━━
-
-썰한줄: [이 썰을 한 줄로 압축. 유머/밈 스타일. 이모지 1-2개 포함]
-
-이사람에게: [이 썰 당사자에게만 해주는 현실 공감 한 마디. 1-2문장]
-
-캐릭터스토리: [${foodName} 캐릭터가 이 썰과 똑같은 상황을 겪는 짧은 이야기를 지어내줘. 3인칭으로, 마치 동화나 웹툰 한 장면처럼. 4~5문장]
-
-캐릭터한마디: [${foodName} 캐릭터가 이 상황에서 할 법한 말 한 마디. 귀엽거나 웃기거나 공감되게. 따옴표 없이]
-
-태그: #태그1 #태그2 #태그3 #태그4 #태그5
-
-"힘내세요" 금지. 뻔한 위로 금지.`;
-  return await callGemini(prompt,900);
+ONELINER: 한 줄 유머 요약 (이모지 포함, 20자 이내)
+TOYOU: 공감 한마디 (1문장)
+QUOTE: ${foodName} 캐릭터 한마디 (귀엽게, 1문장)
+TAGS: #태그1 #태그2 #태그3 #태그4 #태그5
+STORY: ${foodName} 캐릭터가 이 상황을 겪는 3인칭 이야기 (3문장)`;
+  return await callGemini(prompt,2500);
 }
 
 function deepLocalAnalysis(answerLabels, res) {
